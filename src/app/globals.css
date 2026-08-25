@@ -1,0 +1,24 @@
+@import "tailwindcss";
+@import "./theme.css";
+@import "./book.css";
+
+html, body { height: 100%; }
+
+body {
+  margin: 0;
+  background: var(--desk);
+  color: var(--ink);
+  font-family: var(--font-body);
+  overflow: hidden; /* the book turns; the document does not scroll */
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+.skip-link {
+  position: absolute; left: -9999px; top: 8px; z-index: 10000;
+  background: var(--paper); color: var(--ink); padding: 10px 16px;
+  font-family: var(--font-display); font-size: 12px; border-radius: 3px;
+}
+.skip-link:focus { left: 8px; }
+
+:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }

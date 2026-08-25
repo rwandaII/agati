@@ -1,0 +1,21 @@
+:root {
+  --forest: #1B3A2F;
+  --forest-deep: #12271F;
+  --teal: #417586;
+  --paper: #F4ECD8;
+  --paper-edge: #E4D8BC;
+  --ink: #2B2320;
+  --ink-soft: #5A4C42;
+  --gold: #C9A227;
+  --desk: #3A2A1E;
+
+  --font-display: 'Montserrat', system-ui, sans-serif;
+  --font-body: 'Lora', Georgia, serif;
+
+  --turn-ms: 700ms;
+  --turn-ease: cubic-bezier(0.42, 0, 0.28, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --turn-ms: 1ms; }
+}
