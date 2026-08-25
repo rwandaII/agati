@@ -1,0 +1,193 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  READER
+  ADMIN
+}
+
+enum Language {
+  EN
+  FR
+  RW
+}
+
+enum AccessType {
+  FREE_FOREVER
+  FREE_TRIAL
+  PAID
+}
+
+enum PurchaseKind {
+  BOOK
+  SUBSCRIPTION
+}
+
+enum PurchaseStatus {
+  PENDING
+  SUCCEEDED
+  FAILED
+}
+
+enum Plan {
+  MONTHLY
+  YEARLY
+}
+
+enum SubStatus {
+  ACTIVE
+  EXPIRED
+  CANCELLED
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  role         Role     @default(READER)
+  createdAt    DateTime @default(now())
+
+  accesses      BookAccess[]
+  purchases     Purchase[]
+  subscriptions Subscription[]
+  progress      ReadingProgress[]
+  shelf         ShelfItem[]
+}
+
+model Book {
+  id            String     @id @default(cuid())
+  slug          String     @unique
+  title         String
+  author        String
+  summary       String
+  description   String
+  coverColor    String     @default("#1B3A2F")
+  coverImage    String?
+  language      Language   @default(EN)
+  category      String
+  accessType    AccessType @default(FREE_FOREVER)
+  priceRwf      Int        @default(0)
+  freeTrialDays Int        @default(7)
+  previewPages  Int        @default(2)
+  pageCount     Int        @default(0)
+  featured      Boolean    @default(false)
+  publishedAt   DateTime   @default(now())
+
+  pages     BookPage[]
+  accesses  BookAccess[]
+  purchases Purchase[]
+  progress  ReadingProgress[]
+  shelf     ShelfItem[]
+
+  @@index([accessType])
+  @@index([language])
+  @@index([category])
+}
+
+model BookPage {
+  id      String @id @default(cuid())
+  bookId  String
+  index   Int
+  content String
+
+  book Book @relation(fields: [bookId], references: [id], onDelete: Cascade)
+
+  @@unique([bookId, index])
+}
+
+model BookAccess {
+  id             String    @id @default(cuid())
+  userId         String
+  bookId         String
+  firstOpenedAt  DateTime  @default(now())
+  trialExpiresAt DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  book Book @relation(fields: [bookId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, bookId])
+}
+
+model Purchase {
+  id               String         @id @default(cuid())
+  userId           String
+  bookId           String?
+  kind             PurchaseKind
+  plan             Plan?
+  amountRwf        Int
+  currency         String         @default("RWF")
+  status           PurchaseStatus @default(PENDING)
+  provider         String
+  providerChargeId String?
+  reference        String         @unique
+  phone            String?
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  book         Book?         @relation(fields: [bookId], references: [id], onDelete: SetNull)
+  subscription Subscription?
+
+  @@index([userId, status])
+  @@index([status])
+}
+
+model Subscription {
+  id         String    @id @default(cuid())
+  userId     String
+  plan       Plan
+  status     SubStatus @default(ACTIVE)
+  startedAt  DateTime  @default(now())
+  expiresAt  DateTime
+  purchaseId String    @unique
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  purchase Purchase @relation(fields: [purchaseId], references: [id], onDelete: Cascade)
+
+  @@index([userId, status])
+}
+
+model ReadingProgress {
+  userId    String
+  bookId    String
+  pageIndex Int      @default(0)
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  book Book @relation(fields: [bookId], references: [id], onDelete: Cascade)
+
+  @@id([userId, bookId])
+}
+
+model ShelfItem {
+  userId  String
+  bookId  String
+  addedAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  book Book @relation(fields: [bookId], references: [id], onDelete: Cascade)
+
+  @@id([userId, bookId])
+}
+
+model NewsPost {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  title       String
+  excerpt     String
+  body        String
+  coverImage  String?
+  category    String
+  author      String   @default("Agati Library")
+  publishedAt DateTime @default(now())
+  featured    Boolean  @default(false)
+
+  @@index([publishedAt])
+}

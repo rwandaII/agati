@@ -9,6 +9,7 @@ export default defineConfig({
     // a `// @vitest-environment jsdom` docblock at the top of the file.
     environment: 'node',
     globals: true,
+    fileParallelism: false,
     setupFiles: ['./vitest.setup.ts'],
   },
   resolve: { alias: { '@': path.resolve(__dirname, './src') } },
