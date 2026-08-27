@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { SITE } from '@/config/brand';
+import { BookPreloader } from '@/components/preloader/BookPreloader';
+import { BookShell } from '@/components/book/BookShell';
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.APP_URL ?? 'http://localhost:3000'),
@@ -30,7 +32,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <a className="skip-link" href="#page-content">
           Skip to the page
         </a>
-        {children}
+        <BookPreloader />
+        <BookShell>{children}</BookShell>
       </body>
     </html>
   );
