@@ -10,5 +10,9 @@ export type SeedBook = {
   priceRwf: number;
   coverColor: string;
   featured?: boolean;
+  /** Days of free reading once a reader first opens a FREE_TRIAL book. */
+  freeTrialDays?: number;
+  /** Pages readable without any entitlement at all. */
+  previewPages?: number;
   pages: string[];
 };
