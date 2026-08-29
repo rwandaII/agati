@@ -17,7 +17,13 @@ type Turn = { dir: 1 | -1; from: ReactNode; to: ReactNode };
  * half still shows the outgoing spread while the right half already shows the
  * incoming one. That is what a real book does.
  */
-export function BookShell({ children }: { children: ReactNode }) {
+export function BookShell({
+  children,
+  accountMark,
+}: {
+  children: ReactNode;
+  accountMark?: ReactNode;
+}) {
   const pathname = usePathname();
   const router = useRouter();
 
@@ -77,7 +83,7 @@ export function BookShell({ children }: { children: ReactNode }) {
 
   return (
     <div ref={bind} className="book__viewport">
-      <BookFrame>
+      <BookFrame accountMark={accountMark}>
         {turn ? (
           <>
             <div className="book__under book__under--left">

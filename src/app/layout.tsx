@@ -3,6 +3,7 @@ import './globals.css';
 import { SITE } from '@/config/brand';
 import { BookPreloader } from '@/components/preloader/BookPreloader';
 import { BookShell } from '@/components/book/BookShell';
+import { AccountRibbon } from '@/components/book/AccountRibbon';
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.APP_URL ?? 'http://localhost:3000'),
@@ -33,7 +34,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           Skip to the page
         </a>
         <BookPreloader />
-        <BookShell>{children}</BookShell>
+        <BookShell accountMark={<AccountRibbon />}>{children}</BookShell>
       </body>
     </html>
   );
