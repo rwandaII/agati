@@ -1102,3 +1102,32 @@
 @media (prefers-reduced-motion: reduce) {
   .waiting__ring { animation: none; opacity: 0.35; }
 }
+
+/* ---- the admin desk ---- */
+.admin__stats { display: flex; flex-wrap: wrap; gap: 14px; margin: 0 0 1em; }
+.admin__stats span { font-size: 11px; color: var(--ink-soft); display: grid; }
+.admin__stats strong {
+  font-family: var(--font-display);
+  font-size: 21px;
+  font-weight: 800;
+  color: var(--forest);
+}
+.admin__legend { margin: 0 0 1em; }
+.admin__legend dt {
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--forest);
+  margin-top: 6px;
+}
+.admin__legend dd { margin: 0; font-size: 12px; color: var(--ink-soft); }
+.admin__list { list-style: none; margin: 0; padding: 0; }
+.admin__row { padding: 6px 0; border-bottom: 1px solid rgba(43, 35, 32, 0.08); }
+.admin__title {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--forest);
+}
+.admin__meta { display: block; font-size: 10.5px; color: var(--ink-soft); }
