@@ -6,7 +6,7 @@
   width: 100%;
   display: grid;
   place-items: center;
-  padding: clamp(12px, 3vh, 40px);
+  padding: 0;
   background:
     radial-gradient(120% 90% at 50% 0%, rgba(255, 240, 210, 0.1), transparent 55%),
     radial-gradient(80% 60% at 50% 110%, rgba(0, 0, 0, 0.55), transparent 60%),
@@ -25,12 +25,32 @@
    ============================================================ */
 .book {
   position: relative;
-  width: min(1500px, 94vw);
-  aspect-ratio: 3 / 2;
-  max-height: 90dvh;
+  width: 100vw;
+  height: 100dvh;
   perspective: 2600px;
-  filter: drop-shadow(0 34px 46px rgba(0, 0, 0, 0.55));
+  /* the expansion out of the closed cover and into the whole browser */
+  transition:
+    width 760ms var(--turn-ease),
+    height 760ms var(--turn-ease),
+    border-radius 760ms var(--turn-ease),
+    box-shadow 760ms var(--turn-ease);
 }
+
+/* The welcome page: a closed volume sitting on the desk. As soon as the cover
+   starts opening the :has() stops matching and the book grows to fill the
+   browser, so opening it and entering it are one movement. */
+.book:has(.cover:not(.cover--opening)) {
+  width: min(660px, 84vw);
+  height: min(62dvh, 470px);
+  border-radius: 4px 8px 8px 4px;
+  box-shadow: 0 38px 60px rgba(0, 0, 0, 0.62);
+}
+
+/* chrome belongs to the open book, not the closed one */
+.book:has(.cover) .ribbons,
+.book:has(.cover) .cardmark,
+.book:has(.cover) .turner,
+.book:has(.cover) .book__edges { display: none; }
 
 /* the visible block of paper on each outer side */
 .book__edges {
@@ -48,11 +68,11 @@
   transition: width 400ms ease;
 }
 .book__edges--left {
-  left: -11px;
+  left: 0;
   box-shadow: inset -6px 0 10px rgba(0, 0, 0, 0.25);
 }
 .book__edges--right {
-  right: -11px;
+  right: 0;
   box-shadow: inset 6px 0 10px rgba(0, 0, 0, 0.25);
 }
 
@@ -96,7 +116,8 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  padding: clamp(20px, 3.4vh, 44px) clamp(22px, 3.2vw, 56px);
+  /* room at the head for the tabs and the card marks */
+  padding: clamp(46px, 6vh, 62px) clamp(26px, 3.2vw, 60px) clamp(18px, 3vh, 34px);
   color: var(--ink);
   /* paper: fibre grain plus a soft vignette, no image files */
   background:
@@ -107,16 +128,19 @@
     var(--paper);
 }
 .page--left {
-  border-radius: 5px 0 0 5px;
+  border-radius: 0;
   box-shadow: inset -22px 0 26px -18px rgba(0, 0, 0, 0.42);
 }
 .page--right {
-  border-radius: 0 5px 5px 0;
+  border-radius: 0;
   box-shadow: inset 22px 0 26px -18px rgba(0, 0, 0, 0.42);
 }
 
 .page__running {
   flex: none;
+  width: 100%;
+  max-width: 62ch;
+  margin-inline: auto;
   font-family: var(--font-display);
   font-size: 10px;
   font-weight: 600;
@@ -132,7 +156,14 @@
 .page__body {
   flex: 1;
   min-height: 0;
-  overflow: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(43, 35, 32, 0.28) transparent;
+  padding-right: 6px;
+  width: 100%;
+  max-width: 62ch;
+  margin-inline: auto;
   font-size: clamp(14px, 1.05vw, 16.5px);
   line-height: 1.75;
 }
@@ -141,6 +172,9 @@
 
 .page__folio {
   flex: none;
+  width: 100%;
+  max-width: 62ch;
+  margin-inline: auto;
   font-family: var(--font-display);
   font-size: 11px;
   color: var(--ink-soft);
@@ -155,7 +189,7 @@
   left: 50%;
   top: 0;
   bottom: 0;
-  width: 96px;
+  width: clamp(96px, 9vw, 160px);
   transform: translateX(-50%);
   pointer-events: none;
   z-index: 2;
@@ -229,30 +263,35 @@
    ============================================================ */
 .ribbons {
   position: absolute;
-  top: -14px;
-  right: 6%;
+  top: 0;
+  right: clamp(8px, 2vw, 26px);
   display: flex;
-  gap: 8px;
-  z-index: 5;
+  gap: 4px;
+  z-index: 6;
+  max-width: 62vw;
+  flex-wrap: wrap;
+  justify-content: flex-end;
 }
 .ribbon {
-  width: 28px;
-  height: 112px;
+  width: auto;
+  min-width: 30px;
+  height: 30px;
+  padding: 0 11px;
   text-decoration: none;
   background: linear-gradient(
     180deg,
     color-mix(in srgb, var(--ribbon) 78%, #000) 0%,
     var(--ribbon) 100%
   );
-  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 84%, 0 100%);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+  clip-path: polygon(0 0, 100% 0, 100% 72%, 50% 100%, 0 72%);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.35);
   display: grid;
   place-items: center;
-  opacity: 0.62;
-  transition: height 220ms ease, opacity 220ms ease, filter 220ms ease;
+  opacity: 0.72;
+  transition: height 200ms ease, opacity 200ms ease, filter 200ms ease;
 }
-.ribbon:hover { height: 128px; opacity: 0.92; }
-.ribbon--active { height: 146px; opacity: 1; filter: saturate(1.15); }
+.ribbon:hover { height: 38px; opacity: 0.95; }
+.ribbon--active { height: 42px; opacity: 1; filter: saturate(1.15); }
 .ribbon__label {
   font-family: var(--font-display);
   font-size: 8.5px;
@@ -260,10 +299,8 @@
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: #fff6e2;
-  writing-mode: vertical-rl;
-  transform: rotate(180deg);
-  padding-bottom: 16px;
   white-space: nowrap;
+  padding-bottom: 6px;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
@@ -893,8 +930,9 @@
 
 .cardmark {
   position: absolute;
-  top: -13px;
-  left: 5%;
+  top: 0;
+  left: clamp(8px, 2vw, 26px);
+  z-index: 6;
   display: flex;
   gap: 4px;
   z-index: 5;
@@ -902,8 +940,8 @@
 .cardmark__link {
   display: block;
   padding: 4px 11px 5px;
-  border-radius: 2px 2px 0 0;
-  background: linear-gradient(180deg, #F7F0DC, var(--paper-edge));
+  border-radius: 0 0 2px 2px;
+  background: linear-gradient(180deg, var(--paper-edge), #F7F0DC);
   color: var(--forest);
   font-family: var(--font-display);
   font-size: 9px;
@@ -1131,3 +1169,66 @@
   color: var(--forest);
 }
 .admin__meta { display: block; font-size: 10.5px; color: var(--ink-soft); }
+
+
+/* ============================================================
+   Page turners
+
+   Scrolling belongs to the content, so turning a page has to be
+   something you can see and reach for.
+   ============================================================ */
+.turner {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: clamp(34px, 4vw, 56px);
+  border: 0;
+  cursor: pointer;
+  z-index: 7;
+  display: grid;
+  place-items: center;
+  font-size: 30px;
+  line-height: 1;
+  color: var(--ink-soft);
+  background: transparent;
+  opacity: 0.22;
+  transition: opacity 180ms ease, background 180ms ease;
+}
+.turner--prev { left: 0; }
+.turner--next { right: 0; }
+.turner:hover:not(:disabled) {
+  opacity: 0.85;
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.06), transparent);
+}
+.turner--next:hover:not(:disabled) {
+  background: linear-gradient(270deg, rgba(0, 0, 0, 0.06), transparent);
+}
+.turner:disabled { opacity: 0; cursor: default; pointer-events: none; }
+.turner:focus-visible { opacity: 0.9; }
+
+/* ============================================================
+   Responsive
+   ============================================================ */
+@media (max-width: 900px) {
+  .ribbon__label { font-size: 8px; letter-spacing: 0.08em; }
+  .ribbon { padding: 0 8px; }
+}
+
+@media (max-width: 620px) {
+  .book:has(.cover:not(.cover--opening)) {
+    width: 88vw;
+    height: min(66dvh, 430px);
+  }
+  .page { padding: 44px 18px 16px; }
+  .turner { width: 30px; font-size: 24px; opacity: 0.4; }
+  .cardmark__link { padding: 3px 7px 4px; font-size: 7.5px; letter-spacing: 0.09em; }
+  .ribbons { gap: 3px; max-width: 58vw; }
+  .shelf { grid-template-columns: repeat(auto-fill, minmax(108px, 1fr)); gap: 12px 10px; }
+  .plans { grid-template-columns: 1fr; }
+  .prose__title { font-size: clamp(20px, 6vw, 28px); }
+}
+
+@media (max-height: 520px) {
+  .page { padding-top: 40px; }
+  .book:has(.cover:not(.cover--opening)) { height: 80dvh; }
+}

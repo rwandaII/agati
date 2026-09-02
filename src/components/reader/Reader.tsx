@@ -43,7 +43,15 @@ function PageBody({ text, folio }: { text: string | null; folio: number | null }
     <>
       <div className={`page__body ${opensChapter ? '' : 'page__body--chapter'}`}>
         {paras.map((p, i) => (
-          <p key={i}>{p}</p>
+          <p key={i}>
+            {/* Hard line breaks matter: verse, and tables of contents. */}
+            {p.split('\n').map((line, j, all) => (
+              <span key={j}>
+                {line}
+                {j < all.length - 1 ? <br /> : null}
+              </span>
+            ))}
+          </p>
         ))}
       </div>
       <footer className="page__folio">{folio}</footer>

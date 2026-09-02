@@ -30,10 +30,11 @@ export function useMeasurer(pageRef: RefObject<HTMLElement | null>) {
     ghostRef.current = ghost;
 
     const sync = () => {
-      const rect = page.getBoundingClientRect();
+      const textBox = (page.querySelector('.page__body') as HTMLElement | null) ?? page;
+      const rect = textBox.getBoundingClientRect();
       if (rect.width === 0 || rect.height === 0) return;
 
-      const cs = getComputedStyle(page);
+      const cs = getComputedStyle(textBox);
       ghost.style.width = `${rect.width}px`;
       for (const prop of [
         'fontFamily',
@@ -46,7 +47,7 @@ export function useMeasurer(pageRef: RefObject<HTMLElement | null>) {
         ghost.style[prop] = cs[prop];
       }
 
-      setBox({ width: rect.width, height: rect.height });
+      setBox({ width: rect.width, height: textBox.clientHeight || rect.height });
       setReady(true);
     };
 
@@ -74,7 +75,8 @@ export function useMeasurer(pageRef: RefObject<HTMLElement | null>) {
           `<p style="margin:0 0 .9em">${p
             .replace(/&/g, '&amp;')
             .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')}</p>`,
+            .replace(/>/g, '&gt;')
+            .replace(/\n/g, '<br>')}</p>`,
       )
       .join('');
 

@@ -22,7 +22,7 @@ export function Cover({ onOpen }: { onOpen: () => void }) {
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img className="cover__mark" src="/brand/agati-mark.png" alt="Agati Library" />
         <span className="cover__tagline">{SITE.tagline}</span>
-        <span className="cover__hint">Scroll or click to open</span>
+        <span className="cover__hint">Click to open the book</span>
       </button>
     </div>
   );
