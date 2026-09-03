@@ -12,7 +12,7 @@ export const AGATI_TREE: SeedBook = {
   language: 'EN',
   accessType: 'PAID',
   priceRwf: 2500,
-  coverColor: '#1B3A2F',
+  coverColor: '#0071BA',
   featured: true,
   summary: 'Six students in Musanze, two hundred books, and one very stubborn idea.',
   description:

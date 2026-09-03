@@ -1,6 +1,11 @@
 import type { Metadata } from 'next';
 import { Spread } from '@/components/book/Spread';
 import { PageTitle, Lead, Heading, Scroller } from '@/components/ui/Prose';
+import { Plate } from '@/components/ui/PhotoStrip';
+import { FounderList } from '@/components/ui/FounderList';
+import { SocialLinks } from '@/components/ui/SocialLinks';
+import { AgatiWord } from '@/components/ui/AgatiWord';
+import { HERO } from '@/config/photos';
 
 export const metadata: Metadata = {
   title: 'About Us',
@@ -9,12 +14,12 @@ export const metadata: Metadata = {
 };
 
 const FOUNDERS = [
-  ['Patience Karekezi', 'Director'],
-  ['Aime Mukiza', 'Finance Admin Director'],
-  ['Sabine Isangwe', 'HR Director and Secretary'],
-  ['Rigobert Uwiduhaye', 'Creative Director'],
-  ['Prosper Munyabuhoro', 'Programme Director'],
-  ['Denyse Umuhuza', 'Communications & Fundraising Director'],
+  { name: 'Patience Karekezi', role: 'Director' },
+  { name: 'Aime Mukiza', role: 'Finance Admin Director' },
+  { name: 'Sabine Isangwe', role: 'HR Director and Secretary' },
+  { name: 'Rigobert Uwiduhaye', role: 'Creative Director' },
+  { name: 'Prosper Munyabuhoro', role: 'Programme Director' },
+  { name: 'Denyse Umuhuza', role: 'Communications & Fundraising Director' },
 ] as const;
 
 export default function About() {
@@ -24,7 +29,7 @@ export default function About() {
       folio={4}
       left={
         <Scroller>
-          <PageTitle kicker="Why, when, what">About Us</PageTitle>
+          <PageTitle kicker="Why, when, what">About <AgatiWord /></PageTitle>
 
           <Lead>
             We want to give Rwandan children access to books to widen their aspirations so they can
@@ -52,6 +57,8 @@ export default function About() {
             English, French and Kinyarwanda.
           </p>
 
+          <Plate photo={HERO} wide />
+
           <Heading>Our journey</Heading>
           <p>
             The team changed as the work did — from enthusiastic students to strategic thinkers
@@ -64,14 +71,7 @@ export default function About() {
       right={
         <Scroller>
           <Heading>Meet the co-founders</Heading>
-          <ul className="founders">
-            {FOUNDERS.map(([name, role]) => (
-              <li key={name} className="founders__item">
-                <span className="founders__name">{name}</span>
-                <span className="founders__role">{role}</span>
-              </li>
-            ))}
-          </ul>
+          <FounderList founders={FOUNDERS} />
 
           <Heading>Our partners</Heading>
           <p>

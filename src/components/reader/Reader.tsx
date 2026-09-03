@@ -138,6 +138,38 @@ export function Reader({
       });
   }, [spread, lastSpread, pages, blocked, book.slug, book.pageCount]);
 
+  // Discourage casual copying of book text. Honest limits: this stops
+  // select-and-copy, right-click and the keyboard shortcuts, but anyone with
+  // developer tools can still read the DOM. Real protection is the server-side
+  // gate, which never sends unearned pages at all.
+  useEffect(() => {
+    const swallow = (e: Event) => {
+      if ((e.target as HTMLElement | null)?.closest?.('.page__body')) e.preventDefault();
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (!(e.ctrlKey || e.metaKey)) return;
+      if (['c', 'x', 'a', 's', 'p'].includes(e.key.toLowerCase())) {
+        const tag = (e.target as HTMLElement | null)?.tagName;
+        if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+        e.preventDefault();
+      }
+    };
+
+    document.addEventListener('copy', swallow);
+    document.addEventListener('cut', swallow);
+    document.addEventListener('contextmenu', swallow);
+    document.addEventListener('dragstart', swallow);
+    document.addEventListener('keydown', onKey);
+
+    return () => {
+      document.removeEventListener('copy', swallow);
+      document.removeEventListener('cut', swallow);
+      document.removeEventListener('contextmenu', swallow);
+      document.removeEventListener('dragstart', swallow);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, []);
+
   // Save reading position, debounced, and only when there is somebody to save it for.
   useEffect(() => {
     if (!signedIn) return;

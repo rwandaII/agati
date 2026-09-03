@@ -16,7 +16,7 @@ export const UBWENGE: SeedBook = {
   language: 'RW',
   accessType: 'PAID',
   priceRwf: 2000,
-  coverColor: '#5E7A4A',
+  coverColor: '#80C203',
   summary:
     'Imvura yaguye iminsi ine. Kalisa yari afite igitabo kimwe. / Four days of rain, and one book.',
   description:

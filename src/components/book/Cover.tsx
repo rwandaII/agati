@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { turnDuration } from './constants';
 import { SITE } from '@/config/brand';
+import { MARK_COLOUR } from '@/config/photos';
 
 /** The closed hardcover. Swings open on its spine and hands over to the book. */
 export function Cover({ onOpen }: { onOpen: () => void }) {
@@ -20,7 +21,8 @@ export function Cover({ onOpen }: { onOpen: () => void }) {
         <span className="cover__bands" aria-hidden="true" />
         <span className="cover__rule" aria-hidden="true" />
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img className="cover__mark" src="/brand/agati-mark.png" alt="Agati Library" />
+        <img className="cover__mark" src={MARK_COLOUR} alt="Agati Library" />
+        <span className="cover__wordmark">AGATI LIBRARY</span>
         <span className="cover__tagline">{SITE.tagline}</span>
         <span className="cover__hint">Click to open the book</span>
       </button>

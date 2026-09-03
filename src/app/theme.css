@@ -1,16 +1,30 @@
 :root {
-  --forest: #1B3A2F;
-  --forest-deep: #12271F;
-  --teal: #417586;
-  --paper: #F4ECD8;
-  --paper-edge: #E4D8BC;
-  --ink: #2B2320;
-  --ink-soft: #5A4C42;
-  --gold: #C9A227;
-  --desk: #3A2A1E;
+  /* ---- Agati's logo, exactly ---- */
+  --agati-cyan: #00A7E1;
+  --agati-orange: #FF8000;
+  --agati-green: #80C203;
+  --agati-blue: #0071BA;
+  --agati-flame: #FF5600;
+  --agati-red: #FF0012;
+  --agati-gold: #FFBA00;
 
-  --font-display: 'Montserrat', system-ui, sans-serif;
-  --font-body: 'Lora', Georgia, serif;
+  /* ---- paper and ink ---- */
+  --paper: #F8F3E6;
+  --paper-edge: #E7DEC8;
+  --ink: #22303A;
+  --ink-soft: #5C6B75;
+
+  /* ---- the desk the book rests on ---- */
+  --desk: #0E2A3A;
+  --desk-deep: #081C28;
+
+  /* ---- roles ---- */
+  --accent: var(--agati-cyan);
+  --heading: var(--agati-blue);
+  --gold: var(--agati-gold);
+
+  --font-display: var(--font-display-loaded), 'Montserrat', system-ui, sans-serif;
+  --font-body: var(--font-body-loaded), 'Lora', Georgia, serif;
 
   --turn-ms: 700ms;
   --turn-ease: cubic-bezier(0.42, 0, 0.28, 1);

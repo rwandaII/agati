@@ -2,26 +2,26 @@ import type { ReactNode } from 'react';
 
 export function PageTitle({ children, kicker }: { children: ReactNode; kicker?: string }) {
   return (
-    <hgroup className="prose__head">
-      {kicker ? <p className="prose__kicker">{kicker}</p> : null}
-      <h1 className="prose__title">{children}</h1>
+    <hgroup>
+      {kicker ? <p className="eyebrow">{kicker}</p> : null}
+      <h1 className="h1">{children}</h1>
     </hgroup>
   );
 }
 
 export function Lead({ children }: { children: ReactNode }) {
-  return <p className="prose__lead">{children}</p>;
+  return <p className="lead">{children}</p>;
 }
 
 export function Heading({ children }: { children: ReactNode }) {
-  return <h2 className="prose__h2">{children}</h2>;
+  return <h2 className="h2">{children}</h2>;
 }
 
 export function Rule() {
-  return <hr className="prose__rule" />;
+  return <hr className="rule" />;
 }
 
-/** A page region that may exceed the page box and needs its own scrollbar. */
+/** Was a scroll box inside a page; on a website the page itself scrolls. */
 export function Scroller({ children }: { children: ReactNode }) {
-  return <div className="prose__scroll">{children}</div>;
+  return <div>{children}</div>;
 }

@@ -14,7 +14,7 @@ export const MOBILE_LIBRARY: SeedBook = {
   accessType: 'FREE_TRIAL',
   priceRwf: 1500,
   freeTrialDays: 7,
-  coverColor: '#417586',
+  coverColor: '#FF8000',
   featured: true,
   summary: 'A crate of books gets on a bus. This is where it goes.',
   description:

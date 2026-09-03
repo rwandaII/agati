@@ -1,32 +1,33 @@
 import type { ReactNode } from 'react';
 
-/** One two-page spread: left page, right page, and the gutter between them. */
+/**
+ * A website section laid out in two columns.
+ *
+ * This used to render an actual two-page book spread, and the whole site lived
+ * inside a book. That was wrong: the book belongs to the books. Every page
+ * still hands over a `left` and a `right`, so the pages themselves did not have
+ * to change — but here it becomes an ordinary, scrollable section.
+ */
 export function Spread({
   left,
   right,
   running,
-  folio,
 }: {
   left: ReactNode;
   right: ReactNode;
   running: string;
-  folio: number;
+  /** Kept so the page components need no edit; a website has no folios. */
+  folio?: number;
 }) {
   return (
-    <div className="spread">
-      <section className="page page--left">
-        <header className="page__running">{running}</header>
-        <div className="page__body">{left}</div>
-        <footer className="page__folio page__folio--left">{folio}</footer>
-      </section>
-
-      <section className="page page--right" id="page-content">
-        <header className="page__running">{running}</header>
-        <div className="page__body">{right}</div>
-        <footer className="page__folio page__folio--right">{folio + 1}</footer>
-      </section>
-
-      <div className="spread__gutter" aria-hidden="true" />
-    </div>
+    <section className="section">
+      <div className="wrap">
+        <p className="eyebrow">{running}</p>
+        <div className="columns">
+          <div className="columns__col prose">{left}</div>
+          <div className="columns__col prose">{right}</div>
+        </div>
+      </div>
+    </section>
   );
 }

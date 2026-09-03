@@ -1,7 +1,8 @@
-import { writeFile, mkdir } from 'node:fs/promises';
+import { writeFile, readFile, mkdir } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import path from 'node:path';
 import type { SeedBook } from '../src/content/types';
+import { WANTED, type Wanted } from './wanted-books';
 
 const START = /\*\*\*\s*START OF (THE|THIS) PROJECT GUTENBERG EBOOK.*?\*\*\*/i;
 const END = /\*\*\*\s*END OF (THE|THIS) PROJECT GUTENBERG EBOOK.*?\*\*\*/i;
@@ -44,137 +45,6 @@ export function paginate(text: string, target = 1100): string[] {
   flush();
   return pages;
 }
-
-type Wanted = Omit<SeedBook, 'pages' | 'author'> & { search: string; author?: string };
-
-const WANTED: Wanted[] = [
-  {
-    search: 'Aesop Fables Townsend',
-    slug: 'aesops-fables',
-    title: 'Aesop’s Fables',
-    category: 'Folk tales',
-    language: 'EN',
-    accessType: 'FREE_FOREVER',
-    priceRwf: 0,
-    coverColor: '#1B3A2F',
-    featured: true,
-    summary: 'Short animal tales, each ending in a lesson worth carrying.',
-    description:
-      'The oldest collection of moral stories in the world, told a few lines at a time — the fox and the grapes, the tortoise and the hare, the lion and the mouse.',
-  },
-  {
-    search: 'The Jungle Book Kipling',
-    slug: 'the-jungle-book',
-    title: 'The Jungle Book',
-    category: 'Adventure',
-    language: 'EN',
-    accessType: 'FREE_FOREVER',
-    priceRwf: 0,
-    coverColor: '#2F4A2A',
-    featured: true,
-    summary: 'Mowgli grows up among wolves and learns the law of the jungle.',
-    description:
-      'Stories of a boy raised by wolves, a mongoose who guards a household, and a white seal searching for a safe shore.',
-  },
-  {
-    search: 'Just So Stories Kipling',
-    slug: 'just-so-stories',
-    title: 'Just So Stories',
-    category: 'Children’s',
-    language: 'EN',
-    accessType: 'FREE_FOREVER',
-    priceRwf: 0,
-    coverColor: '#5A3B22',
-    summary: 'How the elephant got its trunk, and other cheerful impossibilities.',
-    description:
-      'Origin stories invented for a child, told aloud and meant to be read the same way.',
-  },
-  {
-    search: 'Grimms Fairy Tales',
-    slug: 'grimms-fairy-tales',
-    title: 'Grimms’ Fairy Tales',
-    category: 'Folk tales',
-    language: 'EN',
-    accessType: 'FREE_FOREVER',
-    priceRwf: 0,
-    coverColor: '#3B2A45',
-    summary: 'The tales the brothers Grimm collected from the people who told them.',
-    description: 'Two centuries of European storytelling, gathered from farmhouses and kitchens.',
-  },
-  {
-    search: 'Alice Adventures in Wonderland',
-    slug: 'alice-in-wonderland',
-    title: 'Alice’s Adventures in Wonderland',
-    category: 'Adventure',
-    language: 'EN',
-    accessType: 'FREE_FOREVER',
-    priceRwf: 0,
-    coverColor: '#417586',
-    summary: 'A girl follows a hurrying rabbit and nothing behaves properly again.',
-    description: 'Still the strangest journey in children’s literature.',
-  },
-  {
-    search: 'The Wonderful Wizard of Oz',
-    slug: 'wizard-of-oz',
-    title: 'The Wonderful Wizard of Oz',
-    category: 'Adventure',
-    language: 'EN',
-    accessType: 'FREE_FOREVER',
-    priceRwf: 0,
-    coverColor: '#2E5B4F',
-    summary: 'A road of yellow brick, and four travellers who each want one thing.',
-    description: 'Dorothy walks to the Emerald City with a scarecrow, a tin man and a lion.',
-  },
-  {
-    search: 'The Wind in the Willows',
-    slug: 'wind-in-the-willows',
-    title: 'The Wind in the Willows',
-    category: 'Adventure',
-    language: 'EN',
-    accessType: 'FREE_FOREVER',
-    priceRwf: 0,
-    coverColor: '#4A5D3A',
-    summary: 'Mole, Rat, Badger and the impossible Mr Toad, on the riverbank.',
-    description: 'A quiet classic about friendship, rivers, and knowing when to come home.',
-  },
-  {
-    search: 'The Secret Garden Burnett',
-    slug: 'the-secret-garden',
-    title: 'The Secret Garden',
-    category: 'Children’s',
-    language: 'EN',
-    accessType: 'FREE_FOREVER',
-    priceRwf: 0,
-    coverColor: '#3F6B4A',
-    summary: 'A locked garden, a lonely child, and what grows when both are opened.',
-    description: 'Mary Lennox finds a walled garden nobody has entered for ten years.',
-  },
-  {
-    search: 'Fables de La Fontaine',
-    slug: 'fables-de-la-fontaine',
-    title: 'Fables de La Fontaine',
-    category: 'Folk tales',
-    language: 'FR',
-    accessType: 'FREE_FOREVER',
-    priceRwf: 0,
-    coverColor: '#6B4A2F',
-    summary: 'Les fables en vers, du corbeau et du renard à la cigale et la fourmi.',
-    description:
-      'Les fables les plus connues de la langue française, écrites pour être lues à voix haute.',
-  },
-  {
-    search: 'Anne of Green Gables',
-    slug: 'anne-of-green-gables',
-    title: 'Anne of Green Gables',
-    category: 'Children’s',
-    language: 'EN',
-    accessType: 'FREE_FOREVER',
-    priceRwf: 0,
-    coverColor: '#7A3B2E',
-    summary: 'An orphan arrives at the wrong farm and refuses to be sent back.',
-    description: 'Anne Shirley talks her way into a home, a school, and everyone’s affection.',
-  },
-];
 
 type GutendexBook = {
   title: string;
@@ -259,11 +129,13 @@ function scoreCandidate(candidate: GutendexBook, wantTitle: string, wantLang: st
   return overlap + langBonus + hasText - partPenalty;
 }
 
-async function resolveText(
+type Candidate = { urls: string[]; author: string; matchedTitle: string };
+
+async function resolveCandidates(
   search: string,
   language: string,
   wantTitle: string,
-): Promise<{ urls: string[]; author: string; matchedTitle: string }> {
+): Promise<Candidate[]> {
   const wantLang = language.toLowerCase();
   const res = await fetchWithRetry(
     `https://gutendex.com/books?search=${encodeURIComponent(search)}&languages=${wantLang}`,
@@ -275,26 +147,28 @@ async function resolveText(
 
   const ranked = results
     .map((r) => ({ r, score: scoreCandidate(r, wantTitle, wantLang) }))
-    .sort((a, b) => b.score - a.score);
+    .sort((a, b) => b.score - a.score)
+    .filter((x) => x.score >= 0.7); // never seed a book that is not the one asked for
 
-  const best = ranked[0];
-  // Require at least half the significant words of the wanted title to be present.
-  if (best.score < 0.7) {
+  if (!ranked.length) {
+    const best = results
+      .map((r) => ({ r, score: scoreCandidate(r, wantTitle, wantLang) }))
+      .sort((a, b) => b.score - a.score)[0];
     throw new Error(
       `Best Gutendex match for "${wantTitle}" was "${best.r.title}" (score ${best.score.toFixed(2)}) — refusing to seed the wrong book`,
     );
   }
-  const hit = best.r;
 
-  // Collect every plain-text URL as a fallback chain; mirrors differ in reliability.
-  const urls = Object.keys(hit.formats)
-    .filter((k) => k.startsWith('text/plain') && !String(hit.formats[k]).endsWith('.zip'))
-    .sort((a, b) => Number(b.includes('utf-8')) - Number(a.includes('utf-8')))
-    .map((k) => hit.formats[k]);
+  return ranked.slice(0, 5).map(({ r: hit }) => {
 
-  if (!urls.length) throw new Error(`No plain-text format for "${search}"`);
+    // Every plain-text URL, best encoding first; mirrors differ in reliability.
+    const urls = Object.keys(hit.formats)
+      .filter((k) => k.startsWith('text/plain') && !String(hit.formats[k]).endsWith('.zip'))
+      .sort((a, b) => Number(b.includes('utf-8')) - Number(a.includes('utf-8')))
+      .map((k) => hit.formats[k]);
 
-  return { urls, author: hit.authors?.[0]?.name ?? 'Unknown', matchedTitle: hit.title };
+    return { urls, author: hit.authors?.[0]?.name ?? 'Unknown', matchedTitle: hit.title };
+  }).filter((cand) => cand.urls.length > 0);
 }
 
 /** Gutenberg author names come as "Kipling, Rudyard"; humans read them the other way. */
@@ -314,19 +188,43 @@ async function main() {
 
   for (const w of WANTED) {
     const outPath = path.join(outDir, `${w.slug}.json`);
+
     if (!force && existsSync(outPath)) {
-      console.log(`- ${w.title} ... already downloaded`);
+      const existing = JSON.parse(await readFile(outPath, 'utf8')) as SeedBook;
+      const { search: _s, ...meta } = w;
+      const refreshed: SeedBook = { ...existing, ...meta, author: w.author ?? existing.author };
+      await writeFile(outPath, JSON.stringify(refreshed, null, 2), 'utf8');
+      console.log(`- ${w.title} ... have it (${existing.pages.length} pages, ${w.category})`);
       continue;
     }
 
     console.log(`- ${w.title} ...`);
     try {
-      const { urls, author, matchedTitle } = await resolveText(w.search, w.language, w.title);
-      const raw = await fetchTextWithRetry(urls);
-      const pages = paginate(stripGutenbergBoilerplate(raw));
+      const candidates = await resolveCandidates(w.search, w.language, w.title);
+
+      let pages: string[] = [];
+      let author = '';
+      let matchedTitle = '';
+      const tried: string[] = [];
+
+      for (const cand of candidates) {
+        try {
+          const raw = await fetchTextWithRetry(cand.urls);
+          const got = paginate(stripGutenbergBoilerplate(raw));
+          tried.push(`"${cand.matchedTitle}" -> ${got.length}p`);
+          if (got.length >= 10) {
+            pages = got;
+            author = cand.author;
+            matchedTitle = cand.matchedTitle;
+            break;
+          }
+        } catch {
+          tried.push(`"${cand.matchedTitle}" -> unreachable`);
+        }
+      }
 
       if (pages.length < 10) {
-        throw new Error(`only ${pages.length} pages from "${matchedTitle}" — check the source`);
+        throw new Error(`no usable edition. Tried: ${tried.join('; ')}`);
       }
 
       const { search: _drop, ...meta } = w;

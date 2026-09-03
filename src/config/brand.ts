@@ -1,14 +1,40 @@
+/**
+ * Agati's real identity, sampled straight from their logo.
+ *
+ * The mark is an open book whose pages branch like a tree, and every facet of
+ * it is a different bright colour. These seven are the exact values taken from
+ * the artwork on agatilibrary.org — nothing here is invented.
+ */
+export const LOGO_COLOURS = {
+  cyan: '#00A7E1',
+  orange: '#FF8000',
+  green: '#80C203',
+  blue: '#0071BA',
+  flame: '#FF5600',
+  red: '#FF0012',
+  gold: '#FFBA00',
+} as const;
+
+/** The order the letters of AGATI are coloured in, and the section tabs too. */
+export const LOGO_SEQUENCE = [
+  LOGO_COLOURS.gold,
+  LOGO_COLOURS.cyan,
+  LOGO_COLOURS.green,
+  LOGO_COLOURS.orange,
+  LOGO_COLOURS.blue,
+  LOGO_COLOURS.red,
+  LOGO_COLOURS.flame,
+] as const;
+
 export const BRAND = {
   colors: {
-    forest:     '#1B3A2F',
-    forestDeep: '#12271F',
-    teal:       '#417586',
-    paper:      '#F4ECD8',
-    paperEdge:  '#E4D8BC',
-    ink:        '#2B2320',
-    inkSoft:    '#5A4C42',
-    gold:       '#C9A227',
-    desk:       '#3A2A1E',
+    ...LOGO_COLOURS,
+    ink: '#22303A',
+    inkSoft: '#5C6B75',
+    paper: '#F8F3E6',
+    paperEdge: '#E7DEC8',
+    desk: '#0E2A3A',
+    deskDeep: '#081C28',
   },
   fonts: {
     display: "'Montserrat', system-ui, sans-serif",

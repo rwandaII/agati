@@ -2,6 +2,9 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Spread } from '@/components/book/Spread';
 import { PageTitle, Lead, Heading, Scroller } from '@/components/ui/Prose';
+import { Plate } from '@/components/ui/PhotoStrip';
+import { SocialLinks } from '@/components/ui/SocialLinks';
+import { WIDE } from '@/config/photos';
 import { listNews, formatNewsDate } from '@/lib/news';
 
 export const metadata: Metadata = {
@@ -41,6 +44,9 @@ export default async function News() {
                   Read this
                 </Link>
               </p>
+
+              <Plate photo={WIDE} wide />
+              <SocialLinks label="Follow the work" />
             </article>
           ) : (
             <p>Nothing published yet.</p>

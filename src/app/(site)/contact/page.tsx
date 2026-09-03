@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Spread } from '@/components/book/Spread';
 import { PageTitle, Lead, Heading, Rule } from '@/components/ui/Prose';
 import { SITE } from '@/config/brand';
+import { SocialLinks } from '@/components/ui/SocialLinks';
 
 export const metadata: Metadata = {
   title: 'Get In Touch',
@@ -43,16 +44,7 @@ export default function Contact() {
       }
       right={
         <>
-          <Heading>Follow the work</Heading>
-          <ul className="channels">
-            {CHANNELS.map(([label, href]) => (
-              <li key={label}>
-                <a href={href} target="_blank" rel="noreferrer noopener">
-                  {label}
-                </a>
-              </li>
-            ))}
-          </ul>
+          <SocialLinks label="Follow the work" />
 
           <Rule />
 
