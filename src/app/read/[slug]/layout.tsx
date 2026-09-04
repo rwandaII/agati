@@ -10,7 +10,7 @@ import type { ReactNode } from 'react';
  */
 export default function ReadLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="book__viewport">
+    <div className="book__viewport book__viewport--reading">
       <div className="desk">
         <div className="book">
           <div className="book__edges book__edges--left" aria-hidden="true" />

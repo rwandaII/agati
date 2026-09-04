@@ -1,23 +1,14 @@
 import type { ReactNode } from 'react';
-import './site.css';
-import { SiteHeader } from '@/components/site/SiteHeader';
-import { SiteFooter } from '@/components/site/SiteFooter';
-import { AccountLink } from '@/components/site/AccountLink';
+import { BookShell } from '@/components/book/BookShell';
+import { AccountRibbon } from '@/components/book/AccountRibbon';
 
 /**
- * The website. An ordinary, scrollable, readable site.
+ * The website is one big book, filling the screen: every section is a spread,
+ * and moving between sections turns a page.
  *
- * The book — closed cover, turning pages, two-page spread — belongs to the
- * books themselves, over in /read/[slug]. It is not the shape of the website.
+ * Reading an actual book from the collection is deliberately NOT inside this —
+ * that route brings its own, smaller, bound volume.
  */
 export default function SiteLayout({ children }: { children: ReactNode }) {
-  return (
-    <div className="site">
-      <SiteHeader account={<AccountLink />} />
-      <main className="site__main" id="page-content">
-        {children}
-      </main>
-      <SiteFooter />
-    </div>
-  );
+  return <BookShell accountMark={<AccountRibbon />}>{children}</BookShell>;
 }

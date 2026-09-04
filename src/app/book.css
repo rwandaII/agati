@@ -6,7 +6,7 @@
   width: 100%;
   display: grid;
   place-items: center;
-  padding: clamp(14px, 3.2vh, 46px) clamp(14px, 3vw, 52px);
+  padding: 0;
   background:
     radial-gradient(90% 70% at 50% 0%, rgba(0, 167, 225, 0.18), transparent 60%),
     radial-gradient(70% 60% at 50% 110%, rgba(0, 0, 0, 0.5), transparent 62%),
@@ -28,10 +28,9 @@
    ============================================================ */
 .book {
   position: relative;
-  width: min(1440px, 92vw);
-  height: min(86dvh, 880px);
-  border-radius: 5px 8px 8px 5px;
-  box-shadow: 0 34px 64px rgba(0, 0, 0, 0.55), 0 4px 12px rgba(0, 0, 0, 0.4);
+  /* The website fills the screen. A library book does not — see below. */
+  width: 100vw;
+  height: 100dvh;
   perspective: 2600px;
   /* the expansion out of the closed cover and into the whole browser */
   transition:
@@ -1443,4 +1442,146 @@
 @media (max-width: 620px) {
   .desk { padding: 10px; }
   .book { width: 96vw; height: 88dvh; }
+}
+
+
+/* ============================================================
+   Reading a book from the library
+
+   The website is the big book. An actual book off the shelf is a
+   smaller, bound volume sitting on the desk, so you can see it is
+   a thing you are holding.
+   ============================================================ */
+.book__viewport--reading .desk { padding: clamp(14px, 3.4vh, 48px) clamp(14px, 3vw, 54px); }
+
+.book__viewport--reading .book {
+  width: min(1320px, 90vw);
+  height: min(84dvh, 860px);
+  border-radius: 5px 9px 9px 5px;
+  box-shadow: 0 36px 66px rgba(0, 0, 0, 0.58), 0 5px 14px rgba(0, 0, 0, 0.42);
+}
+.book__viewport--reading .book__block { border-radius: 5px 9px 9px 5px; overflow: hidden; }
+.book__viewport--reading .page--left  { border-radius: 5px 0 0 5px; }
+.book__viewport--reading .page--right { border-radius: 0 9px 9px 0; }
+
+/* the closed cover is smaller still, and grows as it opens */
+.book:has(.cover:not(.cover--opening)) {
+  width: min(640px, 80vw);
+  height: min(58dvh, 440px);
+  border-radius: 4px 8px 8px 4px;
+  box-shadow: 0 40px 70px rgba(0, 0, 0, 0.66);
+}
+
+/* ============================================================
+   Movement
+
+   Every turn brings its page in: the words rise and settle rather
+   than appearing all at once.
+   ============================================================ */
+@keyframes ink-in {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.page__body > *,
+.prose__scroll > * {
+  animation: ink-in 520ms var(--turn-ease) both;
+}
+/* a short stagger, so the page settles line by line */
+.page__body > *:nth-child(1),  .prose__scroll > *:nth-child(1)  { animation-delay: 40ms; }
+.page__body > *:nth-child(2),  .prose__scroll > *:nth-child(2)  { animation-delay: 90ms; }
+.page__body > *:nth-child(3),  .prose__scroll > *:nth-child(3)  { animation-delay: 140ms; }
+.page__body > *:nth-child(4),  .prose__scroll > *:nth-child(4)  { animation-delay: 190ms; }
+.page__body > *:nth-child(5),  .prose__scroll > *:nth-child(5)  { animation-delay: 235ms; }
+.page__body > *:nth-child(6),  .prose__scroll > *:nth-child(6)  { animation-delay: 275ms; }
+.page__body > *:nth-child(n+7), .prose__scroll > *:nth-child(n+7) { animation-delay: 310ms; }
+
+/* the leaf's own content must not re-animate mid-turn */
+.leaf .page__body > *, .leaf .prose__scroll > * { animation: none; }
+
+/* the title letters lift one after another */
+@keyframes letter-in {
+  from { opacity: 0; transform: translateY(18px) rotate(-4deg); }
+  to   { opacity: 1; transform: none; }
+}
+.agatiword > span {
+  display: inline-block;
+  animation: letter-in 560ms var(--turn-ease) both;
+}
+.agatiword > span:nth-child(1) { animation-delay: 60ms; }
+.agatiword > span:nth-child(2) { animation-delay: 130ms; }
+.agatiword > span:nth-child(3) { animation-delay: 200ms; }
+.agatiword > span:nth-child(4) { animation-delay: 270ms; }
+.agatiword > span:nth-child(5) { animation-delay: 340ms; }
+.agatiword > span:nth-child(n+6) { animation-delay: 400ms; }
+.agatiword > span:hover { animation: none; transform: translateY(-4px); transition: transform 180ms ease; }
+
+/* things you can touch answer back */
+.bookcard__cover, .plate__img, .btn, .cta__button, .social__chip, .founders__photo {
+  transition: transform 220ms var(--turn-ease), box-shadow 220ms ease, filter 220ms ease;
+}
+.btn:hover, .cta__button:hover { transform: translateY(-2px); filter: brightness(1.07); }
+.founders__item:hover .founders__photo { transform: scale(1.05) rotate(-1deg); }
+
+/* the mark breathes gently on the cover */
+@keyframes mark-float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-7px); }
+}
+.cover__mark { animation: mark-float 5s ease-in-out infinite; }
+
+/* the preloader hands over to the page rather than snapping away */
+@keyframes page-arrive { from { opacity: 0; } to { opacity: 1; } }
+.book__block { animation: page-arrive 420ms ease both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .page__body > *, .prose__scroll > *, .agatiword > span,
+  .cover__mark, .book__block { animation: none !important; }
+  .bookcard__cover, .plate__img, .btn, .founders__photo { transition: none; }
+}
+
+/* ============================================================
+   Mobile
+   ============================================================ */
+@media (max-width: 780px) {
+  .book__viewport--reading .desk { padding: 8px; }
+  .book__viewport--reading .book { width: 96vw; height: 90dvh; }
+
+  .page { padding: clamp(60px, 8vh, 76px) 18px 14px; }
+  .page__body { font-size: 15px; max-width: none; }
+  .page__running, .page__folio { max-width: none; }
+
+  .ribbons { top: 0; right: 4px; gap: 3px; max-width: 70vw; }
+  .ribbon { min-width: 0; height: 40px; padding: 0 10px; }
+  .ribbon:hover { height: 46px; }
+  .ribbon--active { height: 52px; }
+  .ribbon__label { font-size: 9.5px; letter-spacing: 0.06em; padding-bottom: 8px; }
+
+  .cardmark { left: 4px; gap: 3px; }
+  .cardmark__link { padding: 8px 10px 10px; font-size: 9.5px; letter-spacing: 0.06em; }
+
+  .shelf { grid-template-columns: repeat(auto-fill, minmax(108px, 1fr)); gap: 14px 10px; }
+  .plans { grid-template-columns: 1fr; }
+  .portraits { grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); }
+  .founders__photo { width: 58px; height: 74px; }
+  .detail__cover { width: min(150px, 60%); }
+  .turner { width: 30px; font-size: 26px; opacity: 0.45; }
+  .home__mark { width: 72px; }
+  .cover__title { font-size: clamp(19px, 6vw, 30px); }
+  .cover__wordmark { font-size: clamp(17px, 5.5vw, 26px); letter-spacing: 0.1em; }
+}
+
+@media (max-width: 420px) {
+  .ribbon { padding: 0 7px; }
+  .ribbon__label { font-size: 8.5px; }
+  .cardmark__link { padding: 7px 8px 9px; font-size: 8.5px; }
+  .page { padding: 56px 13px 12px; }
+  .shelf { grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); }
+}
+
+/* short screens: give the text back its room */
+@media (max-height: 560px) {
+  .page { padding-top: 52px; padding-bottom: 10px; }
+  .ribbon { height: 34px; }
+  .ribbon--active { height: 42px; }
 }

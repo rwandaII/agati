@@ -6,13 +6,11 @@ html, body { height: 100%; }
 
 body {
   margin: 0;
-  background: var(--paper);
+  background: var(--desk);
   color: var(--ink);
   font-family: var(--font-body);
+  overflow: hidden; /* the book turns; the document does not scroll */
 }
-
-/* Only while an actual book is open does the document stop scrolling. */
-body:has(.book__viewport) { overflow: hidden; }
 
 *, *::before, *::after { box-sizing: border-box; }
 
