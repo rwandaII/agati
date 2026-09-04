@@ -1,153 +1,77 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import { Spread } from '@/components/book/Spread';
+import { CoverGate } from '@/components/book/CoverGate';
+import { PageTitle, Lead, Rule, Scroller } from '@/components/ui/Prose';
 import { AgatiWord } from '@/components/ui/AgatiWord';
-import { SITE, LOGO_SEQUENCE } from '@/config/brand';
-import { HERO } from '@/config/photos';
-import { listBooks } from '@/lib/books';
-import { listNews, formatNewsDate } from '@/lib/news';
-import { BookCard } from '@/components/library/BookCard';
+import { Plate } from '@/components/ui/PhotoStrip';
+import { SocialLinks } from '@/components/ui/SocialLinks';
+import { SITE } from '@/config/brand';
+import { HERO, MARK_COLOUR } from '@/config/photos';
 
-const PROGRAMS = [
-  ['Agati Mobile Library', 'A crate of books carried out along the ridge roads, to communities with no library at all.'],
-  ['Nge Nawe Dusome', 'Children read their favourite books — and their own stories — on the radio.'],
-  ['Writers Residency', 'A sanctuary where new narratives are born and manuscripts are finished.'],
-  ['Hospital Libraries', 'A safe, creative space for children spending their year in a ward.'],
-] as const;
-
-export default async function Home() {
-  const [featured, news] = await Promise.all([listBooks({}), listNews(3)]);
-  const shelf = featured.filter((b) => b.featured).slice(0, 4);
-
+export default function Home() {
   return (
     <>
-      {/* ---------- hero ---------- */}
-      <section className="wrap">
-        <div className="hero">
-          <div>
-            <p className="eyebrow">{SITE.tagline}</p>
-            <h1 className="h1">
+      <Spread
+        running="Agati Library"
+        folio={2}
+        left={
+          <Scroller>
+            <Image
+              className="home__mark"
+              src={MARK_COLOUR}
+              alt=""
+              aria-hidden="true"
+              width={130}
+              height={134}
+              priority
+            />
+
+            <PageTitle kicker={SITE.tagline}>
               <AgatiWord /> Library
-            </h1>
-            <p className="lead">{SITE.mission}</p>
+            </PageTitle>
 
-            <div className="stats">
-              <span className="stat">
-                <strong>8</strong>
-                <span>library spaces</span>
-              </span>
-              <span className="stat">
-                <strong>32</strong>
-                <span>books to read here</span>
-              </span>
-              <span className="stat">
-                <strong>3</strong>
-                <span>languages</span>
-              </span>
-            </div>
+            <Lead>{SITE.mission}</Lead>
 
-            <div className="buttons">
-              <Link className="button button--primary" href="/library">
-                Open the collection
-              </Link>
-              <a
-                className="button button--gold"
-                href={SITE.donateUrl}
-                target="_blank"
-                rel="noreferrer noopener"
-              >
-                Support a library
+            <p>
+              <em>Agati</em> means a tree. We started with fewer than two hundred books in one room
+              in Musanze, in April 2018.
+            </p>
+
+            <p className="home__actions">
+              <Link href="/library">Open the collection →</Link>
+              <Link href="/about">How Agati began →</Link>
+              <a href={SITE.donateUrl} target="_blank" rel="noreferrer noopener">
+                Support the libraries →
               </a>
-            </div>
-          </div>
+            </p>
+          </Scroller>
+        }
+        right={
+          <Scroller>
+            <p className="home__stat">
+              <strong>8</strong> library spaces
+              <span>Musanze · Rubavu · Kicukiro · Nyamasheke · Karongi</span>
+            </p>
+            <p className="home__stat">
+              <strong>32</strong> books to read here
+              <span>English · Français · Kinyarwanda</span>
+            </p>
 
-          <figure className="hero__art">
-            <Image src={HERO.src} alt={HERO.alt} width={1103} height={735} priority sizes="(max-width: 900px) 92vw, 46vw" />
-          </figure>
-        </div>
-      </section>
+            <Rule />
 
-      {/* ---------- start reading ---------- */}
-      <section className="section section--tint">
-        <div className="wrap">
-          <p className="eyebrow">Start reading</p>
-          <h2 className="h2">Open a book right now</h2>
-          <p className="lead">
-            Every book here can be read on this site, a page at a time, like a real book. Many are
-            free forever.
-          </p>
+            <Plate photo={HERO} wide caption="An Agati library, in use" />
 
-          <div className="shelf">
-            {shelf.map((b) => (
-              <BookCard key={b.slug} book={b} />
-            ))}
-          </div>
+            <p>
+              Everything on these shelves can be read here, a page at a time. Many books are free
+              forever. Others are yours free for a week.
+            </p>
 
-          <div className="buttons">
-            <Link className="button button--ghost" href="/library">
-              See all 32 books
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ---------- what Agati does ---------- */}
-      <section className="section">
-        <div className="wrap">
-          <p className="eyebrow">What we do</p>
-          <h2 className="h2">A library is not only a room</h2>
-
-          <div className="cards">
-            {PROGRAMS.map(([name, body], i) => (
-              <article
-                key={name}
-                className="card"
-                style={{ ['--card' as string]: LOGO_SEQUENCE[i % LOGO_SEQUENCE.length] }}
-              >
-                <h3 className="h3">{name}</h3>
-                <p>{body}</p>
-              </article>
-            ))}
-          </div>
-
-          <div className="buttons">
-            <Link className="button button--ghost" href="/programs">
-              All nine programmes
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ---------- news ---------- */}
-      <section className="section section--tint">
-        <div className="wrap">
-          <p className="eyebrow">What we have done</p>
-          <h2 className="h2">Lately at Agati</h2>
-
-          <div className="cards">
-            {news.map((n, i) => (
-              <article
-                key={n.slug}
-                className="card"
-                style={{ ['--card' as string]: LOGO_SEQUENCE[(i + 3) % LOGO_SEQUENCE.length] }}
-              >
-                <p className="news__meta">
-                  {formatNewsDate(n.publishedAt)} · {n.category}
-                </p>
-                <h3 className="h3">
-                  <Link href={`/news/${n.slug}`}>{n.title}</Link>
-                </h3>
-                <p>{n.excerpt}</p>
-              </article>
-            ))}
-          </div>
-
-          <div className="buttons">
-            <Link className="button button--ghost" href="/news">
-              Read the news
-            </Link>
-          </div>
-        </div>
-      </section>
+            <SocialLinks />
+          </Scroller>
+        }
+      />
+      <CoverGate />
     </>
   );
 }
