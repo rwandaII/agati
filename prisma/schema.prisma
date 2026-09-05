@@ -18,6 +18,11 @@ enum Language {
   RW
 }
 
+enum BookFormat {
+  TEXT
+  COMIC
+}
+
 enum AccessType {
   FREE_FOREVER
   FREE_TRIAL
@@ -71,6 +76,7 @@ model Book {
   coverColor    String     @default("#1B3A2F")
   coverImage    String?
   language      Language   @default(EN)
+  format        BookFormat @default(TEXT)
   category      String
   accessType    AccessType @default(FREE_FOREVER)
   priceRwf      Int        @default(0)
@@ -95,7 +101,10 @@ model BookPage {
   id      String @id @default(cuid())
   bookId  String
   index   Int
+  /** Prose for a text book; empty for a comic, where the page IS the image. */
   content String
+  /** Public path to a scanned page, for comics. */
+  image   String?
 
   book Book @relation(fields: [bookId], references: [id], onDelete: Cascade)
 

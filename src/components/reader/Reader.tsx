@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Leaf } from '@/components/book/Leaf';
 import { useFlip } from '@/components/book/useFlip';
@@ -10,7 +11,7 @@ import { useMeasurer } from './useMeasurer';
 import { Paywall } from './Paywall';
 import type { AccessReason } from '@/lib/access/resolve';
 
-type Page = { index: number; content: string };
+type Page = { index: number; content: string; image?: string | null };
 
 type Book = {
   slug: string;
@@ -19,11 +20,41 @@ type Book = {
   priceRwf: number;
   accessType: 'FREE_FOREVER' | 'FREE_TRIAL' | 'PAID';
   pageCount: number;
+  format?: 'TEXT' | 'COMIC';
 };
 
 const CHAPTER = /^\s*(CHAPTER|BOOK|PART|FABLE|STORY|LIVRE|CHAPITRE|\*\*)/i;
 const FETCH_AHEAD = 6;
 const WINDOW = 24;
+
+/** A scanned comic plate. The picture is the page. */
+function ComicPage({ src, folio, alt }: { src: string | null; folio: number | null; alt: string }) {
+  if (!src) {
+    return (
+      <>
+        <div className="page__body page__body--comic" />
+        <footer className="page__folio">&nbsp;</footer>
+      </>
+    );
+  }
+  return (
+    <>
+      <div className="page__body page__body--comic">
+        <Image
+          className="comic__plate"
+          src={src}
+          alt={alt}
+          width={1100}
+          height={1500}
+          quality={80}
+          draggable={false}
+          sizes="(max-width: 780px) 92vw, 44vw"
+        />
+      </div>
+      <footer className="page__folio">{folio}</footer>
+    </>
+  );
+}
 
 /** One printed page of the reader. */
 function PageBody({ text, folio }: { text: string | null; folio: number | null }) {
@@ -87,14 +118,23 @@ export function Reader({
   const rightPageRef = useRef<HTMLElement | null>(null);
   const { measure, ready, box } = useMeasurer(rightPageRef);
 
+  const isComic = book.format === 'COMIC';
+
+  /** For a comic the plates ARE the pages, in order, never re-flowed. */
+  const plates = useMemo(
+    () => (isComic ? pages.map((p) => p.image ?? null) : []),
+    [isComic, pages],
+  );
+
   // Re-flow the stored text into pages that actually fit this page box.
   const display = useMemo(() => {
+    if (isComic) return plates.map((_, i) => String(i));
     const text = pages.map((p) => p.content).join('\n\n');
     if (!text) return [] as string[];
     if (!ready || box.height < 40) return pages.map((p) => p.content);
 
     return fitParagraphs(text.split(/\n\s*\n/), box.height, measure).map((g) => g.join('\n\n'));
-  }, [pages, ready, box.height, measure]);
+  }, [pages, ready, box.height, measure, isComic, plates]);
 
   const lastSpread = Math.max(0, Math.ceil(display.length / 2) - 1);
   const atEndOfWhatWeHave = spread >= lastSpread;
@@ -253,6 +293,12 @@ export function Reader({
           <header className="page__running">{book.title}</header>
           {paywall && spread === showPaywallAt ? (
             <div className="page__body">{paywall}</div>
+          ) : isComic ? (
+            <ComicPage
+              src={plates[leftIndex] ?? null}
+              folio={plates[leftIndex] ? leftIndex + 1 : null}
+              alt={`${book.title}, page ${leftIndex + 1}`}
+            />
           ) : (
             <PageBody text={pageText(leftIndex)} folio={pageText(leftIndex) ? leftIndex + 1 : null} />
           )}
@@ -262,6 +308,12 @@ export function Reader({
           <header className="page__running">{book.author}</header>
           {paywall && spread === showPaywallAt ? (
             <div className="page__body" />
+          ) : isComic ? (
+            <ComicPage
+              src={plates[rightIndex] ?? null}
+              folio={plates[rightIndex] ? rightIndex + 1 : null}
+              alt={`${book.title}, page ${rightIndex + 1}`}
+            />
           ) : (
             <PageBody text={pageText(rightIndex)} folio={pageText(rightIndex) ? rightIndex + 1 : null} />
           )}

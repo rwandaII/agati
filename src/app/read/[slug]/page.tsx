@@ -51,7 +51,7 @@ export default async function ReadPage({ params }: { params: Promise<{ slug: str
   const pages = await prisma.bookPage.findMany({
     where: { bookId: book.id, index: { lte: ceiling } },
     orderBy: { index: 'asc' },
-    select: { index: true, content: true },
+    select: { index: true, content: true, image: true },
   });
 
   return (
@@ -72,6 +72,7 @@ export default async function ReadPage({ params }: { params: Promise<{ slug: str
           priceRwf: book.priceRwf,
           accessType: book.accessType,
           pageCount: book.pageCount,
+          format: book.format,
         }}
         pages={pages}
         canRead={access.canRead}

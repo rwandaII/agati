@@ -18,6 +18,7 @@ export const CATEGORIES = [
   'Fantasy',
   'Mystery',
   'Science Fiction',
+  'Comics',
   'Agati Originals',
 ] as const;
 

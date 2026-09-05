@@ -3,31 +3,34 @@ import { FOUNDER_PHOTOS } from '@/config/photos';
 
 export type Founder = { name: string; role: string };
 
-/** Each co-founder with their own photograph, the way Agati presents them. */
+/**
+ * The people who built Agati, at a size where you can actually see them.
+ *
+ * Each portrait is paired with its name from agatilibrary.org's own page data,
+ * not guessed from the face.
+ */
 export function FounderList({ founders }: { founders: readonly Founder[] }) {
   return (
     <ul className="founders">
       {founders.map((f) => {
         const photo = FOUNDER_PHOTOS[f.name];
         return (
-          <li key={f.name} className="founders__item">
+          <li key={f.name} className="founder">
             {photo ? (
               <Image
-                className="founders__photo"
+                className="founder__photo"
                 src={photo}
                 alt={f.name}
-                width={240}
-                height={320}
-                quality={88}
-                sizes="(max-width: 620px) 84px, 148px"
+                width={420}
+                height={560}
+                quality={90}
+                sizes="(max-width: 780px) 42vw, 220px"
               />
             ) : (
-              <span className="founders__photo founders__photo--none" aria-hidden="true" />
+              <span className="founder__photo founder__photo--none" aria-hidden="true" />
             )}
-            <span className="founders__text">
-              <span className="founders__name">{f.name}</span>
-              <span className="founders__role">{f.role}</span>
-            </span>
+            <span className="founder__name">{f.name}</span>
+            <span className="founder__role">{f.role}</span>
           </li>
         );
       })}

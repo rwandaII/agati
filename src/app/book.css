@@ -606,34 +606,43 @@
 }
 .home__actions a:hover { text-decoration: underline; }
 
-.founders { list-style: none; margin: 0 0 1em; padding: 0; }
-.founders__item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 9px 0;
-  border-bottom: 1px solid rgba(34, 48, 58, 0.1);
+.founders {
+  list-style: none;
+  margin: 0 0 1.2em;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 18px 14px;
 }
-.founders__photo {
-  flex: none;
-  width: 74px;
-  height: 94px;
+
+.founder { display: grid; gap: 2px; }
+
+.founder__photo {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 3 / 4;
   object-fit: cover;
-  object-position: center 20%;
-  border-radius: 3px;
+  object-position: center 18%;
+  border-radius: 8px;
   background: var(--paper-edge);
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.22);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.24);
+  margin-bottom: 8px;
+  transition: transform 260ms var(--turn-ease), box-shadow 260ms ease;
 }
-.founders__photo--none { display: block; opacity: 0.35; }
-.founders__text { display: block; }
-.founders__name {
-  display: block;
+.founder:hover .founder__photo {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.3);
+}
+.founder__photo--none { display: block; aspect-ratio: 3 / 4; opacity: 0.3; }
+
+.founder__name {
   font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 13.5px;
+  font-weight: 800;
+  font-size: 14px;
+  line-height: 1.2;
   color: var(--heading);
 }
-.founders__role { display: block; font-size: 12px; color: var(--ink-soft); }
+.founder__role { font-size: 12.5px; line-height: 1.35; color: var(--ink-soft); }
 
 .programs { list-style: none; margin: 0; padding: 0; }
 .programs__item { margin-bottom: 1.05em; }
@@ -1201,30 +1210,55 @@
   position: absolute;
   top: 0;
   bottom: 0;
-  width: clamp(34px, 4vw, 56px);
+  width: clamp(52px, 6vw, 96px);
   border: 0;
   cursor: pointer;
   z-index: 7;
-  display: grid;
-  place-items: center;
-  font-size: 30px;
-  line-height: 1;
-  color: var(--ink-soft);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   background: transparent;
-  opacity: 0.22;
-  transition: opacity 180ms ease, background 180ms ease;
+  color: var(--heading);
+  opacity: 0.42;
+  transition: opacity 200ms ease, background 200ms ease;
 }
 .turner--prev { left: 0; }
 .turner--next { right: 0; }
+
+.turner__arrow {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.22);
+  font-size: 24px;
+  line-height: 1;
+  color: var(--accent);
+}
+.turner__label {
+  font-family: var(--font-display);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  writing-mode: vertical-rl;
+  color: var(--ink-soft);
+}
+.turner--prev .turner__label { transform: rotate(180deg); }
+
 .turner:hover:not(:disabled) {
-  opacity: 0.85;
-  background: linear-gradient(90deg, rgba(0, 0, 0, 0.06), transparent);
+  opacity: 1;
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.05), transparent);
 }
 .turner--next:hover:not(:disabled) {
-  background: linear-gradient(270deg, rgba(0, 0, 0, 0.06), transparent);
+  background: linear-gradient(270deg, rgba(0, 0, 0, 0.05), transparent);
 }
 .turner:disabled { opacity: 0; cursor: default; pointer-events: none; }
-.turner:focus-visible { opacity: 0.9; }
+.turner:focus-visible { opacity: 1; outline: 2px solid var(--gold); outline-offset: -4px; }
 
 /* ============================================================
    Responsive
@@ -1585,3 +1619,54 @@
   .ribbon { height: 34px; }
   .ribbon--active { height: 42px; }
 }
+
+
+@media (max-width: 780px) {
+  .founders { grid-template-columns: repeat(auto-fill, minmax(116px, 1fr)); gap: 14px 10px; }
+  .founder__name { font-size: 13px; }
+  .founder__role { font-size: 11.5px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .founder__photo { transition: none; }
+  .founder:hover .founder__photo { transform: none; }
+}
+
+
+@media (max-width: 780px) {
+  .turner { width: 44px; opacity: 0.6; }
+  .turner__arrow { width: 32px; height: 32px; font-size: 20px; }
+  .turner__label { display: none; }
+}
+
+/* ============================================================
+   Comics
+
+   A comic page is a picture, not prose. It gets the whole page,
+   fitted rather than cropped, so no panel is ever cut off.
+   ============================================================ */
+.page__body--comic {
+  display: grid;
+  place-items: center;
+  padding: 0;
+  max-width: none;
+  overflow: hidden;
+}
+
+.comic__plate {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 2px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.22);
+  /* comic scans are the thing being protected, same as the prose */
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-user-drag: none;
+  pointer-events: none;
+}
+
+/* a comic reads better on a fuller page than a book of prose does */
+.reader:has(.page__body--comic) .page { padding: clamp(52px, 6vh, 68px) clamp(12px, 1.4vw, 26px) clamp(14px, 2vh, 24px); }

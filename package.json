@@ -13,7 +13,9 @@
     "db:seed": "tsx prisma/seed.ts",
     "db:studio": "prisma studio",
     "fetch:books": "tsx scripts/fetch-books.ts",
-    "clean": "node -e \"require('fs').rmSync('.next',{recursive:true,force:true})\""
+    "clean": "node -e \"require('fs').rmSync('.next',{recursive:true,force:true})\"",
+    "fetch:comics": "tsx scripts/fetch-comics.ts",
+    "shrink:comics": "powershell -ExecutionPolicy Bypass -File scripts/shrink-comics.ps1"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

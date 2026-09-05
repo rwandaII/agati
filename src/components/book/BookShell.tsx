@@ -94,6 +94,8 @@ export function BookShell({
             onNext={() => go(1)}
             canPrev={here > 0}
             canNext={here !== -1 && here < PAGES.length - 1}
+            prevLabel={here > 0 ? PAGES[here - 1].label : undefined}
+            nextLabel={here !== -1 && here < PAGES.length - 1 ? PAGES[here + 1].label : undefined}
           />
         }
       >

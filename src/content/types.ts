@@ -16,3 +16,20 @@ export type SeedBook = {
   previewPages?: number;
   pages: string[];
 };
+
+/** A comic: the pages are scanned images rather than prose. */
+export type SeedComic = {
+  slug: string;
+  title: string;
+  author: string;
+  summary: string;
+  description: string;
+  category: string;
+  language: 'EN' | 'FR' | 'RW';
+  coverColor: string;
+  featured?: boolean;
+  published: number;
+  archiveId: string;
+  /** Public paths under /comics/<slug>/ */
+  pages: string[];
+};
