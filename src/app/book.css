@@ -271,46 +271,68 @@
   top: 0;
   right: clamp(10px, 2vw, 30px);
   display: flex;
-  gap: 6px;
+  align-items: flex-start;
+  gap: 5px;
   z-index: 8;
-  max-width: 66vw;
+  max-width: 68vw;
   flex-wrap: wrap;
   justify-content: flex-end;
 }
+
 .ribbon {
-  width: auto;
-  min-width: 46px;
-  height: 52px;
-  padding: 0 20px;
-  text-decoration: none;
-  background: linear-gradient(
-    180deg,
-    color-mix(in srgb, var(--ribbon) 78%, #000) 0%,
-    var(--ribbon) 100%
-  );
-  clip-path: polygon(0 0, 100% 0, 100% 74%, 50% 100%, 0 74%);
-  box-shadow: 0 5px 14px rgba(0, 0, 0, 0.45);
+  position: relative;
   display: grid;
   place-items: center;
-  opacity: 1;
-  transition: height 200ms ease, transform 200ms ease, filter 200ms ease;
+  min-width: 46px;
+  height: 54px;
+  padding: 0 20px 6px;
+  text-decoration: none;
+  border-radius: 0 0 10px 10px;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--ribbon) 88%, #fff) 0%,
+    var(--ribbon) 62%,
+    color-mix(in srgb, var(--ribbon) 82%, #000) 100%
+  );
+  box-shadow:
+    0 6px 14px rgba(0, 0, 0, 0.34),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  transition: height 180ms var(--turn-ease), filter 180ms ease, box-shadow 180ms ease;
 }
-.ribbon:hover { height: 62px; filter: brightness(1.12); }
+
+/* a hairline of paper under each tab, as though it is bound in */
+.ribbon::after {
+  content: '';
+  position: absolute;
+  left: 6px;
+  right: 6px;
+  bottom: 2px;
+  height: 2px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.34);
+}
+
+.ribbon:hover { height: 64px; filter: brightness(1.08); }
 .ribbon--active {
-  height: 70px;
-  filter: saturate(1.2) brightness(1.06);
-  box-shadow: 0 7px 18px rgba(0, 0, 0, 0.5);
+  height: 72px;
+  filter: saturate(1.15);
+  box-shadow:
+    0 9px 20px rgba(0, 0, 0, 0.42),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
 }
+.ribbon:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+
 .ribbon__label {
   font-family: var(--font-display);
   font-size: 12.5px;
   font-weight: 800;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #fffaf0;
+  color: #fffdf6;
   white-space: nowrap;
-  padding-bottom: 10px;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.55);
 }
 
 /* ============================================================
@@ -967,9 +989,9 @@
 }
 .cardmark__link {
   display: block;
-  padding: 11px 18px 13px;
-  border-radius: 0 0 2px 2px;
-  background: linear-gradient(180deg, var(--paper-edge), #F7F0DC);
+  padding: 12px 18px 14px;
+  border-radius: 0 0 10px 10px;
+  background: linear-gradient(180deg, #fffaf0 0%, var(--paper-edge) 100%);
   color: var(--heading);
   font-family: var(--font-display);
   font-size: 12px;
@@ -977,10 +999,10 @@
   letter-spacing: 0.1em;
   text-transform: uppercase;
   text-decoration: none;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.32);
-  border-bottom: 2px solid rgba(27, 58, 47, 0.25);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  transition: transform 180ms ease, background 180ms ease;
 }
-.cardmark__link:hover { background: #FFF8E6; color: var(--desk-deep); }
+.cardmark__link:hover { background: #fff; transform: translateY(2px); }
 @media (max-width: 780px) { .cardmark { left: 2px; } .cardmark__link { padding: 3px 7px 4px; font-size: 8px; } }
 
 /* ---- account and shelf ---- */
@@ -1645,28 +1667,120 @@
    fitted rather than cropped, so no panel is ever cut off.
    ============================================================ */
 .page__body--comic {
-  display: grid;
-  place-items: center;
+  position: relative;
   padding: 0;
   max-width: none;
+  min-height: 0;
   overflow: hidden;
 }
 
 .comic__plate {
-  display: block;
-  max-width: 100%;
-  max-height: 100%;
-  width: auto;
-  height: auto;
+  /* next/image `fill` pins this to the frame; contain letterboxes the plate
+     so a tall newspaper page is never cropped. */
   object-fit: contain;
   border-radius: 2px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.22);
-  /* comic scans are the thing being protected, same as the prose */
   -webkit-user-select: none;
   user-select: none;
   -webkit-user-drag: none;
-  pointer-events: none;
 }
 
 /* a comic reads better on a fuller page than a book of prose does */
 .reader:has(.page__body--comic) .page { padding: clamp(52px, 6vh, 68px) clamp(12px, 1.4vw, 26px) clamp(14px, 2vh, 24px); }
+
+/* ============================================================
+   Comic plates, and reading them properly
+
+   A whole newspaper page shrunk to half a screen is beautiful but
+   the lettering is too small to read. The plate opens full size on
+   a tap, where the balloons are legible.
+   ============================================================ */
+.comic__frame {
+  position: absolute;
+  inset: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: zoom-in;
+}
+
+.comic__zoomHint {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  padding: 5px 11px;
+  border-radius: 999px;
+  background: rgba(14, 42, 58, 0.82);
+  color: #fffdf6;
+  font-family: var(--font-display);
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0;
+  transition: opacity 180ms ease;
+  pointer-events: none;
+}
+.comic__frame:hover .comic__zoomHint,
+.comic__frame:focus-visible .comic__zoomHint { opacity: 1; }
+
+/* ---- full-size plate ---- */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(8, 28, 40, 0.94);
+  overflow: auto;
+  cursor: zoom-out;
+  animation: lightbox-in 220ms ease both;
+}
+@keyframes lightbox-in { from { opacity: 0; } to { opacity: 1; } }
+
+.lightbox__scroll {
+  min-height: 100%;
+  display: grid;
+  place-items: start center;
+  padding: 56px 12px 32px;
+  cursor: default;
+}
+
+.lightbox__plate {
+  display: block;
+  width: auto;
+  max-width: none;
+  height: auto;
+  /* deliberately larger than the viewport: this is where you read the words */
+  min-width: min(1400px, 130vw);
+  border-radius: 3px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.lightbox__close {
+  position: fixed;
+  top: 16px;
+  right: 20px;
+  z-index: 220;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 50%;
+  background: #fffdf6;
+  color: var(--heading);
+  font-size: 19px;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+}
+.lightbox__close:hover { background: #fff; }
+
+@media (max-width: 780px) {
+  .lightbox__plate { min-width: 180vw; }
+  .lightbox__scroll { padding: 48px 8px 24px; }
+  .comic__zoomHint { opacity: 1; font-size: 9px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lightbox { animation: none; }
+  .comic__zoomHint { transition: none; }
+}

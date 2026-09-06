@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Leaf } from '@/components/book/Leaf';
 import { useFlip } from '@/components/book/useFlip';
@@ -9,6 +8,7 @@ import { turnDuration } from '@/components/book/constants';
 import { fitParagraphs } from '@/lib/reader/paginate';
 import { useMeasurer } from './useMeasurer';
 import { Paywall } from './Paywall';
+import { ComicPage } from './ComicPage';
 import type { AccessReason } from '@/lib/access/resolve';
 
 type Page = { index: number; content: string; image?: string | null };
@@ -26,35 +26,6 @@ type Book = {
 const CHAPTER = /^\s*(CHAPTER|BOOK|PART|FABLE|STORY|LIVRE|CHAPITRE|\*\*)/i;
 const FETCH_AHEAD = 6;
 const WINDOW = 24;
-
-/** A scanned comic plate. The picture is the page. */
-function ComicPage({ src, folio, alt }: { src: string | null; folio: number | null; alt: string }) {
-  if (!src) {
-    return (
-      <>
-        <div className="page__body page__body--comic" />
-        <footer className="page__folio">&nbsp;</footer>
-      </>
-    );
-  }
-  return (
-    <>
-      <div className="page__body page__body--comic">
-        <Image
-          className="comic__plate"
-          src={src}
-          alt={alt}
-          width={1100}
-          height={1500}
-          quality={80}
-          draggable={false}
-          sizes="(max-width: 780px) 92vw, 44vw"
-        />
-      </div>
-      <footer className="page__folio">{folio}</footer>
-    </>
-  );
-}
 
 /** One printed page of the reader. */
 function PageBody({ text, folio }: { text: string | null; folio: number | null }) {

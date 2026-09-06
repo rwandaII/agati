@@ -6,8 +6,8 @@
 Add-Type -AssemblyName System.Drawing
 
 $root = Split-Path -Parent $PSScriptRoot
-$maxWidth = 1100
-$quality = 66
+$maxWidth = 2000
+$quality = 92
 
 $codec = [System.Drawing.Imaging.ImageCodecInfo]::GetImageEncoders() |
   Where-Object { $_.MimeType -eq 'image/jpeg' }
