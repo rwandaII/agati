@@ -165,7 +165,7 @@ async function iiifPages(id: string, limit: number): Promise<Buffer[]> {
     const url = `https://iiif.archive.org/iiif/${id}$${i}/full/1100,/0/default.jpg`;
     let got: Buffer | null = null;
 
-    for (let attempt = 0; attempt < 6 && !got; attempt++) {
+    for (let attempt = 0; attempt < 4 && !got; attempt++) {
       try {
         const res = await fetch(url, { headers: { 'User-Agent': UA } });
         if (res.status === 404) return out; // past the last page
@@ -176,13 +176,13 @@ async function iiifPages(id: string, limit: number): Promise<Buffer[]> {
       } catch {
         /* transient */
       }
-      if (!got) await sleep(2000 * (attempt + 1));
+      if (!got) await sleep(8000 * (attempt + 1));
     }
 
     if (!got) break;
     out.push(got);
     if (out.length % 5 === 0) console.log(`    ${out.length} pages (iiif)`);
-    await sleep(800);
+    await sleep(3000);
   }
 
   return out;

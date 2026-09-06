@@ -1,12 +1,14 @@
 import type { ReactNode } from 'react';
+import { Ribbons } from '@/components/book/Ribbons';
+import { AccountRibbon } from '@/components/book/AccountRibbon';
 
 /**
- * Reading a book is the one place the book metaphor belongs.
+ * Reading a book from the collection.
  *
- * A bound volume on a dark desk: no site header, no footer, no page scroll —
- * nothing competing with the book. The `:has(.cover)` rule in book.css keeps
- * the whole thing at closed size until the cover swings open, so opening it and
- * settling into it are one movement.
+ * A smaller bound volume on the desk, rather than the big book the website
+ * itself is. The section tabs and the card marks come along so a reader is
+ * never stranded inside a book with no way back to Home — they appear once the
+ * cover is open, since a closed book has nothing to navigate.
  */
 export default function ReadLayout({ children }: { children: ReactNode }) {
   return (
@@ -17,6 +19,8 @@ export default function ReadLayout({ children }: { children: ReactNode }) {
           <div className="book__edges book__edges--right" aria-hidden="true" />
           <div className="book__block">{children}</div>
           <div className="book__spine" aria-hidden="true" />
+          <Ribbons />
+          <AccountRibbon />
         </div>
       </div>
     </div>

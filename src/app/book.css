@@ -1564,7 +1564,7 @@
 }
 .cover__mark { animation: mark-float 5s ease-in-out infinite; }
 
-/* the preloader hands over to the page rather than snapping away */
+/* a page arrives rather than snapping into place */
 @keyframes page-arrive { from { opacity: 0; } to { opacity: 1; } }
 .book__block { animation: page-arrive 420ms ease both; }
 
