@@ -10,11 +10,9 @@ import { Ribbons } from './Ribbons';
 export function BookFrame({
   children,
   accountMark,
-  turners,
 }: {
   children: ReactNode;
   accountMark?: ReactNode;
-  turners?: ReactNode;
 }) {
   return (
     <div className="desk">
@@ -25,7 +23,6 @@ export function BookFrame({
         <div className="book__spine" aria-hidden="true" />
         <Ribbons />
         {accountMark}
-        {turners}
       </div>
     </div>
   );

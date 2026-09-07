@@ -5,7 +5,6 @@ import { usePathname, useRouter } from 'next/navigation';
 import { BookFrame } from './BookFrame';
 import { Leaf } from './Leaf';
 import { useFlip } from './useFlip';
-import { PageTurners } from './PageTurners';
 import { turnDuration } from './constants';
 import { PAGES, pageIndex } from '@/config/site';
 
@@ -76,8 +75,6 @@ export function BookShell({
     router.push(PAGES[next].href);
   };
 
-  const here = pageIndex(pathname);
-
   const { bind } = useFlip({
     onNext: () => go(1),
     onPrev: () => go(-1),
@@ -86,19 +83,7 @@ export function BookShell({
 
   return (
     <div ref={bind} className="book__viewport">
-      <BookFrame
-        accountMark={accountMark}
-        turners={
-          <PageTurners
-            onPrev={() => go(-1)}
-            onNext={() => go(1)}
-            canPrev={here > 0}
-            canNext={here !== -1 && here < PAGES.length - 1}
-            prevLabel={here > 0 ? PAGES[here - 1].label : undefined}
-            nextLabel={here !== -1 && here < PAGES.length - 1 ? PAGES[here + 1].label : undefined}
-          />
-        }
-      >
+      <BookFrame accountMark={accountMark}>
         {turn ? (
           <>
             <div className="book__under book__under--left">
