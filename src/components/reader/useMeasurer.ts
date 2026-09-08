@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState, type RefObject } from 'react';
+import { displayLines } from './lines';
 import type { Measurer } from '@/lib/reader/paginate';
 
 /**
@@ -72,11 +73,14 @@ export function useMeasurer(pageRef: RefObject<HTMLElement | null>) {
       .split(/\n\s*\n/)
       .map(
         (p) =>
-          `<p style="margin:0 0 .9em">${p
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/\n/g, '<br>')}</p>`,
+          `<p style="margin:0 0 .9em">${displayLines(p)
+            .map((line) =>
+              line
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;'),
+            )
+            .join('<br>')}</p>`,
       )
       .join('');
 

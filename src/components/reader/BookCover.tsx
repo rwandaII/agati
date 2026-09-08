@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, type CSSProperties } from 'react';
+import { useEffect, useState, type CSSProperties } from 'react';
 import { turnDuration } from '@/components/book/constants';
 
 /**
@@ -32,6 +32,13 @@ export function BookCover({
   onOpen: () => void;
 }) {
   const [opening, setOpening] = useState(false);
+
+  // The page-turn buttons live on the body, outside this tree. Flag the cover
+  // while it is up so they stay out of sight until the book is actually open.
+  useEffect(() => {
+    document.body.classList.add('is-covered');
+    return () => document.body.classList.remove('is-covered');
+  }, []);
 
   const open = () => {
     if (opening) return;

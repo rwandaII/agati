@@ -9,6 +9,8 @@ import { fitParagraphs } from '@/lib/reader/paginate';
 import { useMeasurer } from './useMeasurer';
 import { Paywall } from './Paywall';
 import { ComicPage } from './ComicPage';
+import { ReaderNav } from './ReaderNav';
+import { displayLines } from './lines';
 import type { AccessReason } from '@/lib/access/resolve';
 
 type Page = { index: number; content: string; image?: string | null };
@@ -46,8 +48,8 @@ function PageBody({ text, folio }: { text: string | null; folio: number | null }
       <div className={`page__body ${opensChapter ? '' : 'page__body--chapter'}`}>
         {paras.map((p, i) => (
           <p key={i}>
-            {/* Hard line breaks matter: verse, and tables of contents. */}
-            {p.split('\n').map((line, j, all) => (
+            {/* Verse and contents keep their breaks; wrapped prose does not. */}
+            {displayLines(p).map((line, j, all) => (
               <span key={j}>
                 {line}
                 {j < all.length - 1 ? <br /> : null}
@@ -292,6 +294,18 @@ export function Reader({
 
         <div className="spread__gutter" aria-hidden="true" />
       </div>
+
+      <ReaderNav
+        onPrev={() => go(-1)}
+        onNext={() => go(1)}
+        canPrev={spread > 0}
+        canNext={spread < lastSpread + (blocked ? 1 : 0)}
+        position={
+          display.length
+            ? `Page ${leftIndex + 1}–${Math.min(rightIndex + 1, display.length)} of ${display.length}`
+            : ''
+        }
+      />
 
       {turn ? (
         <Leaf

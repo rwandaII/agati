@@ -3,6 +3,7 @@ import { existsSync } from 'node:fs';
 import path from 'node:path';
 import type { SeedBook } from '../src/content/types';
 import { WANTED, type Wanted } from './wanted-books';
+import { stripGutenbergArtifacts } from './artifacts';
 
 const START = /\*\*\*\s*START OF (THE|THIS) PROJECT GUTENBERG EBOOK.*?\*\*\*/i;
 const END = /\*\*\*\s*END OF (THE|THIS) PROJECT GUTENBERG EBOOK.*?\*\*\*/i;
@@ -210,7 +211,7 @@ async function main() {
       for (const cand of candidates) {
         try {
           const raw = await fetchTextWithRetry(cand.urls);
-          const got = paginate(stripGutenbergBoilerplate(raw));
+          const got = paginate(stripGutenbergArtifacts(stripGutenbergBoilerplate(raw)));
           tried.push(`"${cand.matchedTitle}" -> ${got.length}p`);
           if (got.length >= 10) {
             pages = got;

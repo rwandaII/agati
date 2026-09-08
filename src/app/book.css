@@ -121,7 +121,7 @@
   display: flex;
   flex-direction: column;
   /* room at the head for the tabs and the card marks */
-  padding: clamp(64px, 8vh, 84px) clamp(24px, 2.8vw, 52px) clamp(16px, 2.6vh, 30px);
+  padding: clamp(58px, 7vh, 72px) clamp(24px, 2.8vw, 52px) clamp(16px, 2.6vh, 30px);
   color: var(--ink);
   /* paper: fibre grain plus a soft vignette, no image files */
   background:
@@ -278,9 +278,9 @@
 }
 .ribbon {
   width: auto;
-  min-width: 46px;
-  height: 52px;
-  padding: 0 20px;
+  min-width: 38px;
+  height: 38px;
+  padding: 0 14px;
   text-decoration: none;
   background: linear-gradient(
     180deg,
@@ -294,21 +294,21 @@
   opacity: 1;
   transition: height 200ms ease, transform 200ms ease, filter 200ms ease;
 }
-.ribbon:hover { height: 62px; filter: brightness(1.12); }
+.ribbon:hover { height: 46px; filter: brightness(1.1); }
 .ribbon--active {
-  height: 70px;
+  height: 52px;
   filter: saturate(1.2) brightness(1.06);
   box-shadow: 0 7px 18px rgba(0, 0, 0, 0.5);
 }
 .ribbon__label {
   font-family: var(--font-display);
-  font-size: 12.5px;
+  font-size: 10.5px;
   font-weight: 800;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: #fffaf0;
   white-space: nowrap;
-  padding-bottom: 10px;
+  padding-bottom: 7px;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
 }
 
@@ -971,7 +971,7 @@
   background: linear-gradient(180deg, var(--paper-edge), #F7F0DC);
   color: var(--heading);
   font-family: var(--font-display);
-  font-size: 12px;
+  font-size: 10px;
   font-weight: 800;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -1694,4 +1694,158 @@
 @media (prefers-reduced-motion: reduce) {
   .lightbox { animation: none; }
   .comic__zoomHint { transition: none; }
+}
+
+/* ============================================================
+   Turning the pages
+
+   Only in the reader — the website has its tabs. A round brass
+   button rests on the desk to either side of the volume, level
+   with the middle of the page, so it falls under the hand and
+   never covers a word of what you are reading.
+   ============================================================ */
+.pageturn {
+  position: fixed;
+  top: 50%;
+  z-index: 60;
+  width: 58px;
+  height: 58px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 50%;
+  cursor: pointer;
+  color: #f4ead2;
+  background:
+    radial-gradient(120% 120% at 32% 24%, rgba(255, 255, 255, 0.22), transparent 58%),
+    linear-gradient(165deg, #6f5326, #3d2c13);
+  box-shadow:
+    0 12px 26px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  transition:
+    transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 220ms ease,
+    opacity 200ms ease;
+}
+.pageturn--prev { left: clamp(10px, 3.2vw, 44px); transform: translateY(-50%); }
+.pageturn--next { right: clamp(10px, 3.2vw, 44px); transform: translateY(-50%); }
+
+.pageturn__icon { display: block; }
+
+/* Nothing to turn while the book is still closed. */
+body.is-covered .pageturn,
+body.is-covered .pageturn__count {
+  opacity: 0;
+  pointer-events: none;
+}
+.pageturn__count { transition: opacity 300ms ease 160ms; }
+
+/* A page lifting as the hand reaches for it. */
+.pageturn:hover:not(:disabled) {
+  box-shadow:
+    0 16px 34px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    0 0 0 4px rgba(255, 186, 0, 0.16);
+}
+.pageturn--prev:hover:not(:disabled) { transform: translateY(-50%) translateX(-3px) scale(1.06); }
+.pageturn--next:hover:not(:disabled) { transform: translateY(-50%) translateX(3px) scale(1.06); }
+.pageturn--prev:active:not(:disabled) { transform: translateY(-50%) translateX(-1px) scale(0.97); }
+.pageturn--next:active:not(:disabled) { transform: translateY(-50%) translateX(1px) scale(0.97); }
+
+.pageturn:disabled { opacity: 0.22; cursor: default; }
+.pageturn:focus-visible { outline: 2px solid var(--gold); outline-offset: 4px; }
+
+/* Where you are in the book, kept off the paper. */
+.pageturn__count {
+  position: fixed;
+  left: 50%;
+  bottom: 16px;
+  transform: translateX(-50%);
+  z-index: 60;
+  margin: 0;
+  padding: 7px 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(23, 16, 8, 0.58);
+  backdrop-filter: blur(6px);
+  font-family: var(--font-display);
+  font-size: 10.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(248, 243, 230, 0.62);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+@media (max-width: 780px) {
+  /* No room beside the book on a phone, so they drop to the foot,
+     flanking the page count, still clear of the paper. */
+  .pageturn {
+    top: auto;
+    bottom: 14px;
+    width: 46px;
+    height: 46px;
+  }
+  .pageturn--prev { left: 14px; transform: none; }
+  .pageturn--next { right: 14px; transform: none; }
+  .pageturn--prev:hover:not(:disabled),
+  .pageturn--next:hover:not(:disabled) { transform: scale(1.06); }
+  .pageturn--prev:active:not(:disabled),
+  .pageturn--next:active:not(:disabled) { transform: scale(0.97); }
+  .pageturn__icon { width: 22px; height: 22px; }
+  .pageturn__count { bottom: 26px; font-size: 9px; padding: 6px 12px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pageturn { transition: none; }
+  .pageturn--prev:hover:not(:disabled),
+  .pageturn--next:hover:not(:disabled) { transform: translateY(-50%); }
+}
+
+/* ============================================================
+   Opening the book
+
+   The cover swings on its spine while the volume grows into place
+   and the first spread rises to meet you — one movement, so
+   opening the book and arriving inside it are the same gesture.
+   ============================================================ */
+.cover--opening .cover__face {
+  animation: cover-swing var(--turn-ms) var(--turn-ease) forwards;
+  transform-origin: left center;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+}
+
+@keyframes cover-swing {
+  0%   { transform: rotateY(0deg) translateZ(0); }
+  35%  { transform: rotateY(-62deg) translateZ(24px); }
+  100% { transform: rotateY(-176deg) translateZ(0); }
+}
+
+/* the spread beneath lifts as the cover comes off it */
+.book:has(.cover--opening) .spread {
+  animation: spread-rise calc(var(--turn-ms) + 200ms) var(--turn-ease) both;
+}
+
+@keyframes spread-rise {
+  0%   { opacity: 0; transform: scale(0.965) translateY(10px); }
+  55%  { opacity: 0.4; }
+  100% { opacity: 1; transform: none; }
+}
+
+/* and the whole volume settles once it is open */
+.book:has(.cover--opening) {
+  animation: volume-settle calc(var(--turn-ms) + 260ms) var(--turn-ease) both;
+}
+
+@keyframes volume-settle {
+  0%   { filter: brightness(0.94); }
+  60%  { filter: brightness(1.02); }
+  100% { filter: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cover--opening .cover__face,
+  .book:has(.cover--opening) .spread,
+  .book:has(.cover--opening) { animation: none; }
+  .cover--opening { animation: cover-fade 200ms ease forwards; }
 }
