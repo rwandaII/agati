@@ -64,6 +64,7 @@ model User {
   subscriptions Subscription[]
   progress      ReadingProgress[]
   shelf         ShelfItem[]
+  bookmarks     Bookmark[]
 }
 
 model Book {
@@ -91,6 +92,8 @@ model Book {
   purchases Purchase[]
   progress  ReadingProgress[]
   shelf     ShelfItem[]
+
+  bookmarks Bookmark[]
 
   @@index([accessType])
   @@index([language])
@@ -166,7 +169,11 @@ model Subscription {
 model ReadingProgress {
   userId    String
   bookId    String
+  /// The stored page reached, for showing how far through a book someone is.
   pageIndex Int      @default(0)
+  /// Text weighed behind the place reached; for a comic, the plate number.
+  /// Page numbers shift with screen size, so this is what actually restores.
+  anchor    Int      @default(0)
   updatedAt DateTime @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -199,4 +206,21 @@ model NewsPost {
   featured    Boolean  @default(false)
 
   @@index([publishedAt])
+}
+
+/// A place a reader deliberately marked, so they can find it again.
+model Bookmark {
+  id        String   @id @default(cuid())
+  userId    String
+  bookId    String
+  /// Text weighed behind this place; for a comic, the plate's number.
+  anchor    Int
+  /// The words the mark sits beside, so a list of marks reads like the book.
+  label     String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  book Book @relation(fields: [bookId], references: [id], onDelete: Cascade)
+
+  @@index([userId, bookId])
 }

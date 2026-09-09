@@ -44,6 +44,14 @@ export default async function ReadPage({ params }: { params: Promise<{ slug: str
       })
     : null;
 
+  const bookmarks = user
+    ? await prisma.bookmark.findMany({
+        where: { userId: user.id, bookId: book.id },
+        orderBy: { anchor: 'asc' },
+        select: { id: true, anchor: true, label: true },
+      })
+    : [];
+
   // The ceiling is applied in the query itself, so page text the reader has not
   // earned is never loaded into this component's props, let alone the HTML.
   const ceiling = access.canRead ? INITIAL - 1 : access.previewPages - 1;
@@ -79,7 +87,8 @@ export default async function ReadPage({ params }: { params: Promise<{ slug: str
         reason={access.reason}
         previewPages={access.previewPages}
         trialEndsAt={access.trialEndsAt ? access.trialEndsAt.toISOString() : null}
-        startPage={progress?.pageIndex ?? 0}
+        startAnchor={progress?.anchor ?? 0}
+        bookmarks={bookmarks}
         signedIn={Boolean(user)}
       />
     </ReaderGate>

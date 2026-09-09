@@ -9,8 +9,16 @@ import { fitParagraphs } from '@/lib/reader/paginate';
 import { useMeasurer } from './useMeasurer';
 import { Paywall } from './Paywall';
 import { ComicPage } from './ComicPage';
-import { ReaderNav } from './ReaderNav';
+import { PagePosition } from './PagePosition';
+import { useLeavesShown } from './useLeavesShown';
 import { displayLines } from './lines';
+import { Bookmarks, type Mark } from './Bookmarks';
+import { PenMark } from './PenMark';
+import { ResumeNotice } from './ResumeNotice';
+import { useReadingPlace, localAnchor } from './useReadingPlace';
+import { anchorOfPage, pageAtAnchor, weigh } from '@/lib/reading/anchor';
+import { charsBefore, wordsAt } from './pointing';
+
 import type { AccessReason } from '@/lib/access/resolve';
 
 type Page = { index: number; content: string; image?: string | null };
@@ -70,7 +78,8 @@ export function Reader({
   reason: initialReason,
   previewPages,
   trialEndsAt,
-  startPage,
+  startAnchor,
+  bookmarks: initialBookmarks,
   signedIn,
 }: {
   book: Book;
@@ -79,19 +88,32 @@ export function Reader({
   reason: AccessReason;
   previewPages: number;
   trialEndsAt: string | null;
-  startPage: number;
+  startAnchor: number;
+  bookmarks: Mark[];
   signedIn: boolean;
 }) {
   const [pages, setPages] = useState<Page[]>(initialPages);
   const [reason, setReason] = useState<AccessReason>(initialReason);
   const [blocked, setBlocked] = useState(!canRead);
-  const [spread, setSpread] = useState(() => Math.floor(startPage / 2));
+  // Always opens at the beginning; the saved place then moves it, once it is
+  // known and the text has been laid out for this screen.
+  const [spread, setSpread] = useState(0);
   const [turn, setTurn] = useState<{ dir: 1 | -1; from: number; to: number } | null>(null);
+  const [marks, setMarks] = useState<Mark[]>(initialBookmarks);
+  const [penHint, setPenHint] = useState<string | null>(null);
+  const [penMode, setPenMode] = useState(false);
 
   const rightPageRef = useRef<HTMLElement | null>(null);
+  const leftPageRef = useRef<HTMLElement | null>(null);
   const { measure, ready, box } = useMeasurer(rightPageRef);
 
+  /** One page on a phone, two on anything wider. */
+  const leaves = useLeavesShown();
+
   const isComic = book.format === 'COMIC';
+
+  /** The book as it is stored, whose page numbering never changes. */
+  const storedText = useMemo(() => pages.map((p) => p.content), [pages]);
 
   /** For a comic the plates ARE the pages, in order, never re-flowed. */
   const plates = useMemo(
@@ -109,8 +131,13 @@ export function Reader({
     return fitParagraphs(text.split(/\n\s*\n/), box.height, measure).map((g) => g.join('\n\n'));
   }, [pages, ready, box.height, measure, isComic, plates]);
 
-  const lastSpread = Math.max(0, Math.ceil(display.length / 2) - 1);
+  const lastSpread = Math.max(0, Math.ceil(display.length / leaves) - 1);
   const atEndOfWhatWeHave = spread >= lastSpread;
+
+  const ceiling = lastSpread + (blocked ? 1 : 0);
+  useEffect(() => {
+    setSpread((current) => (current > ceiling ? ceiling : current));
+  }, [ceiling]);
 
   // Pull the next window of pages as the reader approaches the end of what we hold.
   const fetching = useRef(false);
@@ -183,18 +210,126 @@ export function Reader({
     };
   }, []);
 
-  // Save reading position, debounced, and only when there is somebody to save it for.
+  // The cursor becomes the pen, so it is obvious the next touch will mark.
   useEffect(() => {
-    if (!signedIn) return;
-    const t = setTimeout(() => {
-      fetch('/api/progress', {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ slug: book.slug, pageIndex: spread * 2 }),
-      }).catch(() => {});
-    }, 1500);
-    return () => clearTimeout(t);
-  }, [spread, signedIn, book.slug]);
+    document.body.classList.toggle('is-penned', penMode);
+    return () => document.body.classList.remove('is-penned');
+  }, [penMode]);
+
+  // A reader who has not signed in still gets their place back on this device,
+  // but it has to be read from the browser, so it is not known on first render.
+  const [guestAnchor, setGuestAnchor] = useState(0);
+  const [anchorKnown, setAnchorKnown] = useState(signedIn);
+  useEffect(() => {
+    if (signedIn) return;
+    setGuestAnchor(localAnchor(book.slug));
+    setAnchorKnown(true);
+  }, [signedIn, book.slug]);
+
+  const { resumedAt, dismissResume, anchorNow, startOver } = useReadingPlace({
+    slug: book.slug,
+    signedIn,
+    isComic,
+    display,
+    pageCount: book.pageCount,
+    loadedPages: pages.length,
+    storedText: storedText,
+    spread,
+    setSpread,
+    startAnchor: signedIn ? startAnchor : guestAnchor,
+    known: anchorKnown,
+    laidOut: isComic || ready,
+    leaves,
+  });
+
+  // --- the pen ------------------------------------------------------------
+
+  /** A word to the reader about what just happened, then out of the way. */
+  const say = useCallback((message: string) => {
+    setPenHint(message);
+    setTimeout(() => setPenHint((current) => (current === message ? null : current)), 3200);
+  }, []);
+
+  /**
+   * Marking the line a reader pointed at.
+   *
+   * The click is resolved down to the character it landed on, so the mark
+   * belongs to that line and finds it again however the book is laid out next
+   * time. A comic has no text to point into, so a plate is marked whole.
+   */
+  const markAt = useCallback(
+    async (pageIndexOnScreen: number, page: HTMLElement, x: number, y: number) => {
+      if (!signedIn) {
+        say('Sign in to keep your marks.');
+        setPenMode(false);
+        return;
+      }
+
+      let anchor: number;
+      let label: string;
+
+      if (isComic) {
+        anchor = pageIndexOnScreen;
+        label = `Plate ${pageIndexOnScreen + 1}`;
+      } else {
+        const body = page.querySelector('.page__body');
+        if (!body) return;
+        anchor = anchorOfPage(display, pageIndexOnScreen) + charsBefore(body, x, y);
+        label = wordsAt(body, x, y) || `Page ${pageIndexOnScreen + 1}`;
+      }
+
+      setPenMode(false);
+
+      // Show it immediately; a mark that waits for the network feels broken.
+      const optimistic: Mark = { id: `pending-${anchor}`, anchor, label };
+      setMarks((current) => [...current, optimistic].sort((a, b) => a.anchor - b.anchor));
+
+      try {
+        const res = await fetch('/api/bookmarks', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ slug: book.slug, anchor, label }),
+        });
+        const json = await res.json().catch(() => null);
+        if (!res.ok) throw new Error(json?.error ?? 'Could not save that mark');
+
+        setMarks((current) =>
+          current
+            .map((m) => (m.id === optimistic.id ? json.bookmark : m))
+            .sort((a, b) => a.anchor - b.anchor),
+        );
+        say('Marked.');
+      } catch (err) {
+        setMarks((current) => current.filter((m) => m.id !== optimistic.id));
+        say(err instanceof Error ? err.message : 'Could not save that mark');
+      }
+    },
+    [signedIn, isComic, display, book.slug, say],
+  );
+
+  const removeMark = useCallback(
+    async (id: string) => {
+      const kept = marks;
+      setMarks((current) => current.filter((m) => m.id !== id));
+      try {
+        const res = await fetch(`/api/bookmarks?id=${encodeURIComponent(id)}`, { method: 'DELETE' });
+        if (!res.ok) throw new Error();
+        say('Mark removed.');
+      } catch {
+        setMarks(kept);
+        say('Could not remove that mark');
+      }
+    },
+    [marks, say],
+  );
+
+  const goToMark = useCallback(
+    (anchor: number) => {
+      const page = isComic ? anchor : pageAtAnchor(display, anchor);
+      setSpread(Math.floor(page / 2));
+    },
+    [display, isComic],
+  );
 
   const showPaywallAt = blocked ? lastSpread + 1 : Infinity;
 
@@ -219,9 +354,51 @@ export function Reader({
     enabled: !turn,
   });
 
+  /**
+   * Touching the page turns it: the right page forward, the left page back.
+   * That is how the buttons used to work and how a book has always worked, and
+   * it leaves the paper uncluttered. A click meant for a link, a button or the
+   * pen is never taken for a page turn.
+   */
+  const touchPage = useCallback(
+    (which: 'left' | 'right', pageOnScreen: number) => (e: React.MouseEvent<HTMLElement>) => {
+      const el = e.target as HTMLElement;
+      if (el.closest('a, button, input, select, textarea, [role="button"]')) return;
+
+      if (penMode) {
+        markAt(pageOnScreen, e.currentTarget, e.clientX, e.clientY);
+        return;
+      }
+
+      if (window.getSelection()?.toString()) return;
+      go(which === 'right' ? 1 : -1);
+    },
+    [penMode, markAt, go],
+  );
+
+  /** The marks that fall on one of the two pages now showing. */
+  const marksOn = useCallback(
+    (pageOnScreen: number) => {
+      if (isComic) return marks.filter((m) => m.anchor === pageOnScreen);
+      const from = anchorOfPage(display, pageOnScreen);
+      const to = from + weigh(display[pageOnScreen] ?? '');
+      return marks.filter((m) => m.anchor >= from && m.anchor < to);
+    },
+    [marks, isComic, display],
+  );
+
   const pageText = (i: number) => (i >= 0 && i < display.length ? display[i] : null);
-  const leftIndex = spread * 2;
-  const rightIndex = spread * 2 + 1;
+  const leftIndex = spread * leaves;
+  const rightIndex = leftIndex + 1;
+
+  /** The pages actually open: both halves of a spread, or the single leaf. */
+  const openPages: Array<{ index: number; side: "left" | "right" }> =
+    leaves === 2
+      ? [
+          { index: leftIndex, side: "left" },
+          { index: rightIndex, side: "right" },
+        ]
+      : [{ index: leftIndex, side: "right" }];
 
   const paywall =
     blocked && spread === showPaywallAt ? (
@@ -247,7 +424,11 @@ export function Reader({
           ← {book.title}
         </Link>
         <span className="reader__pos">
-          {display.length ? `Page ${leftIndex + 1}–${rightIndex + 1} of ${display.length}` : ''}
+          {display.length
+            ? leaves === 2
+              ? `Page ${leftIndex + 1}–${rightIndex + 1} of ${display.length}`
+              : `Page ${leftIndex + 1} of ${display.length}`
+            : ''}
           {trialEndsAt && reason === 'TRIAL_ACTIVE' ? (
             <span className="reader__trial">
               {' · '}
@@ -261,51 +442,78 @@ export function Reader({
         </span>
       </div>
 
-      <div className="spread">
-        <section className="page page--left">
-          <header className="page__running">{book.title}</header>
-          {paywall && spread === showPaywallAt ? (
-            <div className="page__body">{paywall}</div>
-          ) : isComic ? (
-            <ComicPage
-              src={plates[leftIndex] ?? null}
-              folio={plates[leftIndex] ? leftIndex + 1 : null}
-              alt={`${book.title}, page ${leftIndex + 1}`}
-            />
-          ) : (
-            <PageBody text={pageText(leftIndex)} folio={pageText(leftIndex) ? leftIndex + 1 : null} />
-          )}
-        </section>
+      <div className={`spread ${leaves === 1 ? 'spread--single' : ''}`}>
+        {openPages.map(({ index, side }) => {
+          const ref = side === 'left' ? leftPageRef : rightPageRef;
+          const showPaywall = paywall && spread === showPaywallAt;
 
-        <section className="page page--right" id="page-content" ref={rightPageRef}>
-          <header className="page__running">{book.author}</header>
-          {paywall && spread === showPaywallAt ? (
-            <div className="page__body" />
-          ) : isComic ? (
-            <ComicPage
-              src={plates[rightIndex] ?? null}
-              folio={plates[rightIndex] ? rightIndex + 1 : null}
-              alt={`${book.title}, page ${rightIndex + 1}`}
-            />
-          ) : (
-            <PageBody text={pageText(rightIndex)} folio={pageText(rightIndex) ? rightIndex + 1 : null} />
-          )}
-        </section>
+          return (
+            <section
+              key={side}
+              className={`page page--${side}`}
+              // The measurer sizes the text column from whichever page is the
+              // one being laid out, so that id follows the right-hand page.
+              id={side === 'right' ? 'page-content' : undefined}
+              ref={ref}
+              onClick={touchPage(side, index)}
+            >
+              <header className="page__running">{side === 'left' ? book.title : book.author}</header>
+
+              {marksOn(index).map((m) => (
+                <PenMark
+                  key={m.id}
+                  pageRef={ref}
+                  charsIn={isComic ? 0 : m.anchor - anchorOfPage(display, index)}
+                  label={m.label}
+                  deps={display}
+                />
+              ))}
+
+              {showPaywall ? (
+                side === 'left' || leaves === 1 ? (
+                  <div className="page__body">{paywall}</div>
+                ) : (
+                  <div className="page__body" />
+                )
+              ) : isComic ? (
+                <ComicPage
+                  src={plates[index] ?? null}
+                  folio={plates[index] ? index + 1 : null}
+                  alt={`${book.title}, page ${index + 1}`}
+                />
+              ) : (
+                <PageBody text={pageText(index)} folio={pageText(index) ? index + 1 : null} />
+              )}
+            </section>
+          );
+        })}
 
         <div className="spread__gutter" aria-hidden="true" />
       </div>
 
-      <ReaderNav
-        onPrev={() => go(-1)}
-        onNext={() => go(1)}
-        canPrev={spread > 0}
-        canNext={spread < lastSpread + (blocked ? 1 : 0)}
+      <PagePosition
         position={
           display.length
-            ? `Page ${leftIndex + 1}–${Math.min(rightIndex + 1, display.length)} of ${display.length}`
+            ? leaves === 2
+              ? `Page ${leftIndex + 1}–${Math.min(rightIndex + 1, display.length)} of ${display.length}`
+              : `Page ${leftIndex + 1} of ${display.length}`
             : ''
         }
       />
+
+      <Bookmarks
+        marks={marks}
+        penMode={penMode}
+        onTogglePen={() => setPenMode((v) => !v)}
+        onRemove={removeMark}
+        onGo={goToMark}
+        disabled={!display.length || !signedIn}
+        hint={penHint}
+      />
+
+      {resumedAt !== null && resumedAt > 1 ? (
+        <ResumeNotice page={leftIndex + 1} onStartOver={startOver} onDismiss={dismissResume} />
+      ) : null}
 
       {turn ? (
         <Leaf

@@ -1,14 +1,13 @@
 import type { ReactNode } from 'react';
-import { Ribbons } from '@/components/book/Ribbons';
-import { AccountRibbon } from '@/components/book/AccountRibbon';
+import { HomeTab } from '@/components/reader/HomeTab';
 
 /**
  * Reading a book from the collection.
  *
  * A smaller bound volume on the desk, rather than the big book the website
- * itself is. The section tabs and the card marks come along so a reader is
- * never stranded inside a book with no way back to Home — they appear once the
- * cover is open, since a closed book has nothing to navigate.
+ * itself is. Only the way home comes along: inside a book, a full row of
+ * section tabs and card marks sits across the head of the page competing with
+ * the words, and a reader who wants the website can get there in one tap.
  */
 export default function ReadLayout({ children }: { children: ReactNode }) {
   return (
@@ -19,8 +18,7 @@ export default function ReadLayout({ children }: { children: ReactNode }) {
           <div className="book__edges book__edges--right" aria-hidden="true" />
           <div className="book__block">{children}</div>
           <div className="book__spine" aria-hidden="true" />
-          <Ribbons />
-          <AccountRibbon />
+          <HomeTab />
         </div>
       </div>
     </div>

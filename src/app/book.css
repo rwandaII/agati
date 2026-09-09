@@ -265,6 +265,10 @@
 /* ============================================================
    Ribbon navigation
    ============================================================ */
+/* Inside a book there is only the way out, and it keeps a tab's width. */
+.ribbons--reading { justify-content: flex-end; }
+.ribbons--reading .ribbon { flex: 0 0 auto; min-width: 74px; }
+
 .ribbons {
   position: absolute;
   top: 0;
@@ -316,15 +320,51 @@
    Narrow screens: one page, not two
    ============================================================ */
 @media (max-width: 780px) {
-  .book { aspect-ratio: 3 / 4.4; }
+  .book__viewport--reading .book { aspect-ratio: 3 / 4.4; }
   .spread { grid-template-columns: 1fr; }
-  .page--left { display: none; }
   .page--right { border-radius: 5px; box-shadow: none; }
   .spread__gutter,
   .book__edges--left,
   .book__spine { display: none; }
-  .ribbons { right: 4px; gap: 4px; }
-  .ribbon { width: 22px; }
+
+  /* --- the website's own book ---
+     A spread will not fit a phone at a readable size, and hiding one of its
+     pages would take half of every page of the site with it. So the two pages
+     stack and the book scrolls: everything that is on the screen of a computer
+     is on the screen of a phone, one page under the other. */
+  .book__viewport:not(.book__viewport--reading) .spread {
+    grid-template-columns: 1fr;
+    grid-auto-rows: max-content;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+  .book__viewport:not(.book__viewport--reading) .page {
+    overflow: visible;
+    min-height: 0;
+  }
+  .book__viewport:not(.book__viewport--reading) .page__body {
+    overflow: visible;
+    flex: none;
+  }
+  /* One running head at the top of the stack, not one per page. */
+  .book__viewport:not(.book__viewport--reading) .page--right > .page__running {
+    display: none;
+  }
+  .book__viewport:not(.book__viewport--reading) .page--left {
+    padding-bottom: 0;
+  }
+  .book__viewport:not(.book__viewport--reading) .page--right {
+    padding-top: 6px;
+  }
+  .book__viewport:not(.book__viewport--reading) .page__folio--left {
+    display: none;
+  }
+
+  /* --- a book from the collection ---
+     One page at a time, which is what the reader is already counting in. */
+  .spread--single { grid-template-columns: 1fr; }
+  .spread--single .page--right { border-radius: 5px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1524,11 +1564,28 @@
   .page__body { font-size: 15px; max-width: none; }
   .page__running, .page__folio { max-width: none; }
 
-  .ribbons { top: 0; right: 4px; gap: 3px; max-width: 70vw; }
-  .ribbon { min-width: 0; height: 40px; padding: 0 10px; }
-  .ribbon:hover { height: 46px; }
-  .ribbon--active { height: 52px; }
-  .ribbon__label { font-size: 9.5px; letter-spacing: 0.06em; padding-bottom: 8px; }
+  /* Every section has to be reachable, so the tabs share the width of the
+     head between them rather than the last ones falling off the edge. */
+  .ribbons {
+    top: 0;
+    left: 5px;
+    right: 5px;
+    gap: 3px;
+    max-width: none;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+  }
+  .ribbon { min-width: 0; flex: 1 1 0; height: 34px; padding: 0 2px; }
+  .ribbon:hover { height: 40px; }
+  .ribbon--active { height: 44px; }
+  .ribbon__label {
+    font-size: 8px;
+    letter-spacing: 0.02em;
+    padding-bottom: 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: clip;
+  }
 
   .cardmark { left: 4px; gap: 3px; }
   .cardmark__link { padding: 8px 10px 10px; font-size: 9.5px; letter-spacing: 0.06em; }
@@ -1697,63 +1754,34 @@
 }
 
 /* ============================================================
-   Turning the pages
+   Turning the pages, and marking them
 
-   Only in the reader — the website has its tabs. A round brass
-   button rests on the desk to either side of the volume, level
-   with the middle of the page, so it falls under the hand and
-   never covers a word of what you are reading.
+   A page is turned by touching it — the right page forward, the
+   left page back — so nothing floats over the paper. Only the
+   count remains, kept off the page.
    ============================================================ */
-.pageturn {
-  position: fixed;
-  top: 50%;
-  z-index: 60;
-  width: 58px;
-  height: 58px;
-  display: grid;
-  place-items: center;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: 50%;
+.page {
   cursor: pointer;
-  color: #f4ead2;
-  background:
-    radial-gradient(120% 120% at 32% 24%, rgba(255, 255, 255, 0.22), transparent 58%),
-    linear-gradient(165deg, #6f5326, #3d2c13);
-  box-shadow:
-    0 12px 26px rgba(0, 0, 0, 0.45),
-    inset 0 1px 0 rgba(255, 255, 255, 0.22);
-  transition:
-    transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
-    box-shadow 220ms ease,
-    opacity 200ms ease;
 }
-.pageturn--prev { left: clamp(10px, 3.2vw, 44px); transform: translateY(-50%); }
-.pageturn--next { right: clamp(10px, 3.2vw, 44px); transform: translateY(-50%); }
-
-.pageturn__icon { display: block; }
-
-/* Nothing to turn while the book is still closed. */
-body.is-covered .pageturn,
-body.is-covered .pageturn__count {
-  opacity: 0;
-  pointer-events: none;
+/* Nothing inside the page should look like it turns the page. */
+.page a,
+.page button,
+.page [role='button'] {
+  cursor: pointer;
 }
-.pageturn__count { transition: opacity 300ms ease 160ms; }
 
-/* A page lifting as the hand reaches for it. */
-.pageturn:hover:not(:disabled) {
-  box-shadow:
-    0 16px 34px rgba(0, 0, 0, 0.5),
-    inset 0 1px 0 rgba(255, 255, 255, 0.3),
-    0 0 0 4px rgba(255, 186, 0, 0.16);
+/* The pen is in hand: the next touch marks a line. */
+body.is-penned .page {
+  cursor:
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30'><path d='M6 2.4 L10.4 9 L6 21.2 L1.6 9 Z' transform='translate(3 2)' fill='%232f5fb0' stroke='%231c356b' stroke-width='1.1' stroke-linejoin='round'/><path d='M9 13.6 V20.4' transform='translate(3 2)' stroke='%23ffffff' stroke-width='1.2' stroke-linecap='round'/><circle cx='9' cy='11.6' r='1.5' transform='translate(3 2)' fill='%23ffffff'/></svg>")
+      9 24,
+    crosshair;
 }
-.pageturn--prev:hover:not(:disabled) { transform: translateY(-50%) translateX(-3px) scale(1.06); }
-.pageturn--next:hover:not(:disabled) { transform: translateY(-50%) translateX(3px) scale(1.06); }
-.pageturn--prev:active:not(:disabled) { transform: translateY(-50%) translateX(-1px) scale(0.97); }
-.pageturn--next:active:not(:disabled) { transform: translateY(-50%) translateX(1px) scale(0.97); }
-
-.pageturn:disabled { opacity: 0.22; cursor: default; }
-.pageturn:focus-visible { outline: 2px solid var(--gold); outline-offset: 4px; }
+/* The line under the nib, so it is clear what is about to be marked. */
+body.is-penned .page__body p:hover {
+  background: linear-gradient(90deg, rgba(47, 95, 176, 0.13), rgba(47, 95, 176, 0.04));
+  box-shadow: -6px 0 0 0 rgba(47, 95, 176, 0.45);
+}
 
 /* Where you are in the book, kept off the paper. */
 .pageturn__count {
@@ -1775,31 +1803,23 @@ body.is-covered .pageturn__count {
   color: rgba(248, 243, 230, 0.62);
   white-space: nowrap;
   pointer-events: none;
+  transition: opacity 300ms ease 160ms;
+}
+
+/* Nothing to count while the book is still closed. */
+body.is-covered .pageturn__count {
+  opacity: 0;
 }
 
 @media (max-width: 780px) {
-  /* No room beside the book on a phone, so they drop to the foot,
-     flanking the page count, still clear of the paper. */
-  .pageturn {
-    top: auto;
-    bottom: 14px;
-    width: 46px;
-    height: 46px;
+  .pageturn__count {
+    left: auto;
+    right: 8px;
+    bottom: 16px;
+    transform: none;
+    font-size: 8.5px;
+    padding: 6px 10px;
   }
-  .pageturn--prev { left: 14px; transform: none; }
-  .pageturn--next { right: 14px; transform: none; }
-  .pageturn--prev:hover:not(:disabled),
-  .pageturn--next:hover:not(:disabled) { transform: scale(1.06); }
-  .pageturn--prev:active:not(:disabled),
-  .pageturn--next:active:not(:disabled) { transform: scale(0.97); }
-  .pageturn__icon { width: 22px; height: 22px; }
-  .pageturn__count { bottom: 26px; font-size: 9px; padding: 6px 12px; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .pageturn { transition: none; }
-  .pageturn--prev:hover:not(:disabled),
-  .pageturn--next:hover:not(:disabled) { transform: translateY(-50%); }
 }
 
 /* ============================================================
@@ -1848,4 +1868,342 @@ body.is-covered .pageturn__count {
   .book:has(.cover--opening) .spread,
   .book:has(.cover--opening) { animation: none; }
   .cover--opening { animation: cover-fade 200ms ease forwards; }
+}
+
+/* ============================================================
+   Keeping your place
+
+   The pen leaves a mark on the page; the mark is drawn in the
+   margin where a reader would slip a piece of paper. Both sit
+   outside the book for the same reason the page-turn buttons
+   do — the book clips whatever is rendered inside it.
+   ============================================================ */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* --- the mark on the page ---
+   A nib resting in the outer margin, level with the line the
+   reader pointed at. It covers no words, and it is the first
+   thing you see on the page you stopped at. */
+.penmark {
+  position: absolute;
+  top: 0;
+  left: clamp(4px, 0.9vw, 14px);
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  color: #2f5fb0;
+  --nib-slit: #f6f2e6;
+  filter: drop-shadow(0 1px 2px rgba(20, 40, 80, 0.35));
+  transform-origin: 50% 0;
+  animation: penmark-set 460ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  pointer-events: none;
+}
+
+/* The stroke the nib left on the line beside it. */
+.penmark::after {
+  content: '';
+  position: absolute;
+  left: 100%;
+  margin-left: 3px;
+  width: 3px;
+  height: 1.5em;
+  border-radius: 2px;
+  background: currentColor;
+  opacity: 0.42;
+}
+
+/* Set down onto the page, and settling. */
+@keyframes penmark-set {
+  from { opacity: 0; transform: translate(-5px, -11px) rotate(-24deg); }
+  62%  { opacity: 1; transform: translate(0, 2px) rotate(4deg); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* --- the pen, and the list of marks --- */
+.pen {
+  position: fixed;
+  left: clamp(10px, 3.2vw, 44px);
+  bottom: clamp(14px, 3vh, 26px);
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.pen__bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pen__button {
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 50%;
+  cursor: pointer;
+  color: #f4ead2;
+  background:
+    radial-gradient(120% 120% at 32% 24%, rgba(255, 255, 255, 0.2), transparent 58%),
+    linear-gradient(165deg, #4a3a1e, #241a0c);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 220ms ease, color 200ms ease;
+}
+/* A pen lifting off the desk. */
+.pen__button:hover:not(:disabled) { transform: translateY(-3px) rotate(-8deg); }
+.pen__button:active:not(:disabled) { transform: translateY(-1px) rotate(-4deg) scale(0.96); }
+.pen__button:disabled { opacity: 0.3; cursor: default; }
+.pen__button:focus-visible { outline: 2px solid var(--gold); outline-offset: 4px; }
+
+/* The pen is in hand. */
+.pen__button--held {
+  color: #cfe0ff;
+  transform: translateY(-3px) rotate(-8deg);
+  box-shadow:
+    0 10px 22px rgba(0, 0, 0, 0.42),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    0 0 0 3px rgba(64, 116, 214, 0.34);
+}
+
+.pen__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 13px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(23, 16, 8, 0.58);
+  backdrop-filter: blur(6px);
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(248, 243, 230, 0.66);
+  transition: color 180ms ease, background 180ms ease;
+}
+.pen__toggle:hover { color: var(--paper); background: rgba(23, 16, 8, 0.78); }
+.pen__toggle:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+
+.pen__count {
+  display: grid;
+  place-items: center;
+  min-width: 17px;
+  height: 17px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: var(--gold, #ffba00);
+  color: #241a0c;
+  font-size: 9px;
+  letter-spacing: 0;
+}
+
+.pen__list {
+  width: min(320px, calc(100vw - 32px));
+  max-height: min(48vh, 380px);
+  overflow-y: auto;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(20, 14, 7, 0.92);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 20px 44px rgba(0, 0, 0, 0.5);
+  animation: pen-open 240ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes pen-open {
+  from { opacity: 0; transform: translateY(10px) scale(0.97); }
+  to   { opacity: 1; transform: none; }
+}
+
+.pen__listHead {
+  margin: 0 0 8px;
+  font-family: var(--font-display);
+  font-size: 9.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(248, 243, 230, 0.48);
+}
+
+.pen__list ul { list-style: none; margin: 0; padding: 0; }
+.pen__list li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+.pen__list li:first-child { border-top: 0; }
+
+.pen__go {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 6px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  color: rgba(248, 243, 230, 0.82);
+  font-size: 12px;
+  line-height: 1.35;
+  border-radius: 7px;
+  transition: background 160ms ease, color 160ms ease;
+}
+.pen__go:hover { background: rgba(255, 255, 255, 0.06); color: var(--paper); }
+.pen__go .pen__nib { flex: none; color: #7ea6ee; }
+.pen__label {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.pen__drop {
+  flex: none;
+  width: 26px;
+  height: 26px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  color: rgba(248, 243, 230, 0.34);
+  font-size: 11px;
+  transition: color 160ms ease, background 160ms ease;
+}
+.pen__drop:hover { color: #ff8a8a; background: rgba(255, 255, 255, 0.07); }
+
+.pen__empty {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.45;
+  color: rgba(248, 243, 230, 0.5);
+}
+
+/* While the pen is in hand, the instruction is the point. */
+.pen__hint--holding {
+  color: #cfe0ff;
+  border-color: rgba(120, 165, 240, 0.4);
+  background: rgba(24, 40, 72, 0.9);
+}
+
+.pen__hint {
+  margin: 0;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(23, 16, 8, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  font-size: 11px;
+  color: rgba(248, 243, 230, 0.78);
+  animation: pen-open 200ms ease both;
+}
+
+/* --- where the book reopened --- */
+.resume {
+  position: fixed;
+  left: 50%;
+  bottom: clamp(74px, 11vh, 96px);
+  transform: translateX(-50%);
+  z-index: 61;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: min(560px, calc(100vw - 24px));
+  padding: 9px 10px 9px 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(20, 14, 7, 0.9);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 16px 38px rgba(0, 0, 0, 0.48);
+  animation: resume-in 380ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes resume-in {
+  from { opacity: 0; transform: translateX(-50%) translateY(14px); }
+  to   { opacity: 1; transform: translateX(-50%); }
+}
+
+.resume__text {
+  margin: 0;
+  font-size: 12.5px;
+  color: rgba(248, 243, 230, 0.82);
+  white-space: nowrap;
+}
+.resume__text strong { color: var(--gold, #ffba00); }
+
+.resume__action {
+  flex: none;
+  padding: 7px 13px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.07);
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(248, 243, 230, 0.86);
+  white-space: nowrap;
+  transition: background 170ms ease, color 170ms ease;
+}
+.resume__action:hover { background: rgba(255, 255, 255, 0.14); color: var(--paper); }
+
+.resume__close {
+  flex: none;
+  width: 26px;
+  height: 26px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  color: rgba(248, 243, 230, 0.4);
+  font-size: 11px;
+}
+.resume__close:hover { color: var(--paper); background: rgba(255, 255, 255, 0.08); }
+
+@media (max-width: 780px) {
+  /* The foot of the screen belongs to the page-turn buttons, so the pen
+     moves above them and the notice above that. */
+  .pen {
+    left: 8px;
+    bottom: 8px;
+    transform: none;
+    align-items: flex-start;
+  }
+  .pen__button { width: 40px; height: 40px; }
+  .pen__button .pen__nib { width: 19px; height: 19px; }
+  .pen__list { width: min(320px, calc(100vw - 24px)); max-height: 42vh; }
+  .resume {
+    bottom: 62px;
+    flex-wrap: wrap;
+    justify-content: center;
+    border-radius: 16px;
+    padding: 10px 12px;
+  }
+  .resume__text { white-space: normal; text-align: center; font-size: 12px; }
+  .penmark { left: 4px; }
+  .penmark .pen__nib { width: 13px; height: 13px; }
+  .penmark::after { height: 1.3em; width: 2px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .penmark,
+  .pen__list,
+  .pen__hint,
+  .resume { animation: none; }
+  .pen__button { transition: none; }
+  .pen__button:hover:not(:disabled) { transform: none; }
 }
