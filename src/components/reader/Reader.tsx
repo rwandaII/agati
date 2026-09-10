@@ -371,9 +371,20 @@ export function Reader({
       }
 
       if (window.getSelection()?.toString()) return;
+
+      // With a spread open, which page you touched says which way to go. With
+      // one page open there is no other page to touch, so the near edge goes
+      // back — the same gesture as reaching for the corner you just turned.
+      if (leaves === 1) {
+        const page = e.currentTarget.getBoundingClientRect();
+        const backwards = e.clientX - page.left < page.width * 0.25;
+        go(backwards ? -1 : 1);
+        return;
+      }
+
       go(which === 'right' ? 1 : -1);
     },
-    [penMode, markAt, go],
+    [penMode, markAt, go, leaves],
   );
 
   /** The marks that fall on one of the two pages now showing. */
