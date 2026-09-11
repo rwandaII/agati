@@ -338,15 +338,17 @@
     overflow-y: auto;
     overscroll-behavior: contain;
     -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .book__viewport:not(.book__viewport--reading) .spread::-webkit-scrollbar {
+    width: 0;
+    height: 0;
   }
   .book__viewport:not(.book__viewport--reading) .page {
     overflow: visible;
     min-height: 0;
   }
-  .book__viewport:not(.book__viewport--reading) .page__body {
-    overflow: visible;
-    flex: none;
-  }
+
   /* One running head at the top of the stack, not one per page. */
   .book__viewport:not(.book__viewport--reading) .page--right > .page__running {
     display: none;
@@ -1560,32 +1562,81 @@
   .book__viewport--reading .desk { padding: 8px; }
   .book__viewport--reading .book { width: 96vw; height: 90dvh; }
 
-  .page { padding: clamp(60px, 8vh, 76px) 18px 14px; }
   .page__body { font-size: 15px; max-width: none; }
   .page__running, .page__folio { max-width: none; }
 
-  /* Every section has to be reachable, so the tabs share the width of the
-     head between them rather than the last ones falling off the edge. */
+  /* --- the tabs move to the fore-edge ---
+     Six tabs across the head of a phone crowd each other and sit on top of
+     the running head. Down the outer edge they have all the room they need,
+     they stop covering the words, and they become the tabs of a real book —
+     the ones you put a thumb on to get straight to a section. */
   .ribbons {
-    top: 0;
-    left: 5px;
-    right: 5px;
-    gap: 3px;
+    top: clamp(38px, 6vh, 58px);
+    right: 0;
+    left: auto;
+    bottom: auto;
+    transform: none;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: flex-start;
+    gap: 4px;
     max-width: none;
     flex-wrap: nowrap;
-    justify-content: space-between;
+    /* the whole block sits on the edge, so it casts one shadow */
+    filter: drop-shadow(-3px 2px 6px rgba(0, 0, 0, 0.32));
   }
-  .ribbon { min-width: 0; flex: 1 1 0; height: 34px; padding: 0 2px; }
-  .ribbon:hover { height: 40px; }
-  .ribbon--active { height: 44px; }
+
+  .ribbon {
+    width: 22px;
+    min-width: 0;
+    height: auto;
+    min-height: 88px;
+    padding: 14px 0;
+    /* Squared against the edge of the book, tapering to a point that
+       reaches into the page — the same ribbon, turned on its side. */
+    clip-path: polygon(34% 0, 100% 0, 100% 100%, 34% 100%, 0 50%);
+    background: linear-gradient(
+      100deg,
+      color-mix(in srgb, var(--ribbon) 72%, #000) 0%,
+      var(--ribbon) 46%,
+      color-mix(in srgb, var(--ribbon) 88%, #fff) 100%
+    );
+    box-shadow: none;
+    transition:
+      width 240ms cubic-bezier(0.22, 1, 0.36, 1),
+      filter 200ms ease;
+  }
+
+  /* Reaching for a tab draws it out of the block. */
+  .ribbon:hover { width: 28px; height: auto; filter: brightness(1.08); }
+  .ribbon--active {
+    width: 30px;
+    height: auto;
+    filter: saturate(1.15) brightness(1.05);
+  }
+
   .ribbon__label {
-    font-size: 8px;
-    letter-spacing: 0.02em;
-    padding-bottom: 6px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: clip;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    font-size: 7.5px;
+    font-weight: 800;
+    letter-spacing: 0.11em;
+    padding: 0 0 0 7px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.55);
   }
+
+  /* Room at the fore-edge for the tabs, and the head of the page is free
+     again — the running title is no longer underneath them. */
+  .page { padding: clamp(24px, 4vh, 38px) 40px 14px 16px; }
+  .book__viewport--reading .page { padding-right: 40px; }
+
+  /* The scrollbar would run straight down the middle of that gap. */
+  .page__body { scrollbar-width: none; }
+  .page__body::-webkit-scrollbar { width: 0; height: 0; }
+
+  /* One tab in a book: at the top of the edge, where a thumb coming from
+     the corner finds it first. */
+  .ribbons--reading { top: clamp(38px, 6vh, 58px); transform: none; }
 
   .cardmark { left: 4px; gap: 3px; }
   .cardmark__link { padding: 8px 10px 10px; font-size: 9.5px; letter-spacing: 0.06em; }
@@ -1601,18 +1652,27 @@
 }
 
 @media (max-width: 420px) {
-  .ribbon { padding: 0 7px; }
-  .ribbon__label { font-size: 8.5px; }
+  /* The tabs are down the fore-edge here, so the narrow rules are about
+     making room for them rather than squeezing them along the top. */
+  .ribbon { width: 19px; min-height: 78px; padding: 12px 0; }
+  .ribbon__label { font-size: 8px; letter-spacing: 0.06em; }
   .cardmark__link { padding: 7px 8px 9px; font-size: 8.5px; }
-  .page { padding: 56px 13px 12px; }
+  .page { padding: 22px 34px 12px 13px; }
   .shelf { grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); }
 }
 
 /* short screens: give the text back its room */
 @media (max-height: 560px) {
-  .page { padding-top: 52px; padding-bottom: 10px; }
+  .page { padding-top: 40px; padding-bottom: 10px; }
   .ribbon { height: 34px; }
   .ribbon--active { height: 42px; }
+}
+/* ...but a short phone still has its tabs down the edge, where height is
+   the one thing they must not give up. */
+@media (max-height: 560px) and (max-width: 780px) {
+  .page { padding-top: 20px; }
+  .ribbon { height: auto; min-height: 62px; }
+  .ribbon--active { height: auto; }
 }
 
 
@@ -2206,4 +2266,140 @@ body.is-covered .pageturn__count {
   .resume { animation: none; }
   .pen__button { transition: none; }
   .pen__button:hover:not(:disabled) { transform: none; }
+}
+
+/* ============================================================
+   Unfolding a page
+
+   On a wide screen a page holds what it holds and the rest
+   scrolls inside it. On a phone that put a scrollbar down the
+   middle of the paper, and a second scroll inside the one
+   already moving the book, so there the page is cut off where
+   it stops being comfortable and opened the rest of the way by
+   asking.
+   ============================================================ */
+.fold {
+  display: contents;
+}
+
+.fold__more {
+  display: none;
+}
+
+@media (max-width: 780px) {
+  .fold {
+    display: block;
+    position: relative;
+    flex: none;
+    width: 100%;
+  }
+
+  /* The height a folded page is cut to. `ReadMore` reads this value, so the
+     two cannot drift apart. */
+  .fold .page__body {
+    --fold: 62vh;
+    overflow: visible;
+    flex: none;
+  }
+
+  .fold--closed .page__body {
+    max-height: var(--fold);
+    overflow: hidden;
+    /* Fades into the paper rather than stopping at a hard line. */
+    -webkit-mask-image: linear-gradient(180deg, #000 calc(100% - 78px), transparent 100%);
+    mask-image: linear-gradient(180deg, #000 calc(100% - 78px), transparent 100%);
+  }
+
+  .fold__more {
+    display: block;
+    margin: 6px auto 2px;
+    padding: 9px 20px 10px;
+    border: 1px solid color-mix(in srgb, var(--rule, #c9bda6) 70%, transparent);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--paper, #f6f2e6) 88%, #000 3%);
+    cursor: pointer;
+    font-family: var(--font-display);
+    font-size: 9.5px;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-soft, #6a5f52);
+    box-shadow: 0 2px 8px rgba(40, 30, 18, 0.1);
+    transition: background 180ms ease, color 180ms ease, transform 180ms ease;
+  }
+  .fold__more:hover {
+    background: color-mix(in srgb, var(--paper, #f6f2e6) 74%, #000 6%);
+    color: var(--ink, #2b2320);
+  }
+  .fold__more:active { transform: translateY(1px); }
+  .fold__more:focus-visible { outline: 2px solid var(--gold, #ffba00); outline-offset: 2px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fold__more { transition: none; }
+}
+
+/* ============================================================
+   The book arrives
+
+   Opening the site should feel like a book being set down in
+   front of you, not like a page appearing. So the desk lights
+   first, the volume comes up onto it and settles, and the cover
+   puts its title on last — by which time your eye is already
+   where the title is going to be.
+
+   This runs on load. Moving between sections of the site keeps
+   the same book, so it does not play again; you are turning
+   pages by then, not being handed the book.
+   ============================================================ */
+.book {
+  animation: book-arrive 820ms var(--turn-ease) backwards;
+}
+
+@keyframes book-arrive {
+  0%   { transform: translateY(42px) scale(0.93); }
+  78%  { transform: translateY(-5px) scale(1.006); }
+  100% { transform: none; }
+}
+
+/* The desk comes up under it. */
+.desk {
+  animation: desk-lift 700ms ease both;
+}
+
+@keyframes desk-lift {
+  from { filter: brightness(0.72); }
+  to   { filter: none; }
+}
+
+/* Then the cover puts its title on, one line at a time. */
+.cover__face > * {
+  animation: cover-settle 620ms var(--turn-ease) both;
+  animation-delay: calc(360ms + var(--i, 0) * 90ms);
+}
+.cover__art     { --i: 0; }
+.cover__kicker  { --i: 1; }
+.cover__title,
+.cover__wordmark { --i: 2; }
+.cover__author  { --i: 3; }
+.cover__badge   { --i: 4; }
+.cover__hint    { --i: 5; }
+
+@keyframes cover-settle {
+  0%   { opacity: 0; transform: translateY(9px); }
+  30%  { opacity: 1; }
+  100% { opacity: 1; transform: none; }
+}
+
+/* Once the cover is swinging open, none of this should still be moving. */
+.cover--opening .cover__face > * {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .book,
+  .desk,
+  .cover__face > * {
+    animation: none;
+  }
 }
