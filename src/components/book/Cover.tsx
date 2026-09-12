@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { turnDuration } from './constants';
+import { fillTheScreen } from './screen';
 import { SITE } from '@/config/brand';
 import { MARK_COLOUR } from '@/config/photos';
 
@@ -11,6 +12,10 @@ export function Cover({ onOpen }: { onOpen: () => void }) {
 
   const open = () => {
     if (opening) return;
+    // The website is a book too, and a book wants to be lying down. Asked for
+    // here because this is the tap: full screen and the orientation lock are
+    // granted to a gesture or not at all.
+    void fillTheScreen();
     setOpening(true);
     setTimeout(onOpen, turnDuration() + 220);
   };

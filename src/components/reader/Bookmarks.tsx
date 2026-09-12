@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { stageEl } from '@/components/book/screen';
 import { Nib } from './PenMark';
 
 export type Mark = { id: string; anchor: number; label: string };
@@ -14,8 +15,10 @@ export type Mark = { id: string; anchor: number; label: string };
  * pen works, and it means a reader marks the line they stopped at rather than
  * the page they happen to be on.
  *
- * Portalled to the body for the same reason everything else here is: the book
- * clips its contents, so a control rendered inside it would be cut off.
+ * Portalled out for the same reason everything else here is: the book clips
+ * its contents, so a control rendered inside it would be cut off. Out as far
+ * as the frame, and no further — the frame is what turns on a phone, and a pen
+ * left behind on the body would stand upright beside a book lying on its side.
  */
 export function Bookmarks({
   marks,
@@ -126,6 +129,6 @@ export function Bookmarks({
         </p>
       ) : null}
     </div>,
-    document.body,
+    stageEl(),
   );
 }

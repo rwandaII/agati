@@ -20,6 +20,10 @@ export function useMeasurer(pageRef: RefObject<HTMLElement | null>) {
 
     const ghost = document.createElement('div');
     ghost.setAttribute('aria-hidden', 'true');
+    // A page opens with a drop capital, which is two or three lines tall and
+    // pushes the text around it. Measuring without one fits a line more than
+    // the page can hold, and that line is clipped at the foot.
+    ghost.className = 'ghost';
     Object.assign(ghost.style, {
       position: 'absolute',
       visibility: 'hidden',
@@ -32,11 +36,22 @@ export function useMeasurer(pageRef: RefObject<HTMLElement | null>) {
 
     const sync = () => {
       const textBox = (page.querySelector('.page__body') as HTMLElement | null) ?? page;
-      const rect = textBox.getBoundingClientRect();
-      if (rect.width === 0 || rect.height === 0) return;
-
       const cs = getComputedStyle(textBox);
-      ghost.style.width = `${rect.width}px`;
+
+      // Measured in the page's own axes, not the screen's: on a phone the book
+      // is drawn turned, and a bounding rect would then report the column's
+      // height as its width and paginate the book into ribbons.
+      //
+      // And measured to the text's own width, not the column's. The ghost has
+      // no padding, so giving it the padded width lets it fit a little more on
+      // every line than the page can — which is a line too many at the foot of
+      // the page, showing as a row of clipped letter-tops.
+      const width =
+        textBox.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+      const height = textBox.clientHeight;
+      if (width <= 0 || height === 0) return;
+
+      ghost.style.width = `${width}px`;
       for (const prop of [
         'fontFamily',
         'fontSize',
@@ -48,17 +63,39 @@ export function useMeasurer(pageRef: RefObject<HTMLElement | null>) {
         ghost.style[prop] = cs[prop];
       }
 
-      setBox({ width: rect.width, height: textBox.clientHeight || rect.height });
+      setBox({ width, height });
       setReady(true);
     };
 
     sync();
 
-    const ro = new ResizeObserver(sync);
+    /**
+     * Re-flowing the book is the most expensive thing this component does: it
+     * lays every loaded paragraph out again to find where the pages end. The
+     * page box changes shape the instant the stage turns, so left to itself
+     * that work would land in the middle of the turn and stutter it.
+     *
+     * So it waits — for the resizing to stop, and then for the book to have
+     * finished turning. Nothing is lost by waiting: the pages keep the flow
+     * they already had, which for the second the turn takes is exactly right.
+     */
+    let pending: ReturnType<typeof setTimeout> | undefined;
+    const schedule = () => {
+      clearTimeout(pending);
+      pending = setTimeout(() => {
+        const stage = document.getElementById('book-stage');
+        const turning = stage?.getAnimations?.().some((a) => a.playState === 'running');
+        if (turning) return schedule();
+        sync();
+      }, 90);
+    };
+
+    const ro = new ResizeObserver(schedule);
     ro.observe(page);
-    document.fonts?.ready.then(sync).catch(() => {});
+    document.fonts?.ready.then(schedule).catch(() => {});
 
     return () => {
+      clearTimeout(pending);
       ro.disconnect();
       ghost.remove();
       ghostRef.current = null;

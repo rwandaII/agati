@@ -6,3 +6,5 @@ node_modules/
 .env.local
 next-env.d.ts
 tsconfig.tsbuildinfo
+*.db-shm
+*.db-wal

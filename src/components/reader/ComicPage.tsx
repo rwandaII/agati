@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { stageEl } from '@/components/book/screen';
 
 /**
  * A scanned comic plate.
@@ -74,8 +75,9 @@ export function ComicPage({
       {/*
         The book block carries `contain: layout paint`, which makes it a
         containing block for fixed positioning — an overlay rendered in place
-        would be trapped inside the book. A portal puts it on the body, where
-        full screen genuinely means full screen.
+        would be trapped inside the book. A portal lifts it out to the frame,
+        where full screen genuinely means full screen — and no further, or it
+        would stay upright while a turned book lay on its side beneath it.
       */}
       {open && mounted
         ? createPortal(
@@ -103,7 +105,7 @@ export function ComicPage({
                 />
               </div>
             </div>,
-            document.body,
+            stageEl(),
           )
         : null}
     </>

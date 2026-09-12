@@ -1,8 +1,91 @@
 /* ============================================================
+   The stage
+
+   A book wants a landscape box: two pages side by side is what a
+   book is, and a phone held upright is the one screen that cannot
+   give it one. Chrome on Android will turn the screen when asked;
+   Safari has never offered the choice. So where the phone will not
+   turn, the stage turns instead, and the book never learns which
+   of the two happened — everything below is measured in stage
+   units, which are the screen's, or the screen's swapped over.
+
+   The fallbacks matter: only a book from the collection has a
+   stage. The website's own book reads them and gets the viewport,
+   exactly as it did before.
+   ============================================================ */
+.stage {
+  --stage-w: 100vw;
+  --stage-h: 100dvh;
+}
+
+:root[data-turn='90'] .stage {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  /* the screen, on its side */
+  width: 100dvh;
+  height: 100vw;
+  --stage-w: 100dvh;
+  --stage-h: 100vw;
+  overflow: hidden;
+  /* Turned about its own middle and pulled back to the middle of the screen,
+     so a box the shape of the screen laid on its side lands exactly on the
+     glass — and so the turn itself has something to pivot around. */
+  transform-origin: center;
+  transform: translate(-50%, -50%) rotate(90deg);
+  animation: stage-turn 880ms cubic-bezier(0.33, 0.9, 0.28, 1) both;
+  /* The stage holds the whole book — paper grain, gradients, photographs. Told
+     in advance that only its transform will change, the browser draws all that
+     once and then just moves the picture; without this it redraws the lot on
+     every frame of the turn, which is what makes a turn stutter. */
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+/* You should see the book turn, not find it already turned.
+   It starts lying the long way across a screen too narrow to hold it, held
+   back far enough to be seen whole; it swings up, growing as it comes; and it
+   goes a few degrees past square before settling back — which is what a real
+   object does when you set it down, and the reason this reads as a book being
+   turned rather than a picture being rotated.
+   `--turn-scale` is the screen's own ratio, measured by the stage. */
+@keyframes stage-turn {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg) scale(var(--turn-scale, 0.5));
+  }
+  45% {
+    transform: translate(-50%, -50%) rotate(52deg) scale(calc(var(--turn-scale, 0.5) * 1.42));
+  }
+  80% {
+    transform: translate(-50%, -50%) rotate(97deg) scale(1.012);
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(90deg) scale(1);
+  }
+}
+
+/* Blur sampled from behind a layer has to be recomputed every time the layer
+   moves, and these sit on top of the one thing that moves. A turned book does
+   without them; on the glass they are a solid pill either way. */
+:root[data-turn='90'] .pageturn__count,
+:root[data-turn='90'] .resume,
+:root[data-turn='90'] .pen__list {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root[data-turn='90'] .stage {
+    animation: none;
+    will-change: auto;
+  }
+}
+
+/* ============================================================
    The desk the book rests on
    ============================================================ */
 .desk {
-  height: 100dvh;
+  height: var(--stage-h, 100dvh);
   width: 100%;
   display: grid;
   place-items: center;
@@ -16,7 +99,7 @@
 .book__viewport {
   position: fixed;
   inset: 0;
-  height: 100dvh;
+  height: var(--stage-h, 100dvh);
   width: 100%;
   overscroll-behavior: none;
   background: var(--desk);
@@ -29,8 +112,8 @@
 .book {
   position: relative;
   /* The website fills the screen. A library book does not — see below. */
-  width: 100vw;
-  height: 100dvh;
+  width: var(--stage-w, 100vw);
+  height: var(--stage-h, 100dvh);
   perspective: 2600px;
   /* the expansion out of the closed cover and into the whole browser */
   transition:
@@ -44,8 +127,8 @@
    starts opening the :has() stops matching and the book grows to fill the
    browser, so opening it and entering it are one movement. */
 .book:has(.cover:not(.cover--opening)) {
-  width: min(640px, 80vw);
-  height: min(58dvh, 440px);
+  width: min(640px, calc(var(--stage-w, 100vw) * 0.8));
+  height: min(calc(var(--stage-h, 100dvh) * 0.58), 440px);
   box-shadow: 0 40px 70px rgba(0, 0, 0, 0.66);
 }
 
@@ -319,20 +402,26 @@
 /* ============================================================
    Narrow screens: one page, not two
    ============================================================ */
+/* Narrow means one page — unless the stage says otherwise. A phone turned on
+   its side is 667–930px wide and holds a spread perfectly well, and no media
+   query can see that: under a turned book they are still looking at an upright
+   phone. So `data-leaves` decides, and everything below stands aside when it
+   says two. A screen with no stage on it — the server's first render — is
+   treated as one page here, which is what a narrow screen used to get. */
 @media (max-width: 780px) {
-  .book__viewport--reading .book { aspect-ratio: 3 / 4.4; }
-  .spread { grid-template-columns: 1fr; }
-  .page--right { border-radius: 5px; box-shadow: none; }
-  .spread__gutter,
-  .book__edges--left,
-  .book__spine { display: none; }
+  html:not([data-leaves='2']) .book__viewport--reading .book { aspect-ratio: 3 / 4.4; }
+  html:not([data-leaves='2']) .spread { grid-template-columns: 1fr; }
+  html:not([data-leaves='2']) .page--right { border-radius: 5px; box-shadow: none; }
+  html:not([data-leaves='2']) .spread__gutter,
+  html:not([data-leaves='2']) .book__edges--left,
+  html:not([data-leaves='2']) .book__spine { display: none; }
 
   /* --- the website's own book ---
      A spread will not fit a phone at a readable size, and hiding one of its
      pages would take half of every page of the site with it. So the two pages
      stack and the book scrolls: everything that is on the screen of a computer
      is on the screen of a phone, one page under the other. */
-  .book__viewport:not(.book__viewport--reading) .spread {
+  html:not([data-leaves='2']) .book__viewport:not(.book__viewport--reading) .spread {
     grid-template-columns: 1fr;
     grid-auto-rows: max-content;
     overflow-y: auto;
@@ -340,26 +429,26 @@
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
   }
-  .book__viewport:not(.book__viewport--reading) .spread::-webkit-scrollbar {
+  html:not([data-leaves='2']) .book__viewport:not(.book__viewport--reading) .spread::-webkit-scrollbar {
     width: 0;
     height: 0;
   }
-  .book__viewport:not(.book__viewport--reading) .page {
+  html:not([data-leaves='2']) .book__viewport:not(.book__viewport--reading) .page {
     overflow: visible;
     min-height: 0;
   }
 
   /* One running head at the top of the stack, not one per page. */
-  .book__viewport:not(.book__viewport--reading) .page--right > .page__running {
+  html:not([data-leaves='2']) .book__viewport:not(.book__viewport--reading) .page--right > .page__running {
     display: none;
   }
-  .book__viewport:not(.book__viewport--reading) .page--left {
+  html:not([data-leaves='2']) .book__viewport:not(.book__viewport--reading) .page--left {
     padding-bottom: 0;
   }
-  .book__viewport:not(.book__viewport--reading) .page--right {
+  html:not([data-leaves='2']) .book__viewport:not(.book__viewport--reading) .page--right {
     padding-top: 6px;
   }
-  .book__viewport:not(.book__viewport--reading) .page__folio--left {
+  html:not([data-leaves='2']) .book__viewport:not(.book__viewport--reading) .page__folio--left {
     display: none;
   }
 
@@ -1470,8 +1559,8 @@
 .book__viewport--reading .desk { padding: clamp(14px, 3.4vh, 48px) clamp(14px, 3vw, 54px); }
 
 .book__viewport--reading .book {
-  width: min(1320px, 90vw);
-  height: min(84dvh, 860px);
+  width: min(1320px, calc(var(--stage-w, 100vw) * 0.9));
+  height: min(calc(var(--stage-h, 100dvh) * 0.84), 860px);
   border-radius: 5px 9px 9px 5px;
   box-shadow: 0 36px 66px rgba(0, 0, 0, 0.58), 0 5px 14px rgba(0, 0, 0, 0.42);
 }
@@ -1481,8 +1570,8 @@
 
 /* the closed cover is smaller still, and grows as it opens */
 .book:has(.cover:not(.cover--opening)) {
-  width: min(640px, 80vw);
-  height: min(58dvh, 440px);
+  width: min(640px, calc(var(--stage-w, 100vw) * 0.8));
+  height: min(calc(var(--stage-h, 100dvh) * 0.58), 440px);
   border-radius: 4px 8px 8px 4px;
   box-shadow: 0 40px 70px rgba(0, 0, 0, 0.66);
 }
@@ -1560,9 +1649,12 @@
    ============================================================ */
 @media (max-width: 780px) {
   .book__viewport--reading .desk { padding: 8px; }
-  .book__viewport--reading .book { width: 96vw; height: 90dvh; }
+  html:not([data-leaves='2']) .book__viewport--reading .book {
+    width: calc(var(--stage-w, 100vw) * 0.96);
+    height: calc(var(--stage-h, 100dvh) * 0.9);
+  }
 
-  .page__body { font-size: 15px; max-width: none; }
+  html:not([data-leaves='2']) .page__body { font-size: 15px; max-width: none; }
   .page__running, .page__folio { max-width: none; }
 
   /* --- the tabs move to the fore-edge ---
@@ -1627,8 +1719,8 @@
 
   /* Room at the fore-edge for the tabs, and the head of the page is free
      again — the running title is no longer underneath them. */
-  .page { padding: clamp(24px, 4vh, 38px) 40px 14px 16px; }
-  .book__viewport--reading .page { padding-right: 40px; }
+  html:not([data-leaves='2']) .page { padding: clamp(24px, 4vh, 38px) 40px 14px 16px; }
+  html:not([data-leaves='2']) .book__viewport--reading .page { padding-right: 40px; }
 
   /* The scrollbar would run straight down the middle of that gap. */
   .page__body { scrollbar-width: none; }
@@ -2073,7 +2165,7 @@ body.is-covered .pageturn__count {
 }
 
 .pen__list {
-  width: min(320px, calc(100vw - 32px));
+  width: min(320px, calc(var(--stage-w, 100vw) - 32px));
   max-height: min(48vh, 380px);
   overflow-y: auto;
   padding: 12px;
@@ -2181,7 +2273,7 @@ body.is-covered .pageturn__count {
   display: flex;
   align-items: center;
   gap: 12px;
-  max-width: min(560px, calc(100vw - 24px));
+  max-width: min(560px, calc(var(--stage-w, 100vw) - 24px));
   padding: 9px 10px 9px 16px;
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.12);
@@ -2245,7 +2337,7 @@ body.is-covered .pageturn__count {
   }
   .pen__button { width: 40px; height: 40px; }
   .pen__button .pen__nib { width: 19px; height: 19px; }
-  .pen__list { width: min(320px, calc(100vw - 24px)); max-height: 42vh; }
+  .pen__list { width: min(320px, calc(var(--stage-w, 100vw) - 24px)); max-height: 42vh; }
   .resume {
     bottom: 62px;
     flex-wrap: wrap;
@@ -2287,7 +2379,7 @@ body.is-covered .pageturn__count {
 }
 
 @media (max-width: 780px) {
-  .fold {
+  html:not([data-leaves='2']) .fold {
     display: block;
     position: relative;
     flex: none;
@@ -2296,13 +2388,13 @@ body.is-covered .pageturn__count {
 
   /* The height a folded page is cut to. `ReadMore` reads this value, so the
      two cannot drift apart. */
-  .fold .page__body {
+  html:not([data-leaves='2']) .fold .page__body {
     --fold: 62vh;
     overflow: visible;
     flex: none;
   }
 
-  .fold--closed .page__body {
+  html:not([data-leaves='2']) .fold--closed .page__body {
     max-height: var(--fold);
     overflow: hidden;
     /* Fades into the paper rather than stopping at a hard line. */
@@ -2310,7 +2402,7 @@ body.is-covered .pageturn__count {
     mask-image: linear-gradient(180deg, #000 calc(100% - 78px), transparent 100%);
   }
 
-  .fold__more {
+  html:not([data-leaves='2']) .fold__more {
     display: block;
     margin: 6px auto 2px;
     padding: 9px 20px 10px;
@@ -2327,12 +2419,12 @@ body.is-covered .pageturn__count {
     box-shadow: 0 2px 8px rgba(40, 30, 18, 0.1);
     transition: background 180ms ease, color 180ms ease, transform 180ms ease;
   }
-  .fold__more:hover {
+  html:not([data-leaves='2']) .fold__more:hover {
     background: color-mix(in srgb, var(--paper, #f6f2e6) 74%, #000 6%);
     color: var(--ink, #2b2320);
   }
-  .fold__more:active { transform: translateY(1px); }
-  .fold__more:focus-visible { outline: 2px solid var(--gold, #ffba00); outline-offset: 2px; }
+  html:not([data-leaves='2']) .fold__more:active { transform: translateY(1px); }
+  html:not([data-leaves='2']) .fold__more:focus-visible { outline: 2px solid var(--gold, #ffba00); outline-offset: 2px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -2402,4 +2494,320 @@ body.is-covered .pageturn__count {
   .cover__face > * {
     animation: none;
   }
+}
+
+/* ============================================================
+   The spread, at phone scale
+
+   The same book as on a desk — two pages, a gutter between them,
+   a block of paper at each fore-edge, the running head and the
+   folio in their places. Only smaller. Nothing here changes what
+   the page is; it changes how big the details are, because a
+   phone lying on its side is about a third of a desk.
+
+   Keyed on the reader's own attributes rather than a media query,
+   because both screens this has to serve look identical to one:
+   a phone turned by its browser reports 844x390, and a phone the
+   reader turned itself still reports 390x844.
+   ============================================================ */
+/* A band at the foot for the pen and the page count, so they rest on the desk
+   beside the book rather than on top of its paper — which is where they are
+   on a desk, and the reason the folio can still be read. */
+html[data-stage='phone'][data-leaves='2'] .desk {
+  padding: 4px 7px 40px;
+}
+
+html[data-stage='phone'][data-leaves='2'] .book {
+  width: min(1320px, calc(var(--stage-w, 100vw) * 0.955));
+  height: min(calc(var(--stage-h, 100dvh) * 0.88), 860px);
+  aspect-ratio: auto;
+  border-radius: 4px 6px 6px 4px;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.5), 0 3px 8px rgba(0, 0, 0, 0.4);
+}
+
+/* Room at the head for the tabs, as on a desk. Enough room: a tab hangs from
+   the top edge of the book down into the page, and the running title has to
+   start below the deepest of them — the one for the section you are on, which
+   is drawn longer than the rest — with daylight between, or the tab reads as
+   sitting on top of the words rather than above them. */
+html[data-stage='phone'][data-leaves='2'] .page {
+  padding: 40px 18px 7px;
+}
+
+html[data-stage='phone'][data-leaves='2'] .page__running {
+  font-size: 8px;
+  letter-spacing: 0.24em;
+  margin-bottom: 7px;
+  padding-bottom: 4px;
+  max-width: none;
+}
+
+html[data-stage='phone'][data-leaves='2'] .page__body,
+html[data-stage='phone'][data-leaves='2'] .prose__scroll {
+  font-size: 13px;
+  line-height: 1.56;
+  max-width: none;
+  padding-right: 3px;
+  /* A scrollbar down the middle of the paper is not a thing a book has, and
+     on a phone it is a finger's width of the page given to something a finger
+     does not need. The page still scrolls; it just does not say so. */
+  scrollbar-width: none;
+}
+html[data-stage='phone'][data-leaves='2'] .page__body::-webkit-scrollbar,
+html[data-stage='phone'][data-leaves='2'] .prose__scroll::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+html[data-stage='phone'][data-leaves='2'] .page__folio {
+  font-size: 8.5px;
+  padding-top: 5px;
+  max-width: none;
+}
+
+/* The drop capital keeps its proportion to the line it opens, so the page
+   still reads as a page and not as a paragraph that has been shrunk. */
+html[data-stage='phone'][data-leaves='2'] .page__body--chapter p:first-of-type::first-letter {
+  font-size: 2.7em;
+}
+
+/* --- the binding --- */
+html[data-stage='phone'][data-leaves='2'] .spread__gutter {
+  width: 46px;
+}
+html[data-stage='phone'][data-leaves='2'] .book__spine {
+  width: 13px;
+}
+html[data-stage='phone'][data-leaves='2'] .book__edges {
+  width: 6px;
+  border-radius: 1px;
+}
+html[data-stage='phone'][data-leaves='2'] .book__edges--left { left: -5px; }
+html[data-stage='phone'][data-leaves='2'] .book__edges--right { right: -5px; }
+
+/* --- the tabs, across the head ---
+   Where they are on a desk. Stated here rather than left to the media
+   queries, because those move the tabs to the fore-edge for a screen that
+   shows one page — and a phone lying on its side shows two, while still
+   measuring 390px to every query that asks. */
+html[data-stage='phone'][data-leaves='2'] .ribbons {
+  top: 0;
+  bottom: auto;
+  right: 10px;
+  left: auto;
+  transform: none;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: flex-end;
+  gap: 3px;
+  max-width: 64%;
+  flex-wrap: nowrap;
+  filter: none;
+}
+html[data-stage='phone'][data-leaves='2'] .ribbons .ribbon {
+  width: auto;
+  min-width: 0;
+  height: 22px;
+  min-height: 0;
+  flex: 0 1 auto;
+  max-height: none;
+  padding: 0 7px;
+  clip-path: polygon(0 0, 100% 0, 100% 74%, 50% 100%, 0 74%);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
+}
+html[data-stage='phone'][data-leaves='2'] .ribbons .ribbon:hover {
+  width: auto;
+  height: 25px;
+}
+html[data-stage='phone'][data-leaves='2'] .ribbons .ribbon--active {
+  width: auto;
+  height: 28px;
+}
+html[data-stage='phone'][data-leaves='2'] .ribbons .ribbon__label {
+  writing-mode: horizontal-tb;
+  text-orientation: mixed;
+  font-size: 6.5px;
+  letter-spacing: 0.07em;
+  padding: 0 0 5px;
+}
+
+/* --- the website's own book ---
+   It has no pen and no page count at its foot, so it takes the whole stage.
+   The card marks share the head with the tabs, and the page's head padding
+   already clears both. */
+html[data-stage='phone'][data-leaves='2'] .book__viewport:not(.book__viewport--reading) .desk {
+  padding: 3px 6px;
+}
+html[data-stage='phone'][data-leaves='2'] .book__viewport:not(.book__viewport--reading) .book {
+  height: min(calc(var(--stage-h, 100dvh) * 0.965), 860px);
+}
+html[data-stage='phone'][data-leaves='2'] .cardmark {
+  left: 4px;
+  gap: 3px;
+}
+html[data-stage='phone'][data-leaves='2'] .cardmark__link {
+  padding: 3px 8px 5px;
+  font-size: 7.5px;
+  letter-spacing: 0.06em;
+}
+
+/* --- the furniture off the paper ---
+   All of it is portalled into the stage, so on a turned book it comes round
+   with the pages instead of standing upright beside them. */
+html[data-stage='phone'][data-leaves='2'] .pageturn__count {
+  left: 50%;
+  right: auto;
+  bottom: 7px;
+  transform: translateX(-50%);
+  font-size: 7.5px;
+  letter-spacing: 0.14em;
+  padding: 4px 10px;
+}
+
+html[data-stage='phone'][data-leaves='2'] .pen {
+  left: 6px;
+  bottom: 6px;
+}
+html[data-stage='phone'][data-leaves='2'] .pen__button {
+  width: 32px;
+  height: 32px;
+}
+html[data-stage='phone'][data-leaves='2'] .pen__button .pen__nib {
+  width: 15px;
+  height: 15px;
+}
+html[data-stage='phone'][data-leaves='2'] .pen__toggle {
+  font-size: 8px;
+  padding: 5px 9px;
+}
+html[data-stage='phone'][data-leaves='2'] .pen__list {
+  max-height: calc(var(--stage-h, 100dvh) - 70px);
+}
+
+html[data-stage='phone'][data-leaves='2'] .resume {
+  bottom: 46px;
+  padding: 7px 8px 7px 13px;
+}
+html[data-stage='phone'][data-leaves='2'] .resume__text {
+  font-size: 11px;
+}
+
+html[data-stage='phone'][data-leaves='2'] .penmark .pen__nib {
+  width: 11px;
+  height: 11px;
+}
+
+/* The cover is a book on a desk, and stays upright until it is opened: the
+   stage only comes round once the cover starts to swing. */
+html[data-stage='phone'] .cover__title { font-size: clamp(17px, 4.4vmin, 26px); }
+html[data-stage='phone'] .cover__hint { font-size: 8.5px; }
+
+/* ============================================================
+   The measurer's hidden twin
+
+   `useMeasurer` lays the text out in an off-screen clone to work
+   out where each page ends. The clone is given the real column's
+   width and font inline, from the page itself — but a drop capital
+   comes from the stylesheet, and a letter three lines tall changes
+   how many lines fit. So it gets one too.
+   ============================================================ */
+.ghost p:first-of-type::first-letter {
+  float: left;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 3.2em;
+  line-height: 0.8;
+  padding: 0.05em 0.09em 0 0;
+}
+html[data-stage='phone'][data-leaves='2'] .ghost p:first-of-type::first-letter {
+  font-size: 2.7em;
+}
+
+/* ============================================================
+   The shelf, at phone scale
+
+   A shelf with two books on it is not a shelf. On a page a third
+   the size of a desk's, the books have to be a third the size
+   too — small standing volumes you look along, which is what the
+   shelf is for, rather than two covers filling the paper.
+   ============================================================ */
+html[data-stage='phone'][data-leaves='2'] .shelf {
+  grid-template-columns: repeat(auto-fill, minmax(68px, 1fr));
+  gap: 11px 8px;
+}
+html[data-stage='phone'][data-leaves='2'] .bookcard__cover {
+  padding: 8px 5px 6px 9px;
+  border-radius: 1px 3px 3px 1px;
+  box-shadow: 0 3px 7px rgba(0, 0, 0, 0.32);
+}
+html[data-stage='phone'][data-leaves='2'] .bookcard__spine { width: 5px; }
+html[data-stage='phone'][data-leaves='2'] .bookcard__coverTitle {
+  font-size: 6.5px;
+  line-height: 1.2;
+}
+html[data-stage='phone'][data-leaves='2'] .bookcard__meta { margin-top: 4px; }
+html[data-stage='phone'][data-leaves='2'] .bookcard__title {
+  font-size: 7.5px;
+  line-height: 1.2;
+}
+html[data-stage='phone'][data-leaves='2'] .bookcard__author {
+  font-size: 7px;
+  margin-bottom: 2px;
+}
+html[data-stage='phone'][data-leaves='2'] .bookcard__foot { gap: 3px; }
+html[data-stage='phone'][data-leaves='2'] .bookcard__lang { font-size: 6.5px; }
+html[data-stage='phone'][data-leaves='2'] .badge {
+  padding: 2px 5px;
+  font-size: 6.5px;
+  letter-spacing: 0.08em;
+}
+
+/* The filters beside it come down to the same size, or choosing a language
+   would take more of the page than the books being chosen between. */
+html[data-stage='phone'][data-leaves='2'] .filters { gap: 6px; }
+html[data-stage='phone'][data-leaves='2'] .filters__field > span {
+  font-size: 6.5px;
+  letter-spacing: 0.13em;
+}
+html[data-stage='phone'][data-leaves='2'] .filters input,
+html[data-stage='phone'][data-leaves='2'] .filters select {
+  font-size: 10px;
+  padding: 3px 2px;
+}
+html[data-stage='phone'][data-leaves='2'] .filters__count { font-size: 7px; }
+html[data-stage='phone'][data-leaves='2'] .btn {
+  padding: 5px 11px 6px;
+  font-size: 7.5px;
+}
+
+/* A book's own page: the cover it shows, and the shelf of others under it. */
+html[data-stage='phone'][data-leaves='2'] .detail__cover { width: min(96px, 42%); }
+html[data-stage='phone'][data-leaves='2'] .home__mark { width: 52px; }
+
+/* ============================================================
+   While the book is coming round
+
+   The opening sets a great deal in motion at once: the volume
+   growing out of its cover, the desk lifting under it, the words
+   settling line by line. On a desk that is the whole charm of it.
+   On a phone it lands on top of the turn — and unlike the turn,
+   most of it is laid out or filtered rather than merely moved,
+   so the browser must draw the book again for every frame.
+
+   So for the second the turn takes, the turn has the stage. The
+   cover keeps swinging, because that is the thing you are meant
+   to be watching; everything else waits its moment.
+   ============================================================ */
+:root[data-turning] .book {
+  /* Growing the book out of its cover animates width and height, which is a
+     fresh layout of every line of text on every frame. */
+  transition: none;
+  animation: none;
+}
+:root[data-turning] .desk,
+:root[data-turning] .book__block,
+:root[data-turning] .spread,
+:root[data-turning] .page__body > *,
+:root[data-turning] .prose__scroll > * {
+  animation: none;
 }

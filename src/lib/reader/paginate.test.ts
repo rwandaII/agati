@@ -55,6 +55,35 @@ describe('splitLongParagraph', () => {
     for (const part of parts) expect(part).not.toMatch(/^\s|\s$/);
   });
 
+  it('fills each piece as full as it will go', () => {
+    // The property the search has to preserve: every piece but the last is the
+    // most words that fit, so adding the next word over would have overflowed.
+    const words = Array.from({ length: 300 }, (_, i) => `word${i}`);
+    const parts = splitLongParagraph(words.join(' '), 200, measure);
+
+    for (let i = 0; i < parts.length - 1; i++) {
+      const firstOfNext = parts[i + 1].split(' ')[0];
+      expect(measure(parts[i])).toBeLessThanOrEqual(200);
+      expect(measure(`${parts[i]} ${firstOfNext}`)).toBeGreaterThan(200);
+    }
+  });
+
+  it('does not ask the browser to lay the paragraph out once per word', () => {
+    // Measuring is a forced layout of the growing text, so one call per word is
+    // a second of frozen page for a long chapter. The break points can be found
+    // by searching for them instead of walking to them.
+    const words = Array.from({ length: 2000 }, (_, i) => `word${i}`);
+    let calls = 0;
+    const counted = (text: string) => {
+      calls++;
+      return measure(text);
+    };
+
+    splitLongParagraph(words.join(' '), 200, counted);
+
+    expect(calls).toBeLessThan(words.length / 4);
+  });
+
   it('never splits inside a word', () => {
     const parts = splitLongParagraph('alpha beta gamma delta epsilon', 20, measure);
     for (const part of parts) {

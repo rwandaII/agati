@@ -2,6 +2,7 @@
 
 import { useEffect, useState, type CSSProperties } from 'react';
 import { turnDuration } from '@/components/book/constants';
+import { fillTheScreen } from '@/components/book/screen';
 
 /**
  * Every book gets its own closed cover before you read it.
@@ -42,6 +43,10 @@ export function BookCover({
 
   const open = () => {
     if (opening) return;
+    // A book wants to be lying down. Asked for here because this is the tap:
+    // full screen and the orientation lock are granted to a gesture or not at
+    // all, and a phone that will not turn has the book turned for it instead.
+    void fillTheScreen();
     setOpening(true);
     setTimeout(onOpen, turnDuration() + 220);
   };

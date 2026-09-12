@@ -1,6 +1,7 @@
 'use client';
 
 import { weigh } from '@/lib/reading/anchor';
+import { downFrom } from '@/components/book/geometry';
 
 /**
  * Turning a place on the screen into a place in the book, and back again.
@@ -96,8 +97,17 @@ export function wordsAt(body: Element, x: number, y: number): string {
  *
  * Returns the distance from the top of `page`, or null when the text runs out
  * before that point — which happens while the page is still being laid out.
+ *
+ * The browser answers in screen coordinates, and on a turned book those are
+ * not the page's: `turned` says so, and the distance is taken along the page's
+ * own downward instead.
  */
-export function topOfChar(page: Element, body: Element, chars: number): number | null {
+export function topOfChar(
+  page: Element,
+  body: Element,
+  chars: number,
+  turned = false,
+): number | null {
   if (chars <= 0) return 0;
 
   const walker = document.createTreeWalker(body, NodeFilter.SHOW_TEXT);
@@ -123,9 +133,9 @@ export function topOfChar(page: Element, body: Element, chars: number): number |
     range.setEnd(node, Math.min(offset + 1, text.length));
 
     const rect = range.getBoundingClientRect();
-    if (!rect.height && !rect.top) return null;
+    if (!rect.width && !rect.height) return null;
 
-    return rect.top - page.getBoundingClientRect().top;
+    return downFrom(page.getBoundingClientRect(), rect, turned);
   }
 
   return null;

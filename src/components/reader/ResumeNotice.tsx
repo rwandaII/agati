@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { stageEl } from '@/components/book/screen';
 
 /** How long the notice stays before it gets out of the way. */
 const SHOWN_FOR = 9000;
@@ -67,6 +68,6 @@ export function ResumeNotice({
         ✕
       </button>
     </div>,
-    document.body,
+    stageEl(),
   );
 }

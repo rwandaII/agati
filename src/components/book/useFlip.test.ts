@@ -28,8 +28,8 @@ describe('useFlip', () => {
     vi.useRealTimers();
   });
 
-  const setup = (onNext = vi.fn(), onPrev = vi.fn(), enabled = true) => {
-    const hook = renderHook(() => useFlip({ onNext, onPrev, enabled }));
+  const setup = (onNext = vi.fn(), onPrev = vi.fn(), enabled = true, turned = false) => {
+    const hook = renderHook(() => useFlip({ onNext, onPrev, enabled, turned }));
     act(() => {
       hook.result.current.bind(el);
     });
@@ -129,6 +129,34 @@ describe('useFlip', () => {
     const { onNext, onPrev } = setup();
     act(() => {
       touch(el, [200, 400], [205, 120]);
+    });
+    expect(onNext).not.toHaveBeenCalled();
+    expect(onPrev).not.toHaveBeenCalled();
+  });
+
+  // On a phone the book is drawn a quarter-turn clockwise, so the reader's
+  // finger travels up and down the glass to go through the book. The gesture
+  // is the same one — sideways across the page — seen in the page's own axes.
+  it('turns forward on a swipe up a turned phone', () => {
+    const { onNext } = setup(vi.fn(), vi.fn(), true, true);
+    act(() => {
+      touch(el, [200, 400], [205, 280]);
+    });
+    expect(onNext).toHaveBeenCalledTimes(1);
+  });
+
+  it('turns back on a swipe down a turned phone', () => {
+    const { onPrev } = setup(vi.fn(), vi.fn(), true, true);
+    act(() => {
+      touch(el, [200, 200], [205, 340]);
+    });
+    expect(onPrev).toHaveBeenCalledTimes(1);
+  });
+
+  it('ignores a swipe across a turned phone, which is that page scrolling', () => {
+    const { onNext, onPrev } = setup(vi.fn(), vi.fn(), true, true);
+    act(() => {
+      touch(el, [400, 200], [120, 205]);
     });
     expect(onNext).not.toHaveBeenCalled();
     expect(onPrev).not.toHaveBeenCalled();

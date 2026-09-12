@@ -10,7 +10,7 @@ import { useMeasurer } from './useMeasurer';
 import { Paywall } from './Paywall';
 import { ComicPage } from './ComicPage';
 import { PagePosition } from './PagePosition';
-import { useLeavesShown } from './useLeavesShown';
+import { useStageValue } from '@/components/book/Stage';
 import { displayLines } from './lines';
 import { Bookmarks, type Mark } from './Bookmarks';
 import { PenMark } from './PenMark';
@@ -107,8 +107,8 @@ export function Reader({
   const leftPageRef = useRef<HTMLElement | null>(null);
   const { measure, ready, box } = useMeasurer(rightPageRef);
 
-  /** One page on a phone, two on anything wider. */
-  const leaves = useLeavesShown();
+  /** The box the book is played on: how many pages are open, and which way up. */
+  const { leaves, turned } = useStageValue();
 
   const isComic = book.format === 'COMIC';
 
@@ -352,6 +352,7 @@ export function Reader({
     onNext: () => go(1),
     onPrev: () => go(-1),
     enabled: !turn,
+    turned,
   });
 
   /**
@@ -476,6 +477,7 @@ export function Reader({
                   pageRef={ref}
                   charsIn={isComic ? 0 : m.anchor - anchorOfPage(display, index)}
                   label={m.label}
+                  turned={turned}
                   deps={display}
                 />
               ))}

@@ -8,6 +8,10 @@ import { HomeTab } from '@/components/reader/HomeTab';
  * itself is. Only the way home comes along: inside a book, a full row of
  * section tabs and card marks sits across the head of the page competing with
  * the words, and a reader who wants the website can get there in one tap.
+ *
+ * The turning stage this sits on belongs to the whole application, not to this
+ * route — see `components/book/Stage`. Closing a book should not un-rotate the
+ * phone on the way back to the shelf.
  */
 export default function ReadLayout({ children }: { children: ReactNode }) {
   return (

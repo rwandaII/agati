@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Cover } from './Cover';
 
 /**
@@ -14,12 +14,16 @@ import { Cover } from './Cover';
 let openedThisVisit = false;
 
 export function CoverGate() {
-  // Assume open during SSR so the cover never flashes into a rendered page.
-  const [open, setOpen] = useState(true);
-
-  useEffect(() => {
-    setOpen(openedThisVisit);
-  }, []);
+  // Closed from the very first paint. The page behind it is still rendered and
+  // still in the HTML — the cover is laid over it, not instead of it — so this
+  // costs nothing in search results, and a reload shows you a closed book
+  // rather than the inside of one for a moment before the cover arrives.
+  //
+  // Read straight out of the flag rather than corrected by an effect. On the
+  // server the flag is always false, which is right for a page being loaded;
+  // moving about inside the book is a client render with no server rendering
+  // to disagree with, so the two can never be out of step.
+  const [open, setOpen] = useState(() => openedThisVisit);
 
   if (open) return null;
 

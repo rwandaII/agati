@@ -2,11 +2,14 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { turnDuration } from './constants';
+import { inFrame } from './geometry';
 
 type Options = {
   onNext: () => void;
   onPrev: () => void;
   enabled?: boolean;
+  /** The book is drawn a quarter-turn clockwise, as it is on a phone. */
+  turned?: boolean;
 };
 
 /**
@@ -15,16 +18,20 @@ type Options = {
  * The wheel is deliberately NOT bound. Scrolling belongs to the page content —
  * a long programme list or a shelf of books has to scroll normally — so turning
  * is an explicit action: the arrows, the arrow keys, or a sideways swipe.
+ *
+ * Sideways means sideways across the page, not across the glass. When the book
+ * is drawn turned the two part company, and it is the page that decides: the
+ * reader is swiping through a book, not over a screen.
  */
-export function useFlip({ onNext, onPrev, enabled = true }: Options) {
+export function useFlip({ onNext, onPrev, enabled = true, turned = false }: Options) {
   const [el, setEl] = useState<HTMLElement | null>(null);
 
   const locked = useRef(false);
   const touch = useRef<{ x: number; y: number } | null>(null);
 
   // Keep the latest callbacks without re-binding listeners on every render.
-  const cb = useRef({ onNext, onPrev, enabled });
-  cb.current = { onNext, onPrev, enabled };
+  const cb = useRef({ onNext, onPrev, enabled, turned });
+  cb.current = { onNext, onPrev, enabled, turned };
 
   const fire = useCallback((dir: 1 | -1) => {
     if (!cb.current.enabled || locked.current) return;
@@ -63,8 +70,11 @@ export function useFlip({ onNext, onPrev, enabled = true }: Options) {
 
     const onTouchEnd = (e: TouchEvent) => {
       if (!touch.current) return;
-      const dx = e.changedTouches[0].clientX - touch.current.x;
-      const dy = e.changedTouches[0].clientY - touch.current.y;
+      const { dx, dy } = inFrame(
+        e.changedTouches[0].clientX - touch.current.x,
+        e.changedTouches[0].clientY - touch.current.y,
+        cb.current.turned,
+      );
       touch.current = null;
 
       // Sideways only. A vertical swipe is a scroll, and belongs to the page.

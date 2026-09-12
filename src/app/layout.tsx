@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Montserrat, Lora } from 'next/font/google';
 import './globals.css';
 import { SITE } from '@/config/brand';
+import { Stage } from '@/components/book/Stage';
 
 const montserrat = Montserrat({
   subsets: ['latin'],
@@ -38,7 +39,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <a className="skip-link" href="#page-content">
           Skip to the page
         </a>
-        {children}
+        <Stage>{children}</Stage>
       </body>
     </html>
   );

@@ -47,12 +47,15 @@ export function PenMark({
   pageRef,
   charsIn,
   label,
+  turned = false,
   deps,
 }: {
   pageRef: RefObject<HTMLElement | null>;
   /** How much of this page's text lies above the mark. */
   charsIn: number;
   label: string;
+  /** Whether the book is drawn turned, which moves where "down the page" is. */
+  turned?: boolean;
   /** Anything that changes where the text sits, so the mark can follow it. */
   deps: unknown;
 }) {
@@ -65,7 +68,7 @@ export function PenMark({
 
     // Measured after the browser has laid the page out, and again if the text
     // moves under it — a re-flow, a font arriving, the window resized.
-    const place = () => setTop(topOfChar(page, body, charsIn));
+    const place = () => setTop(topOfChar(page, body, charsIn, turned));
     place();
 
     const frame = requestAnimationFrame(place);
@@ -76,7 +79,7 @@ export function PenMark({
       cancelAnimationFrame(frame);
       observer.disconnect();
     };
-  }, [pageRef, charsIn, deps]);
+  }, [pageRef, charsIn, turned, deps]);
 
   return (
     <span

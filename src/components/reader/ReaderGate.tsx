@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, type ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 import { BookCover } from './BookCover';
 
 /**
@@ -31,12 +31,10 @@ export function ReaderGate({
   badge?: string;
   children: ReactNode;
 }) {
-  // Assume open during SSR so the pages are in the HTML for search engines.
-  const [isOpen, setIsOpen] = useState(true);
-
-  useEffect(() => {
-    setIsOpen(opened.has(slug));
-  }, [slug]);
+  // Closed from the very first paint, so reloading a book shows you the book
+  // and not a glimpse of its pages first. The pages are still rendered and
+  // still in the HTML for search engines — the cover lies over them.
+  const [isOpen, setIsOpen] = useState(() => opened.has(slug));
 
   return (
     <>
