@@ -3,9 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "dev": "next dev",
-    "build": "npm run clean && next build",
+    "build": "npm run clean && prisma generate && next build",
     "start": "next start",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -15,7 +18,9 @@
     "fetch:books": "tsx scripts/fetch-books.ts",
     "clean": "node -e \"require('fs').rmSync('.next',{recursive:true,force:true})\"",
     "fetch:comics": "tsx scripts/fetch-comics.ts",
-    "shrink:comics": "powershell -ExecutionPolicy Bypass -File scripts/shrink-comics.ps1"
+    "shrink:comics": "powershell -ExecutionPolicy Bypass -File scripts/shrink-comics.ps1",
+    "postinstall": "prisma generate",
+    "db:setup": "prisma db push && tsx prisma/seed.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

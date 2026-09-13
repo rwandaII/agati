@@ -12,12 +12,15 @@ book whose pages branch into a tree (*agati* means "tree" in Kinyarwanda).
 
 ## Getting started
 
-You need **Node 24+**. Nothing else — no database server, no Docker.
+You need **Node 24+** and a **Postgres** database. A free one from [Neon](https://neon.tech)
+or [Vercel Postgres](https://vercel.com/storage/postgres) takes a minute to create and is the same
+kind of database the deployed site uses; a local `postgres` works just as well. Put its connection
+string in `DATABASE_URL`.
 
 ```bash
 npm install
 cp .env.example .env          # then put a real SESSION_SECRET in it
-npm run db:push               # creates dev.db
+npm run db:push               # creates the tables
 npm run fetch:books           # downloads the public-domain books (a few minutes)
 npm run db:seed               # loads books, news and the admin account
 npm run dev                   # http://localhost:3000

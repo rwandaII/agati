@@ -38,11 +38,11 @@ export async function search(raw: string): Promise<SearchResult> {
     prisma.book.findMany({
       where: {
         OR: [
-          { title: { contains: q } },
-          { author: { contains: q } },
-          { summary: { contains: q } },
-          { description: { contains: q } },
-          { category: { contains: q } },
+          { title: { contains: q, mode: 'insensitive' } },
+          { author: { contains: q, mode: 'insensitive' } },
+          { summary: { contains: q, mode: 'insensitive' } },
+          { description: { contains: q, mode: 'insensitive' } },
+          { category: { contains: q, mode: 'insensitive' } },
         ],
       },
       select: { slug: true, title: true, summary: true, accessType: true, priceRwf: true },
@@ -52,10 +52,10 @@ export async function search(raw: string): Promise<SearchResult> {
     prisma.newsPost.findMany({
       where: {
         OR: [
-          { title: { contains: q } },
-          { excerpt: { contains: q } },
-          { body: { contains: q } },
-          { category: { contains: q } },
+          { title: { contains: q, mode: 'insensitive' } },
+          { excerpt: { contains: q, mode: 'insensitive' } },
+          { body: { contains: q, mode: 'insensitive' } },
+          { category: { contains: q, mode: 'insensitive' } },
         ],
       },
       select: { slug: true, title: true, excerpt: true },

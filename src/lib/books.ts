@@ -33,15 +33,15 @@ export async function listBooks(f: BookFilter): Promise<BookSummary[]> {
   if (f.access === 'free') where.accessType = 'FREE_FOREVER';
   if (f.access === 'paid') where.accessType = { in: ['PAID', 'FREE_TRIAL'] };
 
-  // SQLite's LIKE is already case-insensitive for ASCII, and Prisma rejects
-  // `mode: 'insensitive'` on this connector.
+  // Postgres matches case-sensitively, so a reader typing "alice" would miss
+  // "Alice". `mode: 'insensitive'` asks for ILIKE instead.
   if (f.q?.trim()) {
     const q = f.q.trim();
     where.OR = [
-      { title: { contains: q } },
-      { author: { contains: q } },
-      { summary: { contains: q } },
-      { category: { contains: q } },
+      { title: { contains: q, mode: 'insensitive' } },
+      { author: { contains: q, mode: 'insensitive' } },
+      { summary: { contains: q, mode: 'insensitive' } },
+      { category: { contains: q, mode: 'insensitive' } },
     ];
   }
 
