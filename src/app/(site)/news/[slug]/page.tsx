@@ -5,8 +5,18 @@ import { Spread } from '@/components/book/Spread';
 import { PageTitle, Lead, Scroller } from '@/components/ui/Prose';
 import { getNews, listNews, formatNewsDate } from '@/lib/news';
 
+/**
+ * Which posts to build ahead of time. This runs during the deploy, before the
+ * site is serving anything, so it is the one place where an unreachable
+ * database would take the whole build down with it. Posts left out here are
+ * still rendered on demand, so an empty list costs a little speed, not a page.
+ */
 export async function generateStaticParams() {
-  return (await listNews()).map((p) => ({ slug: p.slug }));
+  try {
+    return (await listNews()).map((p) => ({ slug: p.slug }));
+  } catch {
+    return [];
+  }
 }
 
 export async function generateMetadata({
