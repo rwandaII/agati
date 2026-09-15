@@ -1,0 +1,35 @@
+# The local database.
+#
+# Production runs Postgres, so development runs Postgres — the differences
+# between it and SQLite are the kind that only show up once real readers are
+# using the site (see the case-sensitivity note in docs/DEPLOY.md). Nothing
+# here is a secret: it listens on localhost and holds seed data.
+#
+#   docker compose up -d     start it
+#   docker compose down      stop it, keep the data
+#   docker compose down -v   stop it and throw the data away
+services:
+  db:
+    image: postgres:17-alpine
+    container_name: agati-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: agati
+      POSTGRES_PASSWORD: agati
+      POSTGRES_DB: agati
+    # 5434 on the host, not 5432: other projects on this machine already hold
+    # 5432 and 5433. Inside the container it is still the standard 5432.
+    ports:
+      - '5434:5432'
+    volumes:
+      - agati-pgdata:/var/lib/postgresql/data
+    # Compose waits for this before reporting the database as up, so
+    # `npm run db:setup` straight afterwards does not race the first boot.
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U agati -d agati']
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+volumes:
+  agati-pgdata:

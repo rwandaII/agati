@@ -12,19 +12,24 @@ book whose pages branch into a tree (*agati* means "tree" in Kinyarwanda).
 
 ## Getting started
 
-You need **Node 24+** and a **Postgres** database. A free one from [Neon](https://neon.tech)
-or [Vercel Postgres](https://vercel.com/storage/postgres) takes a minute to create and is the same
-kind of database the deployed site uses; a local `postgres` works just as well. Put its connection
-string in `DATABASE_URL`.
+You need **Node 22+** and **Docker** — the site runs on Postgres, in development as in
+production, and `docker-compose.yml` is a Postgres that starts in one command. (Any other Postgres
+works too: a hosted one from [Neon](https://neon.tech), or one already installed. Put its
+connection string in `DATABASE_URL` and skip the `docker compose` line.)
 
 ```bash
 npm install
 cp .env.example .env          # then put a real SESSION_SECRET in it
+docker compose up -d          # Postgres on localhost:5434
 npm run db:push               # creates the tables
 npm run fetch:books           # downloads the public-domain books (a few minutes)
 npm run db:seed               # loads books, news and the admin account
 npm run dev                   # http://localhost:3000
 ```
+
+The database listens on **5434**, not the usual 5432, so it does not collide with another Postgres
+already running on the machine. `docker compose down` stops it and keeps the books; add `-v` to
+throw them away and start over.
 
 Generate a real session secret with:
 
