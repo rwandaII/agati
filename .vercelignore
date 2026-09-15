@@ -1,16 +1,9 @@
-# Seed material, not runtime material.
-#
-# The book text and the comic manifests are read once, by `prisma/seed.ts`, on
-# the machine that fills the database. The running site reads books out of
-# Postgres and never opens these files, so uploading 12MB of them to every
-# deploy buys nothing. The .ts files beside them stay: seed.ts imports their
-# types, and the build typechecks it.
+# ~12MB of seed text. Only prisma/seed.ts reads it, and that runs on my machine,
+# not on the server. Keeping the .ts files next to them because seed.ts imports
+# their types and the build typechecks.
 src/content/books/
 src/content/comics/
 
-# Written for people, not for the server.
 docs/
 
-# Local scratch.
-.playwright-mcp/
 prisma/dev.db*

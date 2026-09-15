@@ -1,45 +1,31 @@
 # Turning on real payments
 
-Right now the app runs in **mock mode**. Everything about buying a book works — the phone number, the
-"approve on your phone" screen, the wait, the success seal, the book unlocking — but **no real money
-moves**. When the app starts in mock mode it says so in the terminal:
+The app runs in mock mode by default. Buying a book works all the way through (phone number,
+approve-on-your-phone screen, waiting, success, book unlocks) but no money moves. You'll see this in
+the terminal on startup:
 
 ```
 [payments] No Flutterwave credentials found - running in MOCK mode.
 ```
 
-This is on purpose. It means you can show the whole product to Agati, to funders, or to anyone else
-before a merchant account exists. Switching to real money is configuration only; no code changes.
-
----
+That's intentional, so the whole thing can be demoed to Agati or to funders before a merchant
+account exists. Going live is config only, no code changes.
 
 ## What you need
 
-A **Flutterwave** account. Flutterwave handles MTN and Airtel Mobile Money in Rwanda, in Rwandan
-francs. Only you can open this account — it needs your organisation's legal and banking details, so
-it is not something that can be set up on your behalf.
+A Flutterwave account. They handle MTN and Airtel Mobile Money in Rwanda, in RWF. This part has to
+be done by Agati, not by a developer, since it needs the organisation's legal and banking details.
 
----
+## 1. Create the account
 
-## Step 1 — Create the account
+Sign up at [flutterwave.com](https://flutterwave.com) and complete business verification for
+Rwanda. They'll ask for registration documents and a bank account. Takes a few days.
 
-1. Go to [flutterwave.com](https://flutterwave.com) and create an account for Agati Library.
-2. Complete business verification for **Rwanda**. Expect to supply registration documents and a bank
-   account. This takes a few days.
+You can use the sandbox while you wait. It behaves the same with fake money. Do that first.
 
-Until verification finishes you can still use the **sandbox**, which behaves exactly like the real
-thing with fake money. Do that first.
+## 2. Keys
 
----
-
-## Step 2 — Copy your keys
-
-In the Flutterwave dashboard, go to **Settings → API Keys**. You need two values:
-
-- **Client ID**
-- **Client Secret**
-
-Put them in your `.env` file:
+Dashboard > Settings > API Keys. You need the Client ID and the Client Secret.
 
 ```
 FLW_ENV="sandbox"
@@ -47,98 +33,82 @@ FLW_CLIENT_ID="paste-your-client-id"
 FLW_CLIENT_SECRET="paste-your-client-secret"
 ```
 
-> **Never commit `.env` to git, and never paste these keys into an email or a chat message.** Anyone
-> holding them can take money through your account. `.env` is already in `.gitignore`.
+Don't commit `.env` and don't send these keys over email or WhatsApp. Anyone with them can take
+money through the account. `.env` is already gitignored.
 
----
+## 3. Webhook
 
-## Step 3 — Set up the webhook
+The webhook is how Flutterwave tells the site a payment went through, even if the reader closed
+their browser halfway.
 
-The webhook is how Flutterwave tells the site that a payment succeeded, even if the reader closed
-their browser.
+Dashboard > Settings > Webhooks. URL:
 
-1. In the dashboard, go to **Settings → Webhooks**.
-2. Set the URL to:
+```
+https://your-domain.example/api/webhooks/flutterwave
+```
 
-   ```
-   https://your-domain.example/api/webhooks/flutterwave
-   ```
+Has to be public HTTPS. localhost won't work, so use ngrok or cloudflared while developing.
 
-   It must be a public HTTPS address. `localhost` will not work — while developing, use a tunnel such
-   as `ngrok` or `cloudflared` to expose your machine.
+Then make up a long random secret hash:
 
-3. Invent a long random **Secret Hash**. Generate one with:
+```bash
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+```
 
-   ```bash
-   node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
-   ```
+and put the same value in the dashboard field and in `.env`:
 
-4. Paste that same value into **both** the dashboard field and your `.env`:
+```
+FLW_SECRET_HASH="the-same-long-random-value"
+```
 
-   ```
-   FLW_SECRET_HASH="the-same-long-random-value"
-   ```
+These have to match exactly. The site rejects any webhook whose signature doesn't verify, which is
+what stops someone POSTing a fake "payment succeeded".
 
-   They must match exactly. The site refuses any webhook whose signature does not verify against this
-   secret, which is what stops somebody forging a "payment succeeded" message.
+## 4. Test in sandbox
 
----
+Restart. The mock mode warning should be gone.
 
-## Step 4 — Test in the sandbox
+Buy a book with Flutterwave's sandbox test numbers (dashboard, Developers > Test credentials) and
+check that:
 
-Restart the app. The mock-mode warning should be gone.
-
-Buy a book using Flutterwave's sandbox test numbers (in the dashboard under **Developers → Test
-credentials**). Check that:
-
-- the waiting screen appears
+- the waiting screen shows up
 - the payment completes
-- the book unlocks and appears on `/account`
-- the purchase shows as **Paid**
+- the book unlocks and shows on `/account`
+- the purchase reads as Paid
 
-Then deliberately break something: try a payment and cancel it. The purchase should show as failed
-and the book should stay locked.
+Then cancel a payment on purpose. It should end up failed and the book should stay locked.
 
----
+## 5. Go live
 
-## Step 5 — Go live
-
-Only after a sandbox purchase has completed end to end:
+Only once a sandbox purchase has worked end to end:
 
 ```
 FLW_ENV="production"
 ```
 
-and replace the Client ID and Secret with the **live** ones from the dashboard. Point the production
-webhook at your live domain and use a fresh Secret Hash for it.
+Swap in the live Client ID and Secret, point the production webhook at the live domain, and use a
+new secret hash for it.
 
-Do one real purchase yourself, for the cheapest book, and confirm the money arrives in the Agati
-account before telling anyone the site is open.
+Do one real purchase yourself, cheapest book, and confirm the money lands in the Agati account
+before telling anyone the site is open.
 
----
+## How the money side is protected
 
-## How the money is protected
+- Prices are read from the database, never from the request body. Editing the page in devtools to
+  say a book costs 1 RWF does nothing.
+- A "payment succeeded" webhook is not trusted by itself. We verify the signature, then call
+  Flutterwave back to ask what the charge actually was, and compare amount, currency and reference
+  against our own record before unlocking anything.
+- Fulfilment is idempotent, so a repeated notification doesn't double-charge or double-grant.
+- If the webhook never arrives, the checkout page polls the server directly, so the reader still
+  gets the book.
 
-Worth knowing, in plain terms:
+## Troubleshooting
 
-- **Prices come from the database, never from the browser.** Somebody editing the page in their
-  browser to say a book costs 1 RWF changes nothing — the server looks the price up itself.
-- **A "payment succeeded" message is never believed on its own.** When Flutterwave notifies us, the
-  site checks the signature, then goes back to Flutterwave and asks what that charge actually was,
-  and compares the amount, the currency and the reference against its own record. Only then is a book
-  unlocked.
-- **Paying twice is impossible.** Fulfilment is idempotent: a repeated notification does nothing.
-- **A lost notification is not a lost purchase.** The checkout page also asks the server directly, so
-  if the webhook never arrives the reader still gets their book.
-
----
-
-## If something goes wrong
-
-| What you see | What it usually means |
+| Symptom | Usually means |
 |---|---|
-| Mock-mode warning still in the terminal | `FLW_CLIENT_ID` or `FLW_CLIENT_SECRET` is empty or misspelled in `.env` |
-| "Flutterwave auth failed" | Wrong keys, or live keys used while `FLW_ENV="sandbox"` |
-| Webhooks rejected | `FLW_SECRET_HASH` does not match the dashboard exactly |
-| Payment stuck on "waiting" | The customer never approved on their phone; nothing was charged |
-| "not a valid Rwandan mobile number" | Only 078/079 (MTN) and 072/073 (Airtel) numbers are accepted |
+| still seeing the mock mode warning | `FLW_CLIENT_ID` or `FLW_CLIENT_SECRET` empty or misspelled in `.env` |
+| "Flutterwave auth failed" | wrong keys, or live keys with `FLW_ENV="sandbox"` |
+| webhooks rejected | `FLW_SECRET_HASH` doesn't match the dashboard |
+| payment stuck on waiting | customer never approved on their phone, nothing was charged |
+| "not a valid Rwandan mobile number" | only 078/079 (MTN) and 072/073 (Airtel) are accepted |

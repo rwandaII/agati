@@ -2,15 +2,10 @@ node_modules/
 .next/
 *.db
 *.db-journal
+*.db-shm
+*.db-wal
 .env
 .env.local
 next-env.d.ts
 tsconfig.tsbuildinfo
-*.db-shm
-*.db-wal
-
-# Vercel
 .vercel
-
-# Browser-automation scratch output
-.playwright-mcp/

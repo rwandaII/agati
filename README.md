@@ -1,144 +1,133 @@
 # Agati Library
 
-A digital reading platform for [Agati Library](https://www.agatilibrary.org/), the Rwandan NGO that
-has grown from one Musanze room with 200 books in April 2018 to eight library spaces across Musanze,
-Rubavu, Kicukiro, Nyamasheke and Karongi.
+Online reading platform for [Agati Library](https://www.agatilibrary.org/), a Rwandan NGO that
+started with one room and 200 books in Musanze (April 2018) and now runs eight library spaces in
+Musanze, Rubavu, Kicukiro, Nyamasheke and Karongi.
 
-The whole site is presented as a physical book: a hardcover that opens, paper spreads that turn when
-you scroll, and books you read a page at a time. That is not decoration — Agati's own logo is an open
-book whose pages branch into a tree (*agati* means "tree" in Kinyarwanda).
+The site is laid out like a physical book. The cover opens, spreads turn when you scroll, and books
+are read a page at a time. The idea came from their logo, which is an open book whose pages branch
+into a tree (*agati* is Kinyarwanda for "tree").
 
----
+Next.js 15 (App Router) + React 19 + TypeScript + Tailwind v4 + Prisma/Postgres.
 
-## Getting started
+## Running it locally
 
-You need **Node 22+** and **Docker** — the site runs on Postgres, in development as in
-production, and `docker-compose.yml` is a Postgres that starts in one command. (Any other Postgres
-works too: a hosted one from [Neon](https://neon.tech), or one already installed. Put its
-connection string in `DATABASE_URL` and skip the `docker compose` line.)
+Needs Node 22+ and Docker.
 
 ```bash
 npm install
-cp .env.example .env          # then put a real SESSION_SECRET in it
-docker compose up -d          # Postgres on localhost:5434
-npm run db:push               # creates the tables
-npm run fetch:books           # downloads the public-domain books (a few minutes)
-npm run db:seed               # loads books, news and the admin account
-npm run dev                   # http://localhost:3000
+cp .env.example .env          # put a real SESSION_SECRET in it
+docker compose up -d          # postgres on localhost:5434
+npm run db:push
+npm run fetch:books           # downloads the public domain texts, takes a few minutes
+npm run db:seed
+npm run dev
 ```
 
-The database listens on **5434**, not the usual 5432, so it does not collide with another Postgres
-already running on the machine. `docker compose down` stops it and keeps the books; add `-v` to
-throw them away and start over.
+Port 5434 instead of 5432 because 5432 was already taken on my machine by another project. If you
+already have Postgres somewhere (or a free Neon database), just point `DATABASE_URL` at it and skip
+the compose step.
 
-Generate a real session secret with:
+`docker compose down` stops it, `-v` also wipes the data.
+
+For the session secret:
 
 ```bash
 node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 ```
 
-**The seeded admin is `admin@agatilibrary.org` / `changeme123`. Change that password before this
-goes anywhere near the internet.**
+The seed creates an admin: `admin@agatilibrary.org` / `changeme123`. Change it before deploying
+anywhere public.
 
----
+## Payments
 
-## Money
+Runs in mock mode unless Flutterwave keys are present in `.env`. The whole flow still works (phone
+number, approve-on-your-phone screen, pending, success, book unlocks), it just doesn't move money.
+`docs/PAYMENTS.md` has the setup steps.
 
-**Payments run in mock mode until you add Flutterwave keys.** The whole flow works — phone number,
-"approve on your phone", pending, success, book unlocks — but no real money moves. See
-[`docs/PAYMENTS.md`](docs/PAYMENTS.md) to switch it on.
-
-Prices live in one file, `src/config/pricing.ts`:
+Prices are in `src/config/pricing.ts`:
 
 | | USD | RWF |
 |---|---|---|
-| A year | $10 | 13,000 |
-| A month | $1 | 1,300 |
+| Year | $10 | 13,000 |
+| Month | $1 | 1,300 |
 
-`USD_TO_RWF` is a single constant there — update it when the rate moves. RWF is the currency actually
-charged, and it is a zero-decimal currency, so every amount in the codebase is a whole number.
+`USD_TO_RWF` is a constant in that file, bump it when the rate moves. Everything is charged in RWF.
+RWF has no decimals so all amounts are integers, don't introduce floats here.
 
-Individual books are priced in RWF on the book record.
+Individual books get their price from the book row in the database.
 
----
+## Access rules
 
-## How access works
+All of it goes through `resolveAccess` in `src/lib/access/resolve.ts`. It's a pure function, first
+match wins:
 
-Everything resolves through one pure function, `resolveAccess` in `src/lib/access/resolve.ts`.
-First match wins:
+1. Admin: everything
+2. Active subscription: everything
+3. Bought the book: that book
+4. `FREE_FOREVER`: anyone, no account needed
+5. Inside the 7 day window: allowed, and we show the days left
+6. Window expired: preview + paywall
+7. Anything else: preview
 
-1. **Admin** — reads anything
-2. **Active subscription** — reads everything
-3. **Bought this book** — reads this book
-4. **Free forever** — anyone reads it, no account needed
-5. **Inside the 7-day window** — reads it, and sees how long is left
-6. **Window expired** — preview only, with a paywall
-7. **Otherwise** — preview only
+The 7 days start when a signed-in reader opens the book for the first time, not from the publish
+date, so someone finding a book late still gets a full week.
 
-The seven-day clock starts when a signed-in reader *first opens that book*, not when it was
-published. Someone who finds a book six months from now still gets their full week.
-
-Page text beyond the preview never reaches the browser without passing this check. The ceiling is
-applied inside the database query, so unearned text is not even loaded into memory. Hiding things
-with CSS is not access control.
-
----
+The page limit is applied in the Prisma query, not in the component, so text the reader hasn't paid
+for is never loaded or serialised. Don't "hide" pages with CSS.
 
 ## Adding books
 
-**A few at a time:** sign in as the admin and POST to `/api/admin/books` with the book's details and
-its full text in a `text` field. It is paginated automatically.
+One or two at a time: sign in as admin and POST to `/api/admin/books` with the metadata and the full
+text in `text`. It gets paginated server side.
 
-**In bulk:** add an entry to `WANTED` in `scripts/fetch-books.ts`, then:
+In bulk: add an entry to `WANTED` in `scripts/fetch-books.ts`, then
 
 ```bash
 npm run fetch:books && npm run db:seed
 ```
 
-The fetcher resolves titles through the Gutendex API rather than hard-coded Gutenberg IDs, scores
-candidates on how much of the title they actually match (so "The Wind in the Willows" cannot quietly
-become a different book), strips the licence boilerplate, and writes committed JSON. Production never
-calls an external service.
+The fetcher goes through the Gutendex API instead of hardcoded Gutenberg ids, and scores candidates
+on title overlap so "The Wind in the Willows" can't silently come back as something else. It strips
+the licence boilerplate and writes JSON that gets committed. Nothing calls Gutendex at runtime.
 
-**Changing how a title earns:** PATCH it with a new `accessType` and `priceRwf`. The three types are
-`FREE_FOREVER`, `FREE_TRIAL` and `PAID`.
+To change how a title earns, PATCH it with a new `accessType` / `priceRwf`. Types are
+`FREE_FOREVER`, `FREE_TRIAL`, `PAID`.
 
-Public-domain titles are seeded `FREE_FOREVER`. They may lawfully be sold, but an NGO charging for
-Aesop reads badly — the paid titles are Agati's own original works.
+Public domain titles are seeded as `FREE_FOREVER`. Legally they could be sold, but an NGO charging
+for Aesop looks bad. The paid titles are Agati's own work.
 
----
+## Layout
 
-## Where things live
-
-| Path | What |
+| Path | What's in it |
 |---|---|
-| `src/config/brand.ts`, `src/app/theme.css` | Colours, fonts, contact details — change the brand here and nowhere else |
-| `src/config/pricing.ts` | Prices and the exchange rate |
-| `src/config/site.ts` | The book's page order |
-| `src/components/book/` | The cover, the spread, the turning leaf, the flip engine |
-| `src/components/reader/` | The reader, its paginator and the paywall |
-| `src/lib/access/` | The entitlement rule |
-| `src/lib/payments/` | The provider interface, Flutterwave, and the mock |
-| `src/content/` | Book text, Agati originals, news posts |
+| `src/config/brand.ts`, `src/app/theme.css` | colours, fonts, contact details |
+| `src/config/pricing.ts` | prices, exchange rate |
+| `src/config/site.ts` | page order of the book |
+| `src/components/book/` | cover, spread, leaf, flip engine |
+| `src/components/reader/` | reader, paginator, paywall |
+| `src/lib/access/` | entitlement rule |
+| `src/lib/payments/` | provider interface, Flutterwave, mock |
+| `src/content/` | book text, Agati originals, news |
 
----
+Brand colours only live in `brand.ts` and `theme.css`. Don't hardcode hex anywhere else, it gets
+impossible to retheme.
 
-## Testing
+## Tests
 
 ```bash
 npm test
 ```
 
-The suite concentrates where a defect costs money or leaks a paid book: the access rule, the webhook
-signature, price conversion, pagination, and the gated pages endpoint.
+Coverage is deliberately uneven. The tests are concentrated where a bug costs money or leaks a paid
+book: access rule, webhook signature, price conversion, pagination, the pages endpoint. UI
+components are mostly not tested.
 
----
+## Notes / still to do
 
-## Notes for Agati
-
-- **The Kinyarwanda book** (`src/content/originals/ubwenge.ts`) should be reviewed by a first-language
-  speaker before it is sold. It is written in deliberately plain Kinyarwanda with English alongside.
-- **The interface is in English**; the books are English, French and Kinyarwanda. The database already
-  stores a language per book, so a trilingual interface is addable later.
-- **Subscriptions do not auto-renew.** They expire and are bought again. Nothing is taken from a
-  reader without asking.
+- `src/content/originals/ubwenge.ts` is in Kinyarwanda and needs a first-language speaker to read it
+  through before it goes on sale. It's written in deliberately simple Kinyarwanda with English
+  alongside.
+- UI is English only for now. Books are English, French and Kinyarwanda, and the language is already
+  stored per book, so a translated interface is possible later.
+- Subscriptions don't auto-renew. They expire and get bought again. This was on purpose.

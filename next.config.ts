@@ -2,9 +2,7 @@ import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  // Next's development badge sits in the bottom-left corner, on top of the
-  // reader's own controls. It never ships, but it makes the corner of the
-  // screen unreadable while the site is being worked on.
+  // dev badge sits bottom-left, right on top of the reader controls
   devIndicators: false,
 };
 
