@@ -29,13 +29,11 @@ export type AccessResult = {
 };
 
 /**
- * The single rule deciding who may read what.
+ * The one rule deciding who may read what.
  *
- * Pure: no I/O, no clock of its own, no database. Every paywall, every free
- * week and every purchase in the product resolves through here, which is why
- * it is the most heavily tested unit in the codebase.
- *
- * Order matters — the first match wins.
+ * Pure: no I/O, no clock of its own, no database. Every paywall, free week and
+ * purchase in the product resolves through here, which is why it's the most
+ * heavily tested unit in the codebase. First match wins.
  */
 export function resolveAccess(i: AccessInput): AccessResult {
   const previewPages = i.book.previewPages;
@@ -46,10 +44,10 @@ export function resolveAccess(i: AccessInput): AccessResult {
   // 1. Admins can open anything.
   if (i.user?.role === 'ADMIN') return at(true, 'ADMIN');
 
-  // Without an identity there is nothing to attach an entitlement to, so a
-  // signed-out visitor can only ever reach a permanently free book. Guarding
-  // here rather than per-rule means a stray subscription row can never leak
-  // a paid book to an anonymous request.
+  // without an identity there's nothing to attach an entitlement to, so a
+  // signed-out visitor can only reach a permanently free book. Guarding here
+  // rather than per rule means a stray subscription row can't leak a paid book
+  // to an anonymous request.
   if (!i.user) {
     return i.book.accessType === 'FREE_FOREVER'
       ? at(true, 'FREE_FOREVER')

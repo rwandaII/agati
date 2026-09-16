@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { ReadMore } from './ReadMore';
 
-/** One two-page spread: left page, right page, and the gutter between them. */
+/** One spread: left page, right page, and the gutter between them. */
 export function Spread({
   left,
   right,

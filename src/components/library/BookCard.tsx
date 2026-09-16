@@ -14,7 +14,7 @@ export function accessBadge(book: { accessType: string; priceRwf: number }): {
 
 const LANGUAGE_LABEL: Record<string, string> = { EN: 'English', FR: 'Français', RW: 'Kinyarwanda' };
 
-/** A small standing book: coloured cover, darker spine, title and access badge. */
+/** A small standing book: coloured cover, darker spine, title, access badge. */
 export function BookCard({ book }: { book: BookSummary }) {
   const badge = accessBadge(book);
 

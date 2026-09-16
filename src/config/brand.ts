@@ -1,9 +1,9 @@
 /**
- * Agati's real identity, sampled straight from their logo.
+ * Agati's brand colours, sampled from their logo.
  *
  * The mark is an open book whose pages branch like a tree, and every facet of
  * it is a different bright colour. These seven are the exact values taken from
- * the artwork on agatilibrary.org — nothing here is invented.
+ * the artwork on agatilibrary.org, nothing here is invented.
  */
 export const LOGO_COLOURS = {
   cyan: '#00A7E1',

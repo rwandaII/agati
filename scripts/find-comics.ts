@@ -1,12 +1,9 @@
 /**
- * Finds archive.org items usable as comics.
- *
- * Three hard requirements: published before 1931 (unambiguously public domain),
- * a public-domain mark, and page images we can actually reach. Items archive.org
- * scanned itself store pages as JP2, which can only be rendered through their
- * IIIF service — that throttles to roughly a page a minute, so those are
- * rejected. What works is items uploaded as plain JPEGs, which archive.org will
- * serve out of the zip one entry at a time.
+ * Finds archive.org items usable as comics. Three requirements: published
+ * before 1931, a public domain mark, and page images we can actually reach.
+ * Items archive.org scanned itself store pages as JP2, which only comes back
+ * through IIIF at about a page a minute, so those get rejected. Items uploaded
+ * as plain JPEGs work, archive.org serves those out of the zip one at a time.
  */
 const UA =
   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36';

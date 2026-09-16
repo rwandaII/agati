@@ -48,7 +48,7 @@ export function Waiting({
           setPhase('failed');
         }
       } catch {
-        /* keep waiting; a dropped poll is not a failure */
+        /* dropped poll, keep waiting */
       }
     }, POLL_MS);
 
@@ -92,7 +92,7 @@ export function Waiting({
         <p>
           {phase === 'failed'
             ? 'Nothing was charged. It is safe to try again.'
-            : 'The approval never arrived. If you did approve it on your phone, check your account in a moment — it may still land.'}
+            : 'The approval never arrived. If you did approve it on your phone, check your account in a moment, it may still land.'}
         </p>
         <p className="paywall__actions">
           <Link className="btn btn--primary" href="/library">
@@ -117,7 +117,7 @@ export function Waiting({
       <h2 className="paywall__heading">Approve the payment on your phone.</h2>
       <p>
         We have asked for {formatRwf(amountRwf)} for {what}. A prompt should appear on your handset
-        within a few seconds — enter your Mobile Money PIN to confirm.
+        within a few seconds. Enter your Mobile Money PIN to confirm.
       </p>
       <p className="paywall__read">Waiting… this page updates itself. It can take up to a minute.</p>
     </section>

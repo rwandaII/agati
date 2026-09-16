@@ -22,7 +22,7 @@ const lora = Lora({
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.APP_URL ?? 'http://localhost:3000'),
   title: {
-    default: `${SITE.name} — ${SITE.tagline}`,
+    default: `${SITE.name} | ${SITE.tagline}`,
     template: `%s · ${SITE.name}`,
   },
   description: SITE.mission,

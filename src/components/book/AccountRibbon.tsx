@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { currentUser } from '@/lib/auth/guards';
 
-/** A small marker at the head of the book: who is reading, and a way in. */
+/** Who is reading, at the head of the book, and a way in. */
 export async function AccountRibbon() {
   const user = await currentUser();
   const firstName = user?.name?.split(/\s+/)[0];

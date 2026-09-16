@@ -13,7 +13,7 @@ type Program = { name: string; body: string; partner?: string };
 const LEFT: Program[] = [
   {
     name: 'Writers Residency',
-    body: 'Through a selective process, writers are invited into a vibrant residency — a sanctuary where new narratives are born and existing manuscripts are refined. The programme celebrates compelling voices with cash prizes and guidance towards publication.',
+    body: 'Through a selective process, writers are invited into a vibrant residency, a sanctuary where new narratives are born and existing manuscripts are refined. The programme celebrates compelling voices with cash prizes and guidance towards publication.',
     partner: 'PAC-GL',
   },
   {
@@ -28,7 +28,7 @@ const LEFT: Program[] = [
   },
   {
     name: 'Hospital Children’s Engagements',
-    body: 'Hospital libraries give a safe, creative space to read, make things and play together — for children whose year is being spent in a ward.',
+    body: 'Hospital libraries give a safe, creative space to read, make things and play together, for children whose year is being spent in a ward.',
     partner: 'Project Life International · Ready for Reading',
   },
   {
@@ -40,7 +40,7 @@ const LEFT: Program[] = [
 const RIGHT: Program[] = [
   {
     name: 'Nge Nawe Dusome',
-    body: 'A radio programme where children share their favourite books on air and read their own original stories — amplifying young voices and building a community reading culture. Born during COVID-19 and kept ever since.',
+    body: 'A radio programme where children share their favourite books on air and read their own original stories, amplifying young voices and building a community reading culture. Born during COVID-19 and kept ever since.',
   },
   {
     name: 'Young Writers Workshops',
@@ -48,7 +48,7 @@ const RIGHT: Program[] = [
   },
   {
     name: 'Agati Read Aloud',
-    body: 'Daily sessions of reading aloud, which builds foundational skills, introduces vocabulary and models fluent, expressive reading — including spelling bees built around book titles.',
+    body: 'Daily sessions of reading aloud, which builds foundational skills, introduces vocabulary and models fluent, expressive reading, including spelling bees built around book titles.',
     partner: 'PAC-GL',
   },
   {

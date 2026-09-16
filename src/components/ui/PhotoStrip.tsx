@@ -26,7 +26,7 @@ export function Plate({
   );
 }
 
-/** A row of portraits: faces kept whole, never cropped at the neck. */
+/** A row of portraits. Faces kept whole, never cropped at the neck. */
 export function PortraitRow({ photos }: { photos: Photo[] }) {
   return (
     <div className="portraits">

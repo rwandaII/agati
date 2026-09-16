@@ -6,8 +6,8 @@ import type { Measurer } from '@/lib/reader/paginate';
 
 /**
  * Builds a Measurer from a hidden clone of the real page box, so pagination
- * uses the exact font, width and line-height the reader will see — and
- * repaginates correctly when the window is resized or the webfont lands.
+ * uses the exact font, width and line height the reader gets, and repaginates
+ * when the window is resized or the webfont lands.
  */
 export function useMeasurer(pageRef: RefObject<HTMLElement | null>) {
   const ghostRef = useRef<HTMLDivElement | null>(null);
@@ -20,9 +20,9 @@ export function useMeasurer(pageRef: RefObject<HTMLElement | null>) {
 
     const ghost = document.createElement('div');
     ghost.setAttribute('aria-hidden', 'true');
-    // A page opens with a drop capital, which is two or three lines tall and
-    // pushes the text around it. Measuring without one fits a line more than
-    // the page can hold, and that line is clipped at the foot.
+    // a page opens with a drop capital, two or three lines tall, which pushes
+    // the text around it. Measuring without one fits a line more than the page
+    // can hold, and that line gets clipped at the foot.
     ghost.className = 'ghost';
     Object.assign(ghost.style, {
       position: 'absolute',
@@ -38,14 +38,13 @@ export function useMeasurer(pageRef: RefObject<HTMLElement | null>) {
       const textBox = (page.querySelector('.page__body') as HTMLElement | null) ?? page;
       const cs = getComputedStyle(textBox);
 
-      // Measured in the page's own axes, not the screen's: on a phone the book
-      // is drawn turned, and a bounding rect would then report the column's
-      // height as its width and paginate the book into ribbons.
+      // measured in the page's own axes, not the screen's. On a phone the book
+      // is rotated, and a bounding rect would report the column's height as its
+      // width and paginate the book into ribbons.
       //
-      // And measured to the text's own width, not the column's. The ghost has
-      // no padding, so giving it the padded width lets it fit a little more on
-      // every line than the page can — which is a line too many at the foot of
-      // the page, showing as a row of clipped letter-tops.
+      // and measured to the text's width, not the column's. The ghost has no
+      // padding, so a padded width fits slightly more on every line than the
+      // page can, which is one line too many at the foot.
       const width =
         textBox.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
       const height = textBox.clientHeight;
@@ -70,14 +69,13 @@ export function useMeasurer(pageRef: RefObject<HTMLElement | null>) {
     sync();
 
     /**
-     * Re-flowing the book is the most expensive thing this component does: it
-     * lays every loaded paragraph out again to find where the pages end. The
-     * page box changes shape the instant the stage turns, so left to itself
-     * that work would land in the middle of the turn and stutter it.
+     * Reflowing is the most expensive thing this component does: every loaded
+     * paragraph gets laid out again to find where the pages end. The page box
+     * changes shape the instant the stage rotates, so left alone that work
+     * lands in the middle of the turn and stutters it.
      *
-     * So it waits — for the resizing to stop, and then for the book to have
-     * finished turning. Nothing is lost by waiting: the pages keep the flow
-     * they already had, which for the second the turn takes is exactly right.
+     * So wait for the resizing to stop, then for the turn to finish. Nothing is
+     * lost by waiting, the pages keep the flow they already had.
      */
     let pending: ReturnType<typeof setTimeout> | undefined;
     const schedule = () => {

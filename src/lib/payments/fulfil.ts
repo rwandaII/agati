@@ -10,12 +10,12 @@ export function newReference(kind: 'bk' | 'sub'): string {
 }
 
 /**
- * The single door through which a purchase becomes SUCCEEDED.
+ * The single door a purchase becomes SUCCEEDED through.
  *
- * Called by the webhook and by the status poll, so a missed webhook never
- * leaves a paying reader locked out and a replayed one never grants twice.
- * Nothing is trusted from the notification: amount, currency and reference are
- * all re-checked against what we recorded when the charge was created.
+ * Called by the webhook and by the status poll, so a missed webhook never locks
+ * out a paying reader and a replayed one never grants twice. Nothing from the
+ * notification is trusted: amount, currency and reference are all re-checked
+ * against what we recorded when the charge was created.
  */
 export async function fulfilPurchase(
   reference: string,

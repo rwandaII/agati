@@ -11,13 +11,12 @@ const Body = z.object({
   anchor: z.number().int().min(0).default(0),
 });
 
-/** Saving a place is a convenience, not a requirement: never an error when signed out. */
+/** Saving a place is best effort. Signed out is not an error. */
 export async function POST(req: Request) {
   const user = await currentUser();
   if (!user) return new NextResponse(null, { status: 204 });
 
-  // A reader closing the tab sends this with `sendBeacon`, which posts a Blob
-  // and so may arrive as text/plain rather than JSON.
+  // sendBeacon posts a Blob, so this can arrive as text/plain rather than JSON
   const raw = await req.text().catch(() => '');
   const parsed = Body.safeParse(((): unknown => {
     try {

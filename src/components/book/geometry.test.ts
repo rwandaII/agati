@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { leavesFor, shouldTurn, inFrame, downFrom } from './geometry';
 
-/** Real screens, in CSS pixels, as their browsers report them. */
+/** Real screens, CSS pixels, as their browsers report them. */
 const SCREENS = {
   phonePortrait: [390, 844], // iPhone 14
   phoneLandscape: [844, 390],
@@ -23,7 +23,7 @@ const leavesOn = (name: keyof typeof SCREENS) => {
 };
 
 describe('leavesFor', () => {
-  it('opens a spread on a phone held sideways — the whole point of turning it', () => {
+  it('opens a spread on a phone held sideways, the whole point of turning it', () => {
     expect(leavesOn('phoneLandscape')).toBe(2);
     expect(leavesOn('smallPhoneLandscape')).toBe(2);
   });
@@ -77,7 +77,7 @@ describe('shouldTurn', () => {
     expect(shouldTurn(...SCREENS.bigTabletPortrait, coarse)).toBe(false);
   });
 
-  it('never turns a screen driven by a mouse — a narrow window is not a phone', () => {
+  it('never turns a screen driven by a mouse, a narrow window is not a phone', () => {
     expect(shouldTurn(500, 900, fine)).toBe(false);
     expect(shouldTurn(...SCREENS.phonePortrait, fine)).toBe(false);
   });
@@ -89,8 +89,8 @@ describe('inFrame', () => {
   });
 
   it('reads a swipe up the phone as a swipe forward through a turned book', () => {
-    // The book is drawn a quarter-turn clockwise, so its own "right" runs
-    // down the screen: a finger travelling up the glass turns the page on.
+    // the book is drawn a quarter turn clockwise, so its "right" runs down the
+    // screen: a finger moving up the glass turns forward
     expect(inFrame(12, -80, true)).toEqual({ dx: -80, dy: -12 });
   });
 
@@ -115,8 +115,8 @@ describe('downFrom', () => {
   });
 
   it('measures across the screen when the book is turned, because its down is', () => {
-    // Turned clockwise, the page's top edge lies along the right of the
-    // screen, so distance down the page is distance left across the glass.
+    // turned clockwise, the page's top edge lies along the right of the screen,
+    // so distance down the page is distance left across the glass
     const page = rect(0, 0, 600, 300);
     expect(downFrom(page, rect(0, 0, 450, 300), true)).toBe(150);
   });

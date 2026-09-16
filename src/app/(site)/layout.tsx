@@ -3,11 +3,11 @@ import { BookShell } from '@/components/book/BookShell';
 import { AccountRibbon } from '@/components/book/AccountRibbon';
 
 /**
- * The website is one big book, filling the screen: every section is a spread,
- * and moving between sections turns a page.
+ * The site itself is the big book: every section is a spread, and moving
+ * between sections turns a page.
  *
- * Reading an actual book from the collection is deliberately NOT inside this —
- * that route brings its own, smaller, bound volume.
+ * Reading an actual book from the collection is deliberately not inside this.
+ * /read brings its own smaller volume.
  */
 export default function SiteLayout({ children }: { children: ReactNode }) {
   return <BookShell accountMark={<AccountRibbon />}>{children}</BookShell>;

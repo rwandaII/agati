@@ -3,18 +3,17 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 
 /**
- * A page that unfolds rather than one that scrolls inside itself.
+ * A page that unfolds rather than scrolling inside itself.
  *
- * On a wide screen a page holds what it holds and the rest scrolls within it,
- * which is what a page does. On a phone that put a scrollbar down the middle of
- * the paper and a second scroll inside the one already moving the book — you
- * could not tell which of the two you were dragging.
+ * On a wide screen the overflow scrolls within the page, which is what a page
+ * does. On a phone that gave us a scrollbar down the middle of the paper plus
+ * a second scroll inside the one already moving the book, and you couldn't
+ * tell which of the two you were dragging.
  *
- * So where a page is shown on its own it is cut off at a comfortable height,
- * faded out where it stops, and opened the rest of the way by asking. Anything
- * short enough to fit is left alone: a button offering to reveal nothing is
- * worse than no button. On a spread — a desk, or a phone lying on its side —
- * nothing folds, because there the page scrolls as a page should.
+ * So a page shown on its own is cut off at a comfortable height, faded where
+ * it stops, and opened the rest of the way on request. Short pages are left
+ * alone, a button that reveals nothing is worse than no button. Nothing folds
+ * on a spread.
  */
 export function ReadMore({ children }: { children: ReactNode }) {
   const body = useRef<HTMLDivElement | null>(null);
@@ -23,16 +22,14 @@ export function ReadMore({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const el = body.current;
-    // Nothing here is essential: without it the page simply shows in full,
-    // which is what it does on a wide screen anyway. So every part of it is
-    // optional, and a browser (or a test) missing any of it still gets a page.
+    // none of this is essential: without it the page just shows in full, which
+    // is what it does on a wide screen anyway
     if (!el) return;
 
     const measure = () => {
-      // Whether to fold at all is asked of the stylesheet, not of the window.
-      // `--fold` is set only where a page is shown on its own; on a spread —
-      // including a phone turned on its side, which no media query can see as
-      // anything but a narrow screen — it is unset, and nothing folds.
+      // the stylesheet decides whether to fold, not the window. --fold is only
+      // set where a page is shown on its own, and no media query can tell a
+      // rotated phone from a narrow screen.
       const limit = parseFloat(getComputedStyle(el).getPropertyValue('--fold')) || 0;
       setFoldable(limit > 0 && el.scrollHeight > limit + 24);
     };
@@ -43,8 +40,7 @@ export function ReadMore({ children }: { children: ReactNode }) {
       typeof ResizeObserver === 'function' ? new ResizeObserver(measure) : null;
     resize?.observe(el);
 
-    // The stage publishes how the book is laid out on the document element,
-    // and `--fold` follows it, so a re-measure follows that.
+    // --fold follows the stage layout published on the document element
     const watch =
       typeof MutationObserver === 'function' ? new MutationObserver(measure) : null;
     watch?.observe(document.documentElement, {

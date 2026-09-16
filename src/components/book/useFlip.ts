@@ -8,20 +8,19 @@ type Options = {
   onNext: () => void;
   onPrev: () => void;
   enabled?: boolean;
-  /** The book is drawn a quarter-turn clockwise, as it is on a phone. */
+  /** The book is drawn a quarter turn clockwise, as it is on a phone. */
   turned?: boolean;
 };
 
 /**
- * Turns keyboard and horizontal swipe into page turns.
+ * Keyboard and horizontal swipe into page turns.
  *
- * The wheel is deliberately NOT bound. Scrolling belongs to the page content —
- * a long programme list or a shelf of books has to scroll normally — so turning
- * is an explicit action: the arrows, the arrow keys, or a sideways swipe.
+ * The wheel is deliberately not bound. Scrolling belongs to the content, a
+ * long programme list or a shelf of books has to scroll normally, so turning
+ * is explicit: the arrows, the arrow keys, or a sideways swipe.
  *
- * Sideways means sideways across the page, not across the glass. When the book
- * is drawn turned the two part company, and it is the page that decides: the
- * reader is swiping through a book, not over a screen.
+ * Sideways means across the page, not across the glass. Those two part company
+ * when the book is drawn rotated, and the page wins.
  */
 export function useFlip({ onNext, onPrev, enabled = true, turned = false }: Options) {
   const [el, setEl] = useState<HTMLElement | null>(null);
@@ -29,7 +28,7 @@ export function useFlip({ onNext, onPrev, enabled = true, turned = false }: Opti
   const locked = useRef(false);
   const touch = useRef<{ x: number; y: number } | null>(null);
 
-  // Keep the latest callbacks without re-binding listeners on every render.
+  // latest callbacks without re-binding listeners on every render
   const cb = useRef({ onNext, onPrev, enabled, turned });
   cb.current = { onNext, onPrev, enabled, turned };
 
@@ -77,7 +76,7 @@ export function useFlip({ onNext, onPrev, enabled = true, turned = false }: Opti
       );
       touch.current = null;
 
-      // Sideways only. A vertical swipe is a scroll, and belongs to the page.
+      // sideways only. A vertical swipe is a scroll and belongs to the page.
       if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.6) {
         fire(dx < 0 ? 1 : -1);
       }

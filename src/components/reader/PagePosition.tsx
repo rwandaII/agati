@@ -7,10 +7,9 @@ import { stageEl } from '@/components/book/screen';
 /**
  * Where you are in the book.
  *
- * Turning a page is done by tapping the page itself, so there is nothing to
- * press here — just the count, kept off the paper and out of the way.
- * Portalled to the frame because the book clips whatever is rendered inside
- * it, and the frame is what comes round when the book is read turned.
+ * Nothing to press, since turning is done by tapping the page itself. Portalled
+ * to the frame because the book clips whatever is rendered inside it, and the
+ * frame is what comes round when the book is read rotated.
  */
 export function PagePosition({ position }: { position: string }) {
   const [mounted, setMounted] = useState(false);

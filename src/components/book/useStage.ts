@@ -12,13 +12,13 @@ export type Stage = {
 };
 
 /**
- * Two during the server render, matching the wide layout. A phone briefly
- * laying out two pages is invisible, whereas guessing wrong in the markup
- * would be a hydration mismatch.
+ * Two during the server render, matching the wide layout. A phone laying out
+ * two pages for one frame is invisible, guessing wrong in the markup is a
+ * hydration mismatch.
  */
 const WIDE: Stage = { leaves: 2, turned: false };
 
-/** How long the turn takes, plus a moment. Must match `stage-turn` in book.css. */
+/** Turn duration plus a moment. Must match `stage-turn` in book.css. */
 const TURN_SETTLES_IN = 940;
 
 const same = (a: Stage, b: Stage) => a.leaves === b.leaves && a.turned === b.turned;
@@ -26,14 +26,14 @@ const same = (a: Stage, b: Stage) => a.leaves === b.leaves && a.turned === b.tur
 /**
  * The box the book is played on, and the shape it takes to fill it.
  *
- * One place decides this, because three things have to agree about it: the
+ * One place decides this because three things have to agree about it: the
  * reader counts pages in it, the swipe and the pen measure against it, and the
- * stylesheet dresses it. So the answer is published on the document — as
- * `data-leaves`, `data-turn` and `data-stage` — and CSS reads it there rather
+ * stylesheet dresses it. So the answer is published on the document as
+ * data-leaves, data-turn and data-stage, and CSS reads it from there rather
  * than asking the viewport a second question and getting a different answer.
  *
- * It is a question CSS could not answer alone anyway: under a turned book the
- * media queries still see an upright phone.
+ * CSS couldn't answer it alone anyway: under a rotated book the media queries
+ * still see an upright phone.
  */
 export function useStage(): Stage {
   const [stage, setStage] = useState<Stage>(WIDE);
@@ -42,25 +42,24 @@ export function useStage(): Stage {
     const root = document.documentElement;
 
     // A closed volume lying on its side is a book knocked over, not a book
-    // opened. The turn belongs to the tap: the moment the cover starts to
-    // swing, this stops matching and the frame comes round with it.
+    // opened. The rotation belongs to the tap: the moment the cover starts to
+    // swing this stops matching and the frame comes round with it.
     //
-    // The cover is put up by an effect of its own, and a child's effect has
-    // already run by the time this one does — but the render it schedules has
-    // not been committed yet, so on the very first pass the cover is not in
-    // the DOM to be found. Deciding then would turn the book before its cover
-    // had appeared, and turn it back a frame later. So the first frame is
-    // always treated as covered, and the real answer waited for.
+    // The cover is mounted by an effect of its own, and a child's effect has
+    // already run by the time this one does, but the render it schedules isn't
+    // committed yet, so on the first pass the cover isn't in the DOM to find.
+    // Deciding then would rotate the book before its cover appeared and rotate
+    // it back a frame later. So treat the first frame as covered and wait.
     let arrived = false;
     const covered = () =>
       !arrived || Boolean(document.querySelector('.cover:not(.cover--opening)'));
 
-    // While the book is coming round, it is the only thing that should be
-    // moving. Everything else the opening sets going — the volume growing out
-    // of its cover, the desk lifting, the words settling onto the page — is
-    // laid out or filtered rather than merely moved, and doing all of it at
-    // once is what makes the turn stutter. This flag stands them down for the
-    // length of the turn; the stylesheet says which.
+    // While the book is coming round it should be the only thing moving.
+    // Everything else the opening starts (the volume growing out of its cover,
+    // the desk lifting, the words settling) is layout or filter work rather
+    // than a plain transform, and doing all of it at once is what makes the
+    // turn stutter. This flag stands them down for the length of the turn, the
+    // stylesheet says which.
     let wasTurned = false;
     let settling: ReturnType<typeof setTimeout> | undefined;
 
@@ -74,9 +73,9 @@ export function useStage(): Stage {
       root.dataset.leaves = String(next.leaves);
       if (turned) {
         root.dataset.turn = '90';
-        // How far back the turn has to stand for a screen's width to hold its
-        // own height. CSS cannot divide one length by another, so the stage
-        // measures it here and the keyframe spends it.
+        // how far back the turn has to stand for a screen's width to hold its
+        // own height. CSS can't divide one length by another, so measure here
+        // and let the keyframe spend it.
         root.style.setProperty(
           '--turn-scale',
           String(Math.min(window.innerWidth, window.innerHeight) / Math.max(window.innerWidth, window.innerHeight)),
@@ -100,16 +99,15 @@ export function useStage(): Stage {
 
     decide();
 
-    // ...which is this: one frame on, the page is as it means to be, and a
-    // book with no cover over it — a reader who came straight to a page —
-    // can be turned at once.
+    // one frame on, the page is settled, and a book with no cover over it (a
+    // reader who came straight to a page) can be rotated at once
     const settle = requestAnimationFrame(() => {
       arrived = true;
       decide();
     });
 
-    // The cover opening is a class change on an element the reader does not
-    // own, so it is watched for rather than waited on.
+    // the cover opening is a class change on an element we don't own, so it
+    // gets watched for rather than waited on
     const watch = new MutationObserver(decide);
     watch.observe(document.body, {
       subtree: true,

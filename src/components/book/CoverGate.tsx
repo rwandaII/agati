@@ -6,23 +6,20 @@ import { Cover } from './Cover';
 /**
  * The closed book is the welcome page.
  *
- * The flag lives in module scope, not in storage, which gives exactly the
- * behaviour we want: every time the app is started or the page reloaded the
- * cover greets you, but stepping back to Home from inside the book does not
- * shut it in your face.
+ * The flag is module scope rather than storage, which is exactly the behaviour
+ * we want: the cover greets you on every load, but going back to Home from
+ * inside the book doesn't shut it in your face.
  */
 let openedThisVisit = false;
 
 export function CoverGate() {
-  // Closed from the very first paint. The page behind it is still rendered and
-  // still in the HTML — the cover is laid over it, not instead of it — so this
-  // costs nothing in search results, and a reload shows you a closed book
-  // rather than the inside of one for a moment before the cover arrives.
+  // Closed from the first paint. The page behind is still rendered and still in
+  // the HTML, the cover just lies over it, so this costs nothing in search
+  // results and a reload doesn't flash the inside of the book first.
   //
   // Read straight out of the flag rather than corrected by an effect. On the
-  // server the flag is always false, which is right for a page being loaded;
-  // moving about inside the book is a client render with no server rendering
-  // to disagree with, so the two can never be out of step.
+  // server it is always false, which is right for a page being loaded, and
+  // moving around inside the book is client-only, so the two can't disagree.
   const [open, setOpen] = useState(() => openedThisVisit);
 
   if (open) return null;

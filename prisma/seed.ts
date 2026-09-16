@@ -22,7 +22,7 @@ async function loadFetchedBooks(): Promise<SeedBook[]> {
   );
 }
 
-/** Comics: the page IS the picture, so the text column stays empty. */
+/** Comics have no text of their own, the page is the image. */
 async function loadComics(): Promise<SeedComic[]> {
   const dir = path.join(process.cwd(), 'src/content/comics');
   let files: string[];
@@ -62,7 +62,7 @@ async function upsertBook(b: SeedBook) {
     create: { ...meta, pageCount: pages.length },
   });
 
-  // Rewrite pages wholesale so re-seeding never leaves stale content behind.
+  // wipe and rewrite, so re-seeding can't leave stale pages behind
   await prisma.bookPage.deleteMany({ where: { bookId: book.id } });
   await prisma.bookPage.createMany({
     data: pages.map((content, index) => ({ bookId: book.id, index, content })),

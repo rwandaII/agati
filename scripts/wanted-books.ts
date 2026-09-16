@@ -3,11 +3,11 @@ import type { SeedBook } from '../src/content/types';
 export type Wanted = Omit<SeedBook, 'pages' | 'author'> & { search: string; author?: string };
 
 /**
- * The shelf Agati is building, sorted the way a librarian would sort it.
+ * The shelf Agati is building, roughly how a librarian would sort it.
  *
- * Titles are resolved through the Gutendex API rather than hard-coded Gutenberg
- * IDs, and the fetcher scores candidates on how much of the title they actually
- * match — so a search cannot quietly seed the wrong book.
+ * Titles resolve through Gutendex rather than hardcoded Gutenberg ids, and the
+ * fetcher scores candidates on title overlap, so a search can't quietly seed
+ * the wrong book.
  */
 export const CATEGORIES = [
   'Fables',
@@ -63,10 +63,10 @@ const book = (
 });
 
 export const WANTED: Wanted[] = [
-  // ---------- Fables ----------
+  // Fables
   book('Aesop Fables Townsend', 'aesops-fables', 'Aesop’s Fables', 'Fables',
     'Short animal tales, each ending in a lesson worth carrying.',
-    'The oldest collection of moral stories in the world, told a few lines at a time — the fox and the grapes, the tortoise and the hare, the lion and the mouse.',
+    'The oldest collection of moral stories in the world, told a few lines at a time: the fox and the grapes, the tortoise and the hare, the lion and the mouse.',
     { featured: true }),
 
   book('Just So Stories Kipling', 'just-so-stories', 'Just So Stories', 'Fables',
@@ -78,7 +78,7 @@ export const WANTED: Wanted[] = [
     'Les fables les plus connues de la langue française, écrites pour être lues à voix haute.',
     { language: 'FR' }),
 
-  // ---------- Fairy Tales ----------
+  // Fairy tales
   book('Grimms Fairy Tales', 'grimms-fairy-tales', 'Grimms’ Fairy Tales', 'Fairy Tales',
     'The tales the brothers Grimm collected from the people who told them.',
     'Two centuries of European storytelling, gathered from farmhouses and kitchens.'),
@@ -103,7 +103,7 @@ export const WANTED: Wanted[] = [
     'Phileas Fogg fait le tour de la planète contre la montre.',
     { language: 'FR' }),
 
-  // ---------- Adventure ----------
+  // Adventure
   book('Treasure Island Stevenson', 'treasure-island', 'Treasure Island', 'Adventure',
     'A map, a one-legged cook, and a boy who should have stayed home.',
     'The book that invented almost everything we think we know about pirates.',
@@ -126,7 +126,7 @@ export const WANTED: Wanted[] = [
     'A wager, a servant, and a timetable that will not bend.',
     'Jules Verne sends Phileas Fogg around the planet against the clock.'),
 
-  // ---------- Animal Stories ----------
+  // Animal stories
   book('The Jungle Book Kipling', 'the-jungle-book', 'The Jungle Book', 'Animal Stories',
     'Mowgli grows up among wolves and learns the law of the jungle.',
     'Stories of a boy raised by wolves, a mongoose who guards a household, and a white seal searching for a safe shore.',
@@ -140,7 +140,7 @@ export const WANTED: Wanted[] = [
     'A horse tells you what was done to him, plainly.',
     'Written to change how people treated horses, and it did.'),
 
-  // ---------- Children's Classics ----------
+  // Children's classics
   book('The Secret Garden Burnett', 'the-secret-garden', 'The Secret Garden', "Children's Classics",
     'A locked garden, a lonely child, and what grows when both are opened.',
     'Mary Lennox finds a walled garden nobody has entered for ten years.'),
@@ -161,7 +161,7 @@ export const WANTED: Wanted[] = [
     'Three ghosts, one night, and a man with a great deal to answer for.',
     'Dickens on what a person owes the people around him, argued with spirits.'),
 
-  // ---------- Fantasy ----------
+  // Fantasy
   book('Alice Adventures in Wonderland', 'alice-in-wonderland',
     'Alice’s Adventures in Wonderland', 'Fantasy',
     'A girl follows a hurrying rabbit and nothing behaves properly again.',
@@ -179,14 +179,14 @@ export const WANTED: Wanted[] = [
     'A puppet who lies, runs away, and is repeatedly sorry.',
     'Far stranger and harsher than the version most people remember.'),
 
-  // ---------- Mystery ----------
+  // Mystery
   book('The Adventures of Sherlock Holmes', 'sherlock-holmes', 'The Adventures of Sherlock Holmes',
     'Mystery',
     'Twelve cases, one impossible man, and Dr Watson taking notes.',
     'The stories that taught the world what a detective is supposed to sound like.',
     { featured: true }),
 
-  // ---------- Science Fiction ----------
+  // Sci-fi
   book('The Time Machine Wells', 'the-time-machine', 'The Time Machine', 'Science Fiction',
     'Forward eight hundred thousand years, to find out how it ends.',
     'H. G. Wells invents time travel and immediately uses it to worry about class.'),

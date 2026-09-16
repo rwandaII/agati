@@ -10,14 +10,12 @@ const SHOWN_FOR = 9000;
 /**
  * Told, not asked.
  *
- * A book reopens where it was left, without a dialogue in the way — but a
- * reader who did not expect that needs to see what happened and be able to
- * undo it, so this says where they landed and offers the first page back.
+ * A book reopens where it was left without a dialog in the way, but a reader
+ * who didn't expect that needs to see what happened and be able to undo it.
  *
  * The place is found while the cover is still closed, a second after the page
- * loads. Announcing it then would spend the whole notice behind the cover and
- * leave nothing to see on opening it, so this waits for the book to be open —
- * which is exactly what the `is-covered` flag on the body means.
+ * loads. Announcing it then would spend the whole notice behind the cover, so
+ * wait for the book to be open, which is what `is-covered` on the body means.
  */
 export function ResumeNotice({
   page,
@@ -47,7 +45,7 @@ export function ResumeNotice({
     return () => watch.disconnect();
   }, []);
 
-  // It has said its piece by the time anyone has read a paragraph.
+  // gone by the time anyone has read a paragraph
   useEffect(() => {
     if (!open) return;
     const t = setTimeout(onDismiss, SHOWN_FOR);
@@ -59,7 +57,7 @@ export function ResumeNotice({
   return createPortal(
     <div className="resume" role="status">
       <p className="resume__text">
-        Picked up where you left off — page <strong>{page}</strong>
+        Picked up where you left off, page <strong>{page}</strong>
       </p>
       <button type="button" className="resume__action" onClick={onStartOver}>
         Start from the beginning

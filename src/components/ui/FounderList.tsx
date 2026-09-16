@@ -5,9 +5,8 @@ export type Founder = { name: string; role: string };
 
 /**
  * The people who built Agati, at a size where you can actually see them.
- *
- * Each portrait is paired with its name from agatilibrary.org's own page data,
- * not guessed from the face.
+ * Portraits are paired with names from agatilibrary.org's own page data, not
+ * guessed from the faces.
  */
 export function FounderList({ founders }: { founders: readonly Founder[] }) {
   return (

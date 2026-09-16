@@ -7,8 +7,7 @@ import { LOGO_SEQUENCE } from '@/config/brand';
  * The one tab a book needs.
  *
  * The website's full set of section tabs belongs to the website. Inside a book
- * they are clutter across the head of the page, so only the way out remains —
- * a reader is never stranded, and nothing else competes with the page.
+ * they're clutter across the head of the page, so only the way out stays.
  */
 export function HomeTab() {
   const home = PAGES[0];

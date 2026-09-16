@@ -1,18 +1,18 @@
 export type Measurer = (text: string) => number;
 
 /**
- * Break one paragraph that cannot fit a page into word-boundary pieces that can.
+ * Break a paragraph too tall for a page into word-boundary pieces that fit.
  *
- * Each piece is the most words that will fit, which is the same answer walking
- * the paragraph a word at a time would give — but found by searching for the
- * break rather than walking to it. Measuring is a forced layout of the growing
- * text, so one call per word is a second of frozen page for a long chapter, and
- * a phone's page is short enough that most chapters have one.
+ * Each piece is the most words that will fit, the same answer walking the
+ * paragraph a word at a time would give, but found by binary search. Measuring
+ * forces a layout of the growing text, so one call per word is a second of
+ * frozen page for a long chapter, and a phone's page is short enough that most
+ * chapters have one.
  *
  * The search is sound because height never falls as words are added: if some
  * number of words is too tall, so is every larger number. It starts from the
  * size of the previous piece, since the pieces of a paragraph come out much of
- * a size, and the answer is usually a step or two away.
+ * a size, so the answer is usually a step or two away.
  */
 export function splitLongParagraph(p: string, maxHeight: number, measure: Measurer): string[] {
   const words = p.split(/\s+/).filter(Boolean);
@@ -73,8 +73,8 @@ export function splitLongParagraph(p: string, maxHeight: number, measure: Measur
  * Pack paragraphs into pages that each fit within maxHeight.
  *
  * Measurement is injected rather than read from the DOM: jsdom has no layout
- * engine, and the reader needs to repaginate against the real page box when the
- * window is resized. Never drops or duplicates content.
+ * engine, and the reader repaginates against the real page box on resize. Never
+ * drops or duplicates content.
  */
 export function fitParagraphs(
   paragraphs: string[],

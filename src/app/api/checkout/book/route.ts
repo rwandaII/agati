@@ -27,7 +27,7 @@ export async function POST(req: Request) {
   if (!book) return NextResponse.json({ error: 'Not found' }, { status: 404 });
 
   if (book.accessType === 'FREE_FOREVER' || book.priceRwf <= 0) {
-    return NextResponse.json({ error: 'This book is free — just read it.' }, { status: 400 });
+    return NextResponse.json({ error: 'This book is free, just read it.' }, { status: 400 });
   }
 
   const access = await loadAccess(user.id, book);
@@ -35,7 +35,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'You can already read this book.' }, { status: 409 });
   }
 
-  // The amount comes from the database, never from the request body.
+  // price comes from the database, never from the request body
   const amountRwf = book.priceRwf;
   const reference = newReference('bk');
   const provider = paymentProvider();

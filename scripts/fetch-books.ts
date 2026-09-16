@@ -59,10 +59,7 @@ const UA =
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
-/**
- * gutenberg.org drops long-lived connections fairly often, so every network read
- * retries with backoff before giving up.
- */
+/** gutenberg.org drops long connections fairly often, so retry with backoff. */
 async function fetchWithRetry(url: string, attempts = 5): Promise<Response> {
   let lastError: unknown;
 
@@ -108,9 +105,9 @@ function significantWords(title: string): string[] {
 }
 
 /**
- * Gutendex ranks by relevance, and its top hit is sometimes a different book that
- * merely mentions the phrase. Score candidates on how much of the wanted title
- * they actually contain, so "The Wind in the Willows" cannot match Leroy Scott.
+ * Gutendex ranks by relevance and its top hit is sometimes a different book
+ * that just mentions the phrase. Score candidates on how much of the wanted
+ * title they actually contain instead.
  */
 function scoreCandidate(candidate: GutendexBook, wantTitle: string, wantLang: string): number {
   const wanted = significantWords(wantTitle);
@@ -156,7 +153,7 @@ async function resolveCandidates(
       .map((r) => ({ r, score: scoreCandidate(r, wantTitle, wantLang) }))
       .sort((a, b) => b.score - a.score)[0];
     throw new Error(
-      `Best Gutendex match for "${wantTitle}" was "${best.r.title}" (score ${best.score.toFixed(2)}) — refusing to seed the wrong book`,
+      `Best Gutendex match for "${wantTitle}" was "${best.r.title}" (score ${best.score.toFixed(2)}), refusing to seed the wrong book`,
     );
   }
 
@@ -172,7 +169,7 @@ async function resolveCandidates(
   }).filter((cand) => cand.urls.length > 0);
 }
 
-/** Gutenberg author names come as "Kipling, Rudyard"; humans read them the other way. */
+/** Gutenberg gives author names as "Kipling, Rudyard". Flip them. */
 function humaniseAuthor(name: string): string {
   const m = name.match(/^([^,]+),\s*(.+?)(?:,\s*\d{4}.*)?$/);
   return m ? `${m[2].trim()} ${m[1].trim()}` : name.replace(/,\s*\d{4}.*$/, '').trim();
@@ -234,9 +231,9 @@ async function main() {
       await writeFile(outPath, JSON.stringify(book, null, 2), 'utf8');
       console.log(`${pages.length} pages  (${book.author})`);
     } catch (err) {
-      // One bad title must not cost us the other nine.
+      // one bad title shouldn't cost us the other nine
       const msg = err instanceof Error ? err.message : String(err);
-      console.log(`SKIPPED — ${msg}`);
+      console.log(`SKIPPED: ${msg}`);
       failures.push(`${w.title}: ${msg}`);
     }
   }

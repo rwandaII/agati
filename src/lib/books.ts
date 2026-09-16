@@ -33,8 +33,8 @@ export async function listBooks(f: BookFilter): Promise<BookSummary[]> {
   if (f.access === 'free') where.accessType = 'FREE_FOREVER';
   if (f.access === 'paid') where.accessType = { in: ['PAID', 'FREE_TRIAL'] };
 
-  // Postgres matches case-sensitively, so a reader typing "alice" would miss
-  // "Alice". `mode: 'insensitive'` asks for ILIKE instead.
+  // Postgres LIKE is case sensitive, so a reader typing "alice" would miss
+  // "Alice". mode: 'insensitive' asks for ILIKE instead.
   if (f.q?.trim()) {
     const q = f.q.trim();
     where.OR = [

@@ -10,15 +10,13 @@ export type Mark = { id: string; anchor: number; label: string };
 /**
  * The pen, and the marks it has left.
  *
- * Picking the pen up does not mark anything: it puts the pen in your hand, and
- * the next place you touch on the page is where the mark goes. That is how a
- * pen works, and it means a reader marks the line they stopped at rather than
- * the page they happen to be on.
+ * Picking the pen up doesn't mark anything. It puts the pen in your hand, and
+ * the next place you touch on the page is where the mark goes, which means a
+ * reader marks the line they stopped at rather than the page they're on.
  *
- * Portalled out for the same reason everything else here is: the book clips
- * its contents, so a control rendered inside it would be cut off. Out as far
- * as the frame, and no further — the frame is what turns on a phone, and a pen
- * left behind on the body would stand upright beside a book lying on its side.
+ * Portalled out for the same reason everything else here is: the book clips its
+ * contents, so a control rendered inside it would be cut off. Out as far as the
+ * frame and no further, since the frame is what rotates on a phone.
  */
 export function Bookmarks({
   marks,
@@ -42,7 +40,7 @@ export function Bookmarks({
 
   useEffect(() => setMounted(true), []);
 
-  // Neither the pen nor a list of places is worth trapping anybody in.
+  // neither the pen nor a list of places is worth trapping anybody in
   useEffect(() => {
     if (!open && !penMode) return;
     const onKey = (e: KeyboardEvent) => {

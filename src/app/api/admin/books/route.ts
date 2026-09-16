@@ -21,7 +21,7 @@ const BookFields = z.object({
   text: z.string().min(1),
 });
 
-/** A book that can be bought needs a price; a free one does not. */
+/** A book that can be bought needs a price, a free one doesn't. */
 const Body = BookFields.refine((b) => b.accessType === 'FREE_FOREVER' || b.priceRwf > 0, {
   message: 'A book that can be bought needs a price above zero.',
   path: ['priceRwf'],
@@ -72,7 +72,7 @@ export async function PATCH(req: Request) {
   const book = await prisma.book.findUnique({ where: { id } });
   if (!book) return NextResponse.json({ error: 'Not found' }, { status: 404 });
 
-  // Only rewrite the pages when new text was actually supplied.
+  // only touch the pages when new text actually came in
   if (text) {
     const pages = paginateText(text);
     await prisma.bookPage.deleteMany({ where: { bookId: id } });

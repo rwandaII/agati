@@ -56,8 +56,8 @@ describe('splitLongParagraph', () => {
   });
 
   it('fills each piece as full as it will go', () => {
-    // The property the search has to preserve: every piece but the last is the
-    // most words that fit, so adding the next word over would have overflowed.
+    // the property the search has to preserve: every piece but the last is the
+    // most words that fit, so one more word would have overflowed
     const words = Array.from({ length: 300 }, (_, i) => `word${i}`);
     const parts = splitLongParagraph(words.join(' '), 200, measure);
 
@@ -69,9 +69,8 @@ describe('splitLongParagraph', () => {
   });
 
   it('does not ask the browser to lay the paragraph out once per word', () => {
-    // Measuring is a forced layout of the growing text, so one call per word is
-    // a second of frozen page for a long chapter. The break points can be found
-    // by searching for them instead of walking to them.
+    // measuring forces a layout of the growing text, so one call per word is a
+    // second of frozen page on a long chapter. Search for the breaks instead.
     const words = Array.from({ length: 2000 }, (_, i) => `word${i}`);
     let calls = 0;
     const counted = (text: string) => {

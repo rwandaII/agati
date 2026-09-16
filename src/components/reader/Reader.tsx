@@ -95,8 +95,8 @@ export function Reader({
   const [pages, setPages] = useState<Page[]>(initialPages);
   const [reason, setReason] = useState<AccessReason>(initialReason);
   const [blocked, setBlocked] = useState(!canRead);
-  // Always opens at the beginning; the saved place then moves it, once it is
-  // known and the text has been laid out for this screen.
+  // always opens at the beginning. The saved place moves it once it's known and
+  // the text has been laid out for this screen.
   const [spread, setSpread] = useState(0);
   const [turn, setTurn] = useState<{ dir: 1 | -1; from: number; to: number } | null>(null);
   const [marks, setMarks] = useState<Mark[]>(initialBookmarks);
@@ -121,7 +121,7 @@ export function Reader({
     [isComic, pages],
   );
 
-  // Re-flow the stored text into pages that actually fit this page box.
+  // reflow the stored text into pages that actually fit this page box
   const display = useMemo(() => {
     if (isComic) return plates.map((_, i) => String(i));
     const text = pages.map((p) => p.content).join('\n\n');
@@ -139,7 +139,7 @@ export function Reader({
     setSpread((current) => (current > ceiling ? ceiling : current));
   }, [ceiling]);
 
-  // Pull the next window of pages as the reader approaches the end of what we hold.
+  // pull the next window of pages as the reader gets near the end of what we hold
   const fetching = useRef(false);
   useEffect(() => {
     if (fetching.current || blocked) return;
@@ -179,9 +179,9 @@ export function Reader({
   }, [spread, lastSpread, pages, blocked, book.slug, book.pageCount]);
 
   // Discourage casual copying of book text. Honest limits: this stops
-  // select-and-copy, right-click and the keyboard shortcuts, but anyone with
-  // developer tools can still read the DOM. Real protection is the server-side
-  // gate, which never sends unearned pages at all.
+  // select-and-copy, right click and the shortcuts, but anyone with devtools
+  // can still read the DOM. The real protection is the server gate, which never
+  // sends unearned pages at all.
   useEffect(() => {
     const swallow = (e: Event) => {
       if ((e.target as HTMLElement | null)?.closest?.('.page__body')) e.preventDefault();
@@ -210,14 +210,14 @@ export function Reader({
     };
   }, []);
 
-  // The cursor becomes the pen, so it is obvious the next touch will mark.
+  // cursor becomes the pen, so it's obvious the next touch will mark
   useEffect(() => {
     document.body.classList.toggle('is-penned', penMode);
     return () => document.body.classList.remove('is-penned');
   }, [penMode]);
 
-  // A reader who has not signed in still gets their place back on this device,
-  // but it has to be read from the browser, so it is not known on first render.
+  // a reader who hasn't signed in still gets their place back on this device,
+  // but it has to be read from the browser, so it isn't known on first render
   const [guestAnchor, setGuestAnchor] = useState(0);
   const [anchorKnown, setAnchorKnown] = useState(signedIn);
   useEffect(() => {
@@ -242,7 +242,7 @@ export function Reader({
     leaves,
   });
 
-  // --- the pen ------------------------------------------------------------
+  // --- the pen ---
 
   /** A word to the reader about what just happened, then out of the way. */
   const say = useCallback((message: string) => {
@@ -251,11 +251,11 @@ export function Reader({
   }, []);
 
   /**
-   * Marking the line a reader pointed at.
+   * Mark the line a reader pointed at.
    *
-   * The click is resolved down to the character it landed on, so the mark
-   * belongs to that line and finds it again however the book is laid out next
-   * time. A comic has no text to point into, so a plate is marked whole.
+   * The click resolves down to the character it landed on, so the mark belongs
+   * to that line and finds it again however the book is laid out next time. A
+   * comic has no text to point into, so a plate is marked whole.
    */
   const markAt = useCallback(
     async (pageIndexOnScreen: number, page: HTMLElement, x: number, y: number) => {
@@ -280,7 +280,7 @@ export function Reader({
 
       setPenMode(false);
 
-      // Show it immediately; a mark that waits for the network feels broken.
+      // show it immediately, a mark that waits for the network feels broken
       const optimistic: Mark = { id: `pending-${anchor}`, anchor, label };
       setMarks((current) => [...current, optimistic].sort((a, b) => a.anchor - b.anchor));
 
@@ -356,10 +356,9 @@ export function Reader({
   });
 
   /**
-   * Touching the page turns it: the right page forward, the left page back.
-   * That is how the buttons used to work and how a book has always worked, and
-   * it leaves the paper uncluttered. A click meant for a link, a button or the
-   * pen is never taken for a page turn.
+   * Touching the page turns it: right page forward, left page back. That's how
+   * a book has always worked and it leaves the paper uncluttered. A click meant
+   * for a link, a button or the pen is never taken as a page turn.
    */
   const touchPage = useCallback(
     (which: 'left' | 'right', pageOnScreen: number) => (e: React.MouseEvent<HTMLElement>) => {
@@ -373,9 +372,8 @@ export function Reader({
 
       if (window.getSelection()?.toString()) return;
 
-      // With a spread open, which page you touched says which way to go. With
-      // one page open there is no other page to touch, so the near edge goes
-      // back — the same gesture as reaching for the corner you just turned.
+      // with a spread open, which page you touched says which way to go. With
+      // one page there's no other page to touch, so the near edge goes back.
       if (leaves === 1) {
         const page = e.currentTarget.getBoundingClientRect();
         const backwards = e.clientX - page.left < page.width * 0.25;
@@ -438,7 +436,7 @@ export function Reader({
         <span className="reader__pos">
           {display.length
             ? leaves === 2
-              ? `Page ${leftIndex + 1}–${rightIndex + 1} of ${display.length}`
+              ? `Page ${leftIndex + 1}-${rightIndex + 1} of ${display.length}`
               : `Page ${leftIndex + 1} of ${display.length}`
             : ''}
           {trialEndsAt && reason === 'TRIAL_ACTIVE' ? (
@@ -463,8 +461,8 @@ export function Reader({
             <section
               key={side}
               className={`page page--${side}`}
-              // The measurer sizes the text column from whichever page is the
-              // one being laid out, so that id follows the right-hand page.
+              // the measurer sizes the text column from whichever page is being
+              // laid out, so that id follows the right-hand page
               id={side === 'right' ? 'page-content' : undefined}
               ref={ref}
               onClick={touchPage(side, index)}
@@ -508,7 +506,7 @@ export function Reader({
         position={
           display.length
             ? leaves === 2
-              ? `Page ${leftIndex + 1}–${Math.min(rightIndex + 1, display.length)} of ${display.length}`
+              ? `Page ${leftIndex + 1}-${Math.min(rightIndex + 1, display.length)} of ${display.length}`
               : `Page ${leftIndex + 1} of ${display.length}`
             : ''
         }

@@ -7,9 +7,9 @@ import { fillTheScreen } from '@/components/book/screen';
 /**
  * Every book gets its own closed cover before you read it.
  *
- * It carries the book's own title, author and colour, sits closed on the desk,
- * and swings open into the full-screen reader — the same movement the library's
- * own cover makes, so opening any book feels like the same gesture.
+ * It carries the book's title, author and colour and swings open into the
+ * full-screen reader, the same movement the library's own cover makes, so
+ * opening any book is the same gesture.
  *
  * It reuses the `.cover` class deliberately: the `.book:has(.cover)` rule keeps
  * the whole book at closed size until this starts opening, which is what makes
@@ -34,8 +34,8 @@ export function BookCover({
 }) {
   const [opening, setOpening] = useState(false);
 
-  // The page-turn buttons live on the body, outside this tree. Flag the cover
-  // while it is up so they stay out of sight until the book is actually open.
+  // the page-turn buttons live on the body, outside this tree. Flag the cover
+  // while it's up so they stay hidden until the book is actually open.
   useEffect(() => {
     document.body.classList.add('is-covered');
     return () => document.body.classList.remove('is-covered');
@@ -43,9 +43,8 @@ export function BookCover({
 
   const open = () => {
     if (opening) return;
-    // A book wants to be lying down. Asked for here because this is the tap:
-    // full screen and the orientation lock are granted to a gesture or not at
-    // all, and a phone that will not turn has the book turned for it instead.
+    // fullscreen and the orientation lock are granted to a gesture or not at
+    // all, so ask here. A phone that won't rotate gets the book rotated for it.
     void fillTheScreen();
     setOpening(true);
     setTimeout(onOpen, turnDuration() + 220);

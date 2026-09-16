@@ -23,7 +23,7 @@ export default async function Login({ searchParams }: { searchParams: Promise<Se
             Sign in to keep your place in every book you are reading, on any device you pick up.
           </Lead>
           <p>
-            No account yet? <Link href="/register">Create one</Link> — it takes a moment and the
+            No account yet? <Link href="/register">Create one</Link>. It takes a moment and the
             free books stay free.
           </p>
         </>

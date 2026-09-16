@@ -9,7 +9,7 @@ const Body = z.object({
   password: z.string().min(1),
 });
 
-/** Deliberately identical for "no such user" and "wrong password". */
+/** Same message for "no such user" and "wrong password", on purpose. */
 const REJECT = { error: 'That email and password do not match.' };
 
 export async function POST(req: Request) {

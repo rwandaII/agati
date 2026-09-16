@@ -35,7 +35,7 @@ export default async function Subscribe({ searchParams }: { searchParams: Promis
         <Scroller>
           <PageTitle kicker="One subscription">Read everything</PageTitle>
           <Lead>
-            Every book Agati has, for as long as your subscription is active — the paid titles, the
+            Every book Agati has, for as long as your subscription is active: the paid titles, the
             seven-day titles, and everything we add next.
           </Lead>
 
@@ -44,7 +44,7 @@ export default async function Subscribe({ searchParams }: { searchParams: Promis
               <p className="plan__name">A year</p>
               <p className="plan__price">${PLANS.YEARLY.usd}</p>
               <p className="plan__rwf">{formatRwf(PLANS.YEARLY.rwf)}</p>
-              <p className="plan__note">Best value — saves {formatRwf(saving)}</p>
+              <p className="plan__note">Best value, saves {formatRwf(saving)}</p>
               <Link className="btn btn--quiet" href="/subscribe?plan=YEARLY">
                 Choose the year
               </Link>
@@ -63,7 +63,7 @@ export default async function Subscribe({ searchParams }: { searchParams: Promis
 
           <p className="account__note">
             Prices are charged in Rwandan francs. A subscription runs until it expires and is not
-            renewed automatically — nothing is ever taken from you without asking.
+            renewed automatically. Nothing is ever taken from you without asking.
           </p>
         </Scroller>
       }
@@ -96,8 +96,8 @@ export default async function Subscribe({ searchParams }: { searchParams: Promis
                 amountRwf={PLANS[wanted].rwf}
                 label={
                   wanted === 'YEARLY'
-                    ? 'One year of everything — '
-                    : 'One month of everything — '
+                    ? 'One year of everything: '
+                    : 'One month of everything: '
                 }
               />
             </>

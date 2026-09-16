@@ -27,7 +27,7 @@ export default function Contact() {
           <PageTitle kicker="The last page">Get In Touch</PageTitle>
           <Lead>
             Whether you want to volunteer, donate books, write for us or bring a library to your
-            community — write to us. Somebody reads every message.
+            community, write to us. Somebody reads every message.
           </Lead>
 
           <Heading>Email</Heading>

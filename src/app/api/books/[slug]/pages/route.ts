@@ -6,11 +6,11 @@ import { loadAccess } from '@/lib/access/queries';
 const MAX_SPAN = 40;
 
 /**
- * The only way page text leaves the server.
+ * The only route that sends page text to the client.
  *
- * A reader who is not entitled gets the preview and nothing beyond it — the
- * ceiling is applied inside the database query, so paid text is never even
- * loaded into memory for them, let alone serialised.
+ * A reader without an entitlement gets the preview and nothing past it. The
+ * ceiling is applied inside the query, so paid text is never loaded into
+ * memory for them at all.
  */
 export async function GET(req: Request, { params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;

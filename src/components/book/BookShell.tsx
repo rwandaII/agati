@@ -11,11 +11,11 @@ import { PAGES, pageIndex } from '@/config/site';
 type Turn = { dir: 1 | -1; from: ReactNode; to: ReactNode };
 
 /**
- * Wraps every route in the book, and turns a page whenever the route changes.
+ * Wraps every route in the book and turns a page whenever the route changes.
  *
- * During a turn the pages beneath are a composite: turning forward, the left
- * half still shows the outgoing spread while the right half already shows the
- * incoming one. That is what a real book does.
+ * Mid-turn the pages underneath are a composite: going forward, the left half
+ * still shows the outgoing spread while the right half already shows the
+ * incoming one.
  */
 export function BookShell({
   children,
@@ -27,7 +27,7 @@ export function BookShell({
   const pathname = usePathname();
   const router = useRouter();
 
-  // The freshest children, without making the turn effect depend on them.
+  // latest children, without making the turn effect depend on them
   const latest = useRef<ReactNode>(children);
   latest.current = children;
 
@@ -50,7 +50,7 @@ export function BookShell({
 
     const from = pageIndex(prev.key);
     const to = pageIndex(pathname);
-    // Pages outside the book's spine (a reader, a checkout) turn forward.
+    // pages outside the book's spine (a reader, a checkout) turn forward
     const dir: 1 | -1 = to === -1 || from === -1 || to >= from ? 1 : -1;
 
     const incoming = latest.current;
@@ -62,8 +62,8 @@ export function BookShell({
     }, turnDuration());
 
     return () => clearTimeout(timer);
-    // Intentionally keyed on pathname alone: `children` changes identity every
-    // render, and re-running this on that would restart the turn mid-flight.
+    // keyed on pathname only: `children` gets a new identity every render, and
+    // re-running on that restarts the turn halfway through
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 

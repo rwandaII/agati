@@ -3,7 +3,7 @@ import { displayLines } from './lines';
 
 describe('displayLines', () => {
   it('joins a paragraph that a machine wrapped', () => {
-    // Straight out of Gutenberg's Alice: hard-wrapped at about seventy.
+    // straight out of Gutenberg's Alice, hard wrapped at about 70
     const para = [
       'In another moment down went Alice after it, never once considering how',
       'in the world she was to get out again.',
@@ -34,8 +34,8 @@ describe('displayLines', () => {
   });
 
   it('does not treat one long opening line as a wrapped paragraph on its own', () => {
-    // A long first line followed by a short second is the ambiguous case; the
-    // wrap reading is right far more often, and it is what a reader expects.
+    // a long first line followed by a short second is the ambiguous case. The
+    // wrap reading is right far more often.
     const para = [
       'She had not a moment to think about stopping herself before she found',
       'herself falling down a very deep well.',

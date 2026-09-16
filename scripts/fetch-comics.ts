@@ -5,20 +5,17 @@ import path from 'node:path';
 /**
  * Comics for the Agati shelf.
  *
- * Everything here was published in the United States before 1931, which puts it
- * unambiguously in the public domain — US copyright runs 95 years from
- * publication, so as of 2026 anything published up to 1930 is free. Each item
- * additionally carries archive.org's Public Domain Mark, and the fetcher
- * refuses to seed anything that fails either check.
+ * Everything here was published in the US before 1931, so US copyright (95
+ * years from publication) has run out. Each item also carries archive.org's
+ * Public Domain Mark and the fetcher refuses anything that fails either check.
  *
- * That bright line matters. Archive.org is full of comics whose uploaders have
- * tagged them "public domain" while they are plainly still in copyright —
- * Tintin, Marvel, manga. Putting any of those on a site that charges money
- * would expose Agati to a real claim.
+ * That line matters. Archive.org is full of comics whose uploaders tagged them
+ * public domain while they are plainly still in copyright (Tintin, Marvel,
+ * manga), and one of those on a site that charges money is a real claim
+ * against Agati.
  *
- * Pages come from the item's image zip, which archive.org will serve entry by
- * entry. That is far more reliable than their IIIF service, which rate-limits
- * bulk reads into uselessness.
+ * Pages come from the item's image zip, which archive.org serves entry by
+ * entry. Their IIIF service rate-limits bulk reads into uselessness.
  */
 const PUBLIC_DOMAIN_BEFORE = 1931;
 
@@ -73,7 +70,7 @@ export const COMICS: WantedComic[] = [
     coverColor: '#80C203',
     summary: 'Small daily humiliations, drawn with enormous sympathy.',
     description:
-      'Clare Briggs made a career of the moment when everything goes slightly wrong — and of the friend who turns up anyway.',
+      'Clare Briggs made a career of the moment when everything goes slightly wrong, and of the friend who turns up anyway.',
     maxPages: 40,
   },
   {
@@ -130,8 +127,8 @@ async function verifyPublicDomain(comic: WantedComic): Promise<ArchiveMeta> {
 }
 
 /**
- * The original scans live inside the item's image zip. Archive.org will list
- * that zip and serve each entry on its own, so we never download 300MB.
+ * The scans live inside the item's image zip. Archive.org will list that zip
+ * and serve each entry on its own, so we never pull down 300MB.
  */
 async function listPageImages(id: string, meta: ArchiveMeta): Promise<string[]> {
   const zips = (meta.files ?? [])
@@ -153,15 +150,12 @@ async function listPageImages(id: string, meta: ArchiveMeta): Promise<string[]> 
   return [];
 }
 
-/**
- * Fallback for items whose only scan is a JP2 zip. archive.org's IIIF service
- * will render those to JPEG, but it rate-limits hard, so this is patient.
- */
+/** Fallback for JP2-only items. IIIF will render those to JPEG but rate-limits hard. */
 async function iiifPages(id: string, limit: number): Promise<Buffer[]> {
   const out: Buffer[] = [];
 
   for (let i = 1; i <= limit; i++) {
-    // The IIIF identifier for page n of an item is `<id>$<n>` — the dollar is literal.
+    // IIIF identifier for page n is `<id>$<n>`. The dollar is literal.
     const url = `https://iiif.archive.org/iiif/${id}$${i}/full/1100,/0/default.jpg`;
     let got: Buffer | null = null;
 
@@ -252,7 +246,7 @@ async function main() {
       console.log(`    ${pages.length} pages saved`);
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
-      console.log(`    SKIPPED — ${msg}`);
+      console.log(`    SKIPPED: ${msg}`);
       failures.push(`${comic.title}: ${msg}`);
     }
   }

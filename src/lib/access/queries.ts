@@ -42,8 +42,8 @@ export async function loadAccess(
 }
 
 /**
- * Starts the free window the first time a reader opens the book.
- * Idempotent: re-opening the book never buys the reader more time.
+ * Starts the free window the first time a reader opens the book. Idempotent, so
+ * reopening never buys more time.
  */
 export async function startTrial(
   userId: string,

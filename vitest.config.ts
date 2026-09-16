@@ -5,8 +5,8 @@ import path from 'node:path';
 export default defineConfig({
   plugins: [react()],
   test: {
-    // Node by default - it is far faster. Component tests opt in with
-    // a `// @vitest-environment jsdom` docblock at the top of the file.
+    // node by default, it's much faster. Component tests opt in with a
+    // `// @vitest-environment jsdom` docblock at the top of the file.
     environment: 'node',
     globals: true,
     fileParallelism: false,

@@ -18,7 +18,6 @@ export default async function BookCheckout({ params }: { params: Promise<{ slug:
   const book = await getBook(slug);
   if (!book) notFound();
 
-  // Nothing to sell, or nothing to sell it to.
   if (book.accessType === 'FREE_FOREVER' || book.priceRwf <= 0) redirect(`/read/${book.slug}`);
 
   const access = await loadAccess(user.id, book);
@@ -62,7 +61,7 @@ export default async function BookCheckout({ params }: { params: Promise<{ slug:
             kind="book"
             slug={book.slug}
             amountRwf={book.priceRwf}
-            label={`${book.title} — `}
+            label={`${book.title}: `}
           />
         </Scroller>
       }

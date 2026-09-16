@@ -17,10 +17,8 @@ const DATE = (d: Date) =>
   d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
 
 /**
- * The page a reader meets when their entitlement runs out.
- *
- * It is a gate, not a wall: it always says what happened, how far they got,
- * and gives them both ways forward.
+ * What a reader meets when their entitlement runs out. It always says what
+ * happened, how far they got, and gives both ways forward.
  */
 export function Paywall({
   reason,
@@ -46,13 +44,13 @@ export function Paywall({
 
   const buy = (
     <Link className="btn btn--primary" href={`/checkout/book/${book.slug}`}>
-      Buy this book — {formatRwf(book.priceRwf)}
+      Buy this book, {formatRwf(book.priceRwf)}
     </Link>
   );
 
   const subscribe = (
     <Link className="btn btn--quiet" href="/subscribe">
-      Or read everything — ${PLANS.YEARLY.usd} a year
+      Or read everything, ${PLANS.YEARLY.usd} a year
     </Link>
   );
 
@@ -64,7 +62,7 @@ export function Paywall({
     heading = 'Your free week starts when you open this book.';
     body = (
       <p>
-        Seven days with <em>{book.title}</em>, from the moment you begin — not from the day it was
+        Seven days with <em>{book.title}</em>, from the moment you begin, not from the day it was
         published. After that you can keep it, or subscribe and keep everything.
       </p>
     );
@@ -79,7 +77,7 @@ export function Paywall({
       <>
         <p>
           Your seven days with <em>{book.title}</em> are up
-          {trialEndsAt ? ` — the window closed on ${DATE(trialEndsAt)}` : ''}.
+          {trialEndsAt ? `, the window closed on ${DATE(trialEndsAt)}` : ''}.
         </p>
         <p>
           Buying this book keeps it for good. Subscribing opens this one and every other book Agati
@@ -97,7 +95,7 @@ export function Paywall({
     heading = 'Sign in to keep reading.';
     body = (
       <p>
-        <em>{book.title}</em> is free for a week once you have an account — and an account also
+        <em>{book.title}</em> is free for a week once you have an account, and an account also
         remembers where you stopped, on any device.
       </p>
     );

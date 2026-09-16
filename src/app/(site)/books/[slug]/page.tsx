@@ -38,7 +38,7 @@ export default async function BookDetail({ params }: { params: Promise<{ slug: s
 
   const badge = accessBadge(book);
 
-  // Only ever the opening page, which every visitor is allowed to see.
+  // opening page only, every visitor is allowed that much
   const firstPage = await prisma.bookPage.findFirst({
     where: { bookId: book.id, index: 0 },
     select: { content: true },
@@ -109,7 +109,7 @@ export default async function BookDetail({ params }: { params: Promise<{ slug: s
                     Buy for {formatRwf(book.priceRwf)}
                   </Link>
                   <Link className="btn btn--quiet" href="/subscribe">
-                    Or read everything — ${PLANS.YEARLY.usd} a year
+                    Or read everything, ${PLANS.YEARLY.usd} a year
                   </Link>
                 </>
               ) : null}

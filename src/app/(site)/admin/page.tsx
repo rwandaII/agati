@@ -121,7 +121,7 @@ export default async function Admin() {
           <Heading>Adding books</Heading>
           <p className="account__note">
             Post to <code>/api/admin/books</code> with the book&rsquo;s details and its full text in
-            a <code>text</code> field — it is paginated automatically. To change how a title earns,
+            a <code>text</code> field. It is paginated automatically. To change how a title earns,
             PATCH it with a new <code>accessType</code> and <code>priceRwf</code>. Bulk imports go
             through <code>scripts/fetch-books.ts</code>.
           </p>

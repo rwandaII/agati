@@ -12,8 +12,7 @@ export function Cover({ onOpen }: { onOpen: () => void }) {
 
   const open = () => {
     if (opening) return;
-    // The website is a book too, and a book wants to be lying down. Asked for
-    // here because this is the tap: full screen and the orientation lock are
+    // has to be asked for on the tap. Fullscreen and the orientation lock are
     // granted to a gesture or not at all.
     void fillTheScreen();
     setOpening(true);

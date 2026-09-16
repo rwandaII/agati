@@ -5,8 +5,8 @@ const APPROVAL_MS = 4000;
 type Row = { input: ChargeInput; createdAt: number };
 
 /**
- * Plays the exact shape of the real Mobile Money flow — pending, then approved
- * on the phone — so the whole product is demonstrable before a merchant account
+ * Plays the same shape as the real Mobile Money flow, pending then approved on
+ * the phone, so the whole product can be demoed before a merchant account
  * exists. No real money moves.
  */
 export class MockProvider implements PaymentProvider {

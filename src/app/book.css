@@ -1,17 +1,15 @@
 /* ============================================================
    The stage
 
-   A book wants a landscape box: two pages side by side is what a
-   book is, and a phone held upright is the one screen that cannot
-   give it one. Chrome on Android will turn the screen when asked;
-   Safari has never offered the choice. So where the phone will not
-   turn, the stage turns instead, and the book never learns which
-   of the two happened — everything below is measured in stage
-   units, which are the screen's, or the screen's swapped over.
+   A book wants a landscape box, and an upright phone is the one
+   screen that can't give it one. Chrome on Android will rotate
+   the screen when asked, Safari won't, so where the phone won't
+   turn, the stage turns instead. The book never learns which of
+   the two happened: everything below is measured in stage units,
+   which are the screen's, or the screen's swapped over.
 
-   The fallbacks matter: only a book from the collection has a
-   stage. The website's own book reads them and gets the viewport,
-   exactly as it did before.
+   Only a book from the collection has a stage. The website's own
+   book reads these and gets the viewport, as it did before.
    ============================================================ */
 .stage {
   --stage-w: 100vw;
@@ -28,27 +26,25 @@
   --stage-w: 100dvh;
   --stage-h: 100vw;
   overflow: hidden;
-  /* Turned about its own middle and pulled back to the middle of the screen,
-     so a box the shape of the screen laid on its side lands exactly on the
-     glass — and so the turn itself has something to pivot around. */
+  /* rotated about its own middle and pulled back to the centre, so a box the
+     shape of the screen laid on its side lands exactly on the glass, and the
+     turn has something to pivot around */
   transform-origin: center;
   transform: translate(-50%, -50%) rotate(90deg);
   animation: stage-turn 880ms cubic-bezier(0.33, 0.9, 0.28, 1) both;
-  /* The stage holds the whole book — paper grain, gradients, photographs. Told
-     in advance that only its transform will change, the browser draws all that
-     once and then just moves the picture; without this it redraws the lot on
-     every frame of the turn, which is what makes a turn stutter. */
+  /* The stage holds the whole book: paper grain, gradients, photographs.
+     Telling the browser in advance that only the transform changes means it
+     draws all that once and then just moves the picture. Without it the lot
+     gets redrawn on every frame of the turn, which is what makes it stutter. */
   will-change: transform;
   backface-visibility: hidden;
 }
 
-/* You should see the book turn, not find it already turned.
-   It starts lying the long way across a screen too narrow to hold it, held
-   back far enough to be seen whole; it swings up, growing as it comes; and it
-   goes a few degrees past square before settling back — which is what a real
-   object does when you set it down, and the reason this reads as a book being
-   turned rather than a picture being rotated.
-   `--turn-scale` is the screen's own ratio, measured by the stage. */
+/* You should see the book turn, not find it already turned. It starts lying
+   the long way across a screen too narrow to hold it, held back far enough to
+   be seen whole, swings up growing as it comes, and goes a few degrees past
+   square before settling back, which is what a real object does when you set it
+   down. `--turn-scale` is the screen's own ratio, measured by the stage. */
 @keyframes stage-turn {
   0% {
     transform: translate(-50%, -50%) rotate(0deg) scale(var(--turn-scale, 0.5));
@@ -65,8 +61,8 @@
 }
 
 /* Blur sampled from behind a layer has to be recomputed every time the layer
-   moves, and these sit on top of the one thing that moves. A turned book does
-   without them; on the glass they are a solid pill either way. */
+   moves, and these sit on the one thing that moves. A rotated book does without
+   them; they are a solid pill either way. */
 :root[data-turn='90'] .pageturn__count,
 :root[data-turn='90'] .resume,
 :root[data-turn='90'] .pen__list {
@@ -111,7 +107,7 @@
    ============================================================ */
 .book {
   position: relative;
-  /* The website fills the screen. A library book does not — see below. */
+  /* the website fills the screen, a library book doesn't (see below) */
   width: var(--stage-w, 100vw);
   height: var(--stage-h, 100dvh);
   perspective: 2600px;
@@ -402,12 +398,12 @@
 /* ============================================================
    Narrow screens: one page, not two
    ============================================================ */
-/* Narrow means one page — unless the stage says otherwise. A phone turned on
-   its side is 667–930px wide and holds a spread perfectly well, and no media
-   query can see that: under a turned book they are still looking at an upright
-   phone. So `data-leaves` decides, and everything below stands aside when it
-   says two. A screen with no stage on it — the server's first render — is
-   treated as one page here, which is what a narrow screen used to get. */
+/* Narrow means one page, unless the stage says otherwise. A phone turned on its
+   side is 667-930px wide and holds a spread perfectly well, and no media query
+   can see that: under a rotated book they are still looking at an upright
+   phone. So data-leaves decides, and everything below stands aside when it says
+   two. A screen with no stage on it (the server's first render) is treated as
+   one page, which is what a narrow screen used to get. */
 @media (max-width: 780px) {
   html:not([data-leaves='2']) .book__viewport--reading .book { aspect-ratio: 3 / 4.4; }
   html:not([data-leaves='2']) .spread { grid-template-columns: 1fr; }
@@ -417,10 +413,10 @@
   html:not([data-leaves='2']) .book__spine { display: none; }
 
   /* --- the website's own book ---
-     A spread will not fit a phone at a readable size, and hiding one of its
-     pages would take half of every page of the site with it. So the two pages
-     stack and the book scrolls: everything that is on the screen of a computer
-     is on the screen of a phone, one page under the other. */
+     A spread won't fit a phone at a readable size, and hiding one of its pages
+     would take half of every page of the site with it. So the two pages stack
+     and the book scrolls: everything that is on a computer screen is on the
+     phone screen too, one page under the other. */
   html:not([data-leaves='2']) .book__viewport:not(.book__viewport--reading) .spread {
     grid-template-columns: 1fr;
     grid-auto-rows: max-content;
@@ -1658,10 +1654,10 @@
   .page__running, .page__folio { max-width: none; }
 
   /* --- the tabs move to the fore-edge ---
-     Six tabs across the head of a phone crowd each other and sit on top of
-     the running head. Down the outer edge they have all the room they need,
-     they stop covering the words, and they become the tabs of a real book —
-     the ones you put a thumb on to get straight to a section. */
+     Six tabs across the head of a phone crowd each other and sit on top of the
+     running head. Down the outer edge they have all the room they need, they
+     stop covering the words, and they become the tabs of a real book, the ones
+     you put a thumb on to get straight to a section. */
   .ribbons {
     top: clamp(38px, 6vh, 58px);
     right: 0;
@@ -1684,8 +1680,8 @@
     height: auto;
     min-height: 88px;
     padding: 14px 0;
-    /* Squared against the edge of the book, tapering to a point that
-       reaches into the page — the same ribbon, turned on its side. */
+    /* Squared against the edge of the book, tapering to a point that reaches
+       into the page. The same ribbon, turned on its side. */
     clip-path: polygon(34% 0, 100% 0, 100% 100%, 34% 100%, 0 50%);
     background: linear-gradient(
       100deg,
@@ -1717,8 +1713,8 @@
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.55);
   }
 
-  /* Room at the fore-edge for the tabs, and the head of the page is free
-     again — the running title is no longer underneath them. */
+  /* Room at the fore-edge for the tabs, and the head of the page is free again
+     now that the running title isn't underneath them. */
   html:not([data-leaves='2']) .page { padding: clamp(24px, 4vh, 38px) 40px 14px 16px; }
   html:not([data-leaves='2']) .book__viewport--reading .page { padding-right: 40px; }
 
@@ -1759,8 +1755,8 @@
   .ribbon { height: 34px; }
   .ribbon--active { height: 42px; }
 }
-/* ...but a short phone still has its tabs down the edge, where height is
-   the one thing they must not give up. */
+/* ...but a short phone still has its tabs down the edge, where height is the
+   one thing they must not give up. */
 @media (max-height: 560px) and (max-width: 780px) {
   .page { padding-top: 20px; }
   .ribbon { height: auto; min-height: 62px; }
@@ -1810,9 +1806,9 @@
 /* ============================================================
    Comic plates, and reading them properly
 
-   A whole newspaper page shrunk to half a screen is beautiful but
-   the lettering is too small to read. The plate opens full size on
-   a tap, where the balloons are legible.
+   A whole newspaper page shrunk to half a screen is beautiful
+   but the lettering is too small to read. The plate opens full
+   size on a tap, where the balloons are legible.
    ============================================================ */
 .comic__frame {
   position: absolute;
@@ -1908,9 +1904,9 @@
 /* ============================================================
    Turning the pages, and marking them
 
-   A page is turned by touching it — the right page forward, the
-   left page back — so nothing floats over the paper. Only the
-   count remains, kept off the page.
+   A page is turned by touching it, right page forward and left
+   page back, so nothing floats over the paper. Only the count
+   remains, kept off the page.
    ============================================================ */
 .page {
   cursor: pointer;
@@ -1977,8 +1973,8 @@ body.is-covered .pageturn__count {
 /* ============================================================
    Opening the book
 
-   The cover swings on its spine while the volume grows into place
-   and the first spread rises to meet you — one movement, so
+   The cover swings on its spine while the volume grows into
+   place and the first spread rises to meet you. One movement, so
    opening the book and arriving inside it are the same gesture.
    ============================================================ */
 .cover--opening .cover__face {
@@ -2025,10 +2021,10 @@ body.is-covered .pageturn__count {
 /* ============================================================
    Keeping your place
 
-   The pen leaves a mark on the page; the mark is drawn in the
-   margin where a reader would slip a piece of paper. Both sit
-   outside the book for the same reason the page-turn buttons
-   do — the book clips whatever is rendered inside it.
+   The pen leaves a mark on the page, drawn in the margin where a
+   reader would slip a piece of paper. Both sit outside the book
+   for the same reason the page-turn buttons do: the book clips
+   whatever is rendered inside it.
    ============================================================ */
 .sr-only {
   position: absolute;
@@ -2327,8 +2323,8 @@ body.is-covered .pageturn__count {
 .resume__close:hover { color: var(--paper); background: rgba(255, 255, 255, 0.08); }
 
 @media (max-width: 780px) {
-  /* The foot of the screen belongs to the page-turn buttons, so the pen
-     moves above them and the notice above that. */
+  /* The foot of the screen belongs to the page-turn buttons, so the pen sits
+     above them and the notice above that. */
   .pen {
     left: 8px;
     bottom: 8px;
@@ -2364,11 +2360,11 @@ body.is-covered .pageturn__count {
    Unfolding a page
 
    On a wide screen a page holds what it holds and the rest
-   scrolls inside it. On a phone that put a scrollbar down the
-   middle of the paper, and a second scroll inside the one
-   already moving the book, so there the page is cut off where
-   it stops being comfortable and opened the rest of the way by
-   asking.
+   scrolls inside it. On a phone that gave us a scrollbar down
+   the middle of the paper, plus a second scroll inside the one
+   already moving the book, so there the page is cut off where it
+   stops being comfortable and opened the rest of the way on
+   request.
    ============================================================ */
 .fold {
   display: contents;
@@ -2435,14 +2431,13 @@ body.is-covered .pageturn__count {
    The book arrives
 
    Opening the site should feel like a book being set down in
-   front of you, not like a page appearing. So the desk lights
+   front of you rather than a page appearing. So the desk lights
    first, the volume comes up onto it and settles, and the cover
-   puts its title on last — by which time your eye is already
+   puts its title on last, by which time your eye is already
    where the title is going to be.
 
-   This runs on load. Moving between sections of the site keeps
-   the same book, so it does not play again; you are turning
-   pages by then, not being handed the book.
+   This runs on load. Moving between sections keeps the same
+   book, so it doesn't play again.
    ============================================================ */
 .book {
   animation: book-arrive 820ms var(--turn-ease) backwards;
@@ -2499,20 +2494,20 @@ body.is-covered .pageturn__count {
 /* ============================================================
    The spread, at phone scale
 
-   The same book as on a desk — two pages, a gutter between them,
+   The same book as on a desk: two pages, a gutter between them,
    a block of paper at each fore-edge, the running head and the
    folio in their places. Only smaller. Nothing here changes what
-   the page is; it changes how big the details are, because a
-   phone lying on its side is about a third of a desk.
+   the page is, just how big the details are, because a phone
+   lying on its side is about a third of a desk.
 
-   Keyed on the reader's own attributes rather than a media query,
-   because both screens this has to serve look identical to one:
-   a phone turned by its browser reports 844x390, and a phone the
-   reader turned itself still reports 390x844.
+   Keyed on the reader's own attributes rather than a media
+   query, because both screens this has to serve look identical
+   to one: a phone turned by its browser reports 844x390, and a
+   phone the reader turned still reports 390x844.
    ============================================================ */
 /* A band at the foot for the pen and the page count, so they rest on the desk
-   beside the book rather than on top of its paper — which is where they are
-   on a desk, and the reason the folio can still be read. */
+   beside the book rather than on top of its paper, which is where they would be
+   on a real desk and why the folio can still be read. */
 html[data-stage='phone'][data-leaves='2'] .desk {
   padding: 4px 7px 40px;
 }
@@ -2527,9 +2522,9 @@ html[data-stage='phone'][data-leaves='2'] .book {
 
 /* Room at the head for the tabs, as on a desk. Enough room: a tab hangs from
    the top edge of the book down into the page, and the running title has to
-   start below the deepest of them — the one for the section you are on, which
-   is drawn longer than the rest — with daylight between, or the tab reads as
-   sitting on top of the words rather than above them. */
+   start below the deepest of them (the section you are on, drawn longer than
+   the rest) with daylight between, or the tab reads as sitting on the words
+   rather than above them. */
 html[data-stage='phone'][data-leaves='2'] .page {
   padding: 40px 18px 7px;
 }
@@ -2548,9 +2543,9 @@ html[data-stage='phone'][data-leaves='2'] .prose__scroll {
   line-height: 1.56;
   max-width: none;
   padding-right: 3px;
-  /* A scrollbar down the middle of the paper is not a thing a book has, and
-     on a phone it is a finger's width of the page given to something a finger
-     does not need. The page still scrolls; it just does not say so. */
+  /* A scrollbar down the middle of the paper is not a thing a book has, and on
+     a phone it is a finger's width of the page given to something a finger
+     doesn't need. The page still scrolls, it just doesn't say so. */
   scrollbar-width: none;
 }
 html[data-stage='phone'][data-leaves='2'] .page__body::-webkit-scrollbar,
@@ -2586,10 +2581,10 @@ html[data-stage='phone'][data-leaves='2'] .book__edges--left { left: -5px; }
 html[data-stage='phone'][data-leaves='2'] .book__edges--right { right: -5px; }
 
 /* --- the tabs, across the head ---
-   Where they are on a desk. Stated here rather than left to the media
-   queries, because those move the tabs to the fore-edge for a screen that
-   shows one page — and a phone lying on its side shows two, while still
-   measuring 390px to every query that asks. */
+   Where they are on a desk. Stated here rather than left to the media queries,
+   because those move the tabs to the fore-edge for a screen that shows one
+   page, and a phone lying on its side shows two while still measuring 390px to
+   every query that asks. */
 html[data-stage='phone'][data-leaves='2'] .ribbons {
   top: 0;
   bottom: auto;
@@ -2705,11 +2700,11 @@ html[data-stage='phone'] .cover__hint { font-size: 8.5px; }
 /* ============================================================
    The measurer's hidden twin
 
-   `useMeasurer` lays the text out in an off-screen clone to work
-   out where each page ends. The clone is given the real column's
-   width and font inline, from the page itself — but a drop capital
-   comes from the stylesheet, and a letter three lines tall changes
-   how many lines fit. So it gets one too.
+   useMeasurer lays the text out in an off-screen clone to work
+   out where each page ends. The clone gets the real column's
+   width and font inline, from the page itself, but the drop
+   capital comes from the stylesheet, and a letter three lines
+   tall changes how many lines fit. So it gets one too.
    ============================================================ */
 .ghost p:first-of-type::first-letter {
   float: left;
@@ -2728,8 +2723,8 @@ html[data-stage='phone'][data-leaves='2'] .ghost p:first-of-type::first-letter {
 
    A shelf with two books on it is not a shelf. On a page a third
    the size of a desk's, the books have to be a third the size
-   too — small standing volumes you look along, which is what the
-   shelf is for, rather than two covers filling the paper.
+   too: small standing volumes you look along, which is what a
+   shelf is for.
    ============================================================ */
 html[data-stage='phone'][data-leaves='2'] .shelf {
   grid-template-columns: repeat(auto-fill, minmax(68px, 1fr));
@@ -2787,16 +2782,16 @@ html[data-stage='phone'][data-leaves='2'] .home__mark { width: 52px; }
 /* ============================================================
    While the book is coming round
 
-   The opening sets a great deal in motion at once: the volume
-   growing out of its cover, the desk lifting under it, the words
-   settling line by line. On a desk that is the whole charm of it.
-   On a phone it lands on top of the turn — and unlike the turn,
-   most of it is laid out or filtered rather than merely moved,
-   so the browser must draw the book again for every frame.
+   The opening sets a lot in motion at once: the volume growing
+   out of its cover, the desk lifting under it, the words
+   settling line by line. On a desk that is the charm of it. On a
+   phone it lands on top of the turn, and most of it is layout or
+   filter work rather than a plain transform, so the browser has
+   to draw the book again for every frame.
 
    So for the second the turn takes, the turn has the stage. The
-   cover keeps swinging, because that is the thing you are meant
-   to be watching; everything else waits its moment.
+   cover keeps swinging, since that is the thing you are meant to
+   be watching. Everything else waits its moment.
    ============================================================ */
 :root[data-turning] .book {
   /* Growing the book out of its cover animates width and height, which is a

@@ -5,11 +5,11 @@ import type { ReactNode } from 'react';
 /**
  * One turning leaf.
  *
- * `front` and `back` each receive a COMPLETE spread. The faces clip to the half
- * that should be visible, so callers never have to split content by hand:
+ * `front` and `back` each take a COMPLETE spread and clip to the half that
+ * should be visible, so callers never split content by hand:
  *
- *   forward  — front shows the outgoing RIGHT page, back shows the incoming LEFT page
- *   backward — front shows the outgoing LEFT page,  back shows the incoming RIGHT page
+ *   forward:  front = outgoing right page, back = incoming left page
+ *   backward: front = outgoing left page,  back = incoming right page
  */
 export function Leaf({
   dir,

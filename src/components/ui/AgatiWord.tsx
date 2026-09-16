@@ -1,10 +1,6 @@
 import { LOGO_SEQUENCE } from '@/config/brand';
 
-/**
- * The word "Agati", lettered in the logo's own colours.
- *
- * Wherever the name appears it carries the identity, the way the mark does.
- */
+/** The word "Agati", lettered in the logo's own colours. */
 export function AgatiWord({ text = 'Agati', className = '' }: { text?: string; className?: string }) {
   return (
     <span className={`agatiword ${className}`.trim()}>

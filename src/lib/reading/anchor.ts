@@ -1,19 +1,18 @@
 /**
- * Keeping a place in a book that is set afresh every time it is opened.
+ * Keeping a place in a book that is set afresh every time it's opened.
  *
- * The reader re-flows a book's text into whatever pages fit the screen in front
+ * The reader reflows a book's text into whatever pages fit the screen in front
  * of it, so "page 30" means one thing on a laptop and something else on a
  * phone. Saving a page number would hand a reader back to the wrong paragraph
- * the moment they picked up a different device.
+ * as soon as they picked up a different device.
  *
  * So a place is recorded as an amount of book rather than a page: how much text
- * lies behind you. Whitespace is not counted, because that is exactly what
- * changes when the same text is broken into different pages — the words do not.
- * The number therefore means the same thing on every screen, and the page it
- * lands on is worked out fresh each time.
+ * lies behind you, whitespace not counted, since whitespace is exactly what
+ * changes when the same text is broken into different pages. The number means
+ * the same thing on every screen and the page is worked out fresh each time.
  *
- * Comics do not re-flow: a plate is a page. They anchor on the plate's number
- * and never come through here.
+ * Comics don't reflow, a plate is a page. They anchor on the plate number and
+ * never come through here.
  */
 
 /** How much text a string carries, ignoring how it happens to be laid out. */
@@ -40,6 +39,6 @@ export function pageAtAnchor(pages: string[], anchor: number): number {
     if (anchor < seen) return i;
   }
 
-  // Saved beyond what this edition holds — the end is the closest we can offer.
+  // saved beyond what this edition holds, so the end is the closest we can get
   return pages.length - 1;
 }

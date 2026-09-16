@@ -45,7 +45,7 @@ export default function About() {
 
           <Heading>When</Heading>
           <p>
-            Six young people from Musanze — still students at the time — pooled their personal
+            Six young people from Musanze, still students at the time, pooled their personal
             savings and opened the first Agati library in <strong>April 2018</strong> with fewer
             than 200 books.
           </p>
@@ -61,7 +61,7 @@ export default function About() {
 
           <Heading>Our journey</Heading>
           <p>
-            The team changed as the work did — from enthusiastic students to strategic thinkers
+            The team changed as the work did, from enthusiastic students to strategic thinkers
             focused on sustainability, because enthusiasm opens a library and only planning keeps it
             open. The pandemic pushed us out of our buildings and into the Mobile Library, the radio
             programme, the Young Writers Workshops and the Writers Residences.
@@ -75,7 +75,7 @@ export default function About() {
 
           <Heading>Our partners</Heading>
           <p>
-            Our programmes run with Projet Appui Culture — Grands Lacs (PAC-GL), Butterfield &amp;
+            Our programmes run with Projet Appui Culture - Grands Lacs (PAC-GL), Butterfield &amp;
             Robinson&rsquo;s Slow Fund, Project Life International and Ready for Reading.
           </p>
 

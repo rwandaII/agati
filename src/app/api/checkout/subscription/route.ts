@@ -33,7 +33,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'You already have an active subscription.' }, { status: 409 });
   }
 
-  // The amount comes from our own price table, never from the request body.
+  // amount comes from our own price table, never from the request body
   const plan = parsed.data.plan;
   const amountRwf = PLANS[plan].rwf;
   const reference = newReference('sub');
@@ -59,7 +59,7 @@ export async function POST(req: Request) {
       phone: parsed.data.phone,
       email: user.email,
       name: user.name,
-      description: `Agati Library — ${plan === 'YEARLY' ? 'one year' : 'one month'}`,
+      description: `Agati Library: ${plan === 'YEARLY' ? 'one year' : 'one month'}`,
     });
 
     await prisma.purchase.update({

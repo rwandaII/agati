@@ -52,8 +52,8 @@ export default async function ReadPage({ params }: { params: Promise<{ slug: str
       })
     : [];
 
-  // The ceiling is applied in the query itself, so page text the reader has not
-  // earned is never loaded into this component's props, let alone the HTML.
+  // ceiling is applied in the query, so unearned text never reaches props,
+  // let alone the HTML
   const ceiling = access.canRead ? INITIAL - 1 : access.previewPages - 1;
 
   const pages = await prisma.bookPage.findMany({

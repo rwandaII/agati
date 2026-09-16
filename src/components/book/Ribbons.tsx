@@ -7,8 +7,8 @@ import { PAGES, pageIndex } from '@/config/site';
 import { LOGO_SEQUENCE } from '@/config/brand';
 
 /**
- * Section tabs along the head of the book, each in one of the logo's colours —
- * so the navigation carries the identity. Real links, so they work without JS.
+ * Section tabs along the head of the book, each in one of the logo colours.
+ * Real links, so they work without JS.
  */
 export function Ribbons() {
   const pathname = usePathname();

@@ -8,10 +8,9 @@ import { stageEl } from '@/components/book/screen';
 /**
  * A scanned comic plate.
  *
- * Fitted to the page rather than cropped, so no panel is ever cut off — but a
- * whole newspaper page shrunk to half a screen makes the lettering too small to
- * read, which defeats the point. Tapping a plate opens it full size, where the
- * speech balloons are legible and you can move around the page.
+ * Fitted to the page rather than cropped, so no panel is ever cut off, but a
+ * whole newspaper page shrunk to half a screen is unreadable. Tapping a plate
+ * opens it full size where the lettering works and you can move around.
  */
 export function ComicPage({
   src,
@@ -27,7 +26,7 @@ export function ComicPage({
 
   useEffect(() => setMounted(true), []);
 
-  // Escape closes, and the page behind must not scroll away underneath.
+  // escape closes, and the page behind mustn't scroll away underneath
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
@@ -53,7 +52,7 @@ export function ComicPage({
           type="button"
           className="comic__frame"
           onClick={() => setOpen(true)}
-          aria-label={`${alt} — open larger`}
+          aria-label={`${alt}, open larger`}
         >
           <Image
             className="comic__plate"
@@ -74,9 +73,9 @@ export function ComicPage({
 
       {/*
         The book block carries `contain: layout paint`, which makes it a
-        containing block for fixed positioning — an overlay rendered in place
+        containing block for fixed positioning, so an overlay rendered in place
         would be trapped inside the book. A portal lifts it out to the frame,
-        where full screen genuinely means full screen — and no further, or it
+        where full screen genuinely means full screen, and no further, or it
         would stay upright while a turned book lay on its side beneath it.
       */}
       {open && mounted

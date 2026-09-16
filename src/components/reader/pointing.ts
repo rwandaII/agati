@@ -4,12 +4,12 @@ import { weigh } from '@/lib/reading/anchor';
 import { downFrom } from '@/components/book/geometry';
 
 /**
- * Turning a place on the screen into a place in the book, and back again.
+ * A place on the screen into a place in the book, and back again.
  *
  * A reader pointing the pen at a line means that line, not that page. So a
- * click has to be resolved down to the character it landed on, and a mark has
- * to find its way back to the same character when the book is opened again on
- * a screen that lays the text out differently.
+ * click has to resolve down to the character it landed on, and a mark has to
+ * find its way back to the same character when the book is opened again on a
+ * screen that lays the text out differently.
  */
 
 /** The caret nearest a point, across the two APIs browsers offer for it. */
@@ -31,8 +31,8 @@ function caretAt(x: number, y: number): Range | null {
 }
 
 /**
- * How much of a page's text lies above and to the left of a point — the same
- * measure `lib/reading/anchor` uses, so the two agree.
+ * How much of a page's text lies above and to the left of a point. Same measure
+ * lib/reading/anchor uses, so the two agree.
  */
 export function charsBefore(body: Element, x: number, y: number): number {
   const caret = caretAt(x, y);
@@ -52,9 +52,9 @@ export function charsBefore(body: Element, x: number, y: number): number {
 /**
  * The words a mark should be known by: the line the reader pointed at.
  *
- * Taken from the paragraph under the nib rather than from the click's exact
- * character, and snapped back to the start of a word — a label beginning
- * mid-word reads as damage, and a mark is meant to be recognised at a glance.
+ * Taken from the paragraph under the nib rather than the exact character, and
+ * snapped back to the start of a word. A label beginning mid-word reads as
+ * damage, and a mark is meant to be recognised at a glance.
  */
 export function wordsAt(body: Element, x: number, y: number): string {
   const caret = caretAt(x, y);
@@ -68,7 +68,7 @@ export function wordsAt(body: Element, x: number, y: number): string {
   const text = (block.textContent ?? '').replace(/\s+/g, ' ').trim();
   if (!text) return '';
 
-  // Where in that paragraph the nib landed.
+  // where in that paragraph the nib landed
   let at = 0;
   if (node?.nodeType === Node.TEXT_NODE && caret) {
     const upTo = document.createRange();
@@ -81,8 +81,8 @@ export function wordsAt(body: Element, x: number, y: number): string {
     }
   }
 
-  // Never end so close to the paragraph's end that the label is a fragment,
-  // and never start in the middle of a word.
+  // don't end so close to the paragraph's end that the label is a fragment, and
+  // don't start in the middle of a word
   at = Math.max(0, Math.min(at, Math.max(0, text.length - 24)));
   while (at > 0 && !/\s/.test(text[at - 1])) at--;
 
@@ -92,15 +92,12 @@ export function wordsAt(body: Element, x: number, y: number): string {
 }
 
 /**
- * Where on the page a given amount of text falls, so a mark can be drawn
- * beside the line it belongs to rather than at the top of the page.
+ * Where on the page a given amount of text falls, so a mark can be drawn beside
+ * its line rather than at the top of the page. Null when the text runs out
+ * before that point, which happens while the page is still being laid out.
  *
- * Returns the distance from the top of `page`, or null when the text runs out
- * before that point — which happens while the page is still being laid out.
- *
- * The browser answers in screen coordinates, and on a turned book those are
- * not the page's: `turned` says so, and the distance is taken along the page's
- * own downward instead.
+ * The browser answers in screen coordinates, and on a rotated book those aren't
+ * the page's, so `turned` says to measure along the page's own downward.
  */
 export function topOfChar(
   page: Element,
@@ -122,7 +119,7 @@ export function topOfChar(
       continue;
     }
 
-    // The character we want is inside this node: walk it to find which one.
+    // the character we want is inside this node, walk it to find which one
     let offset = 0;
     for (; offset < text.length && seen < chars; offset++) {
       if (!/\s/.test(text[offset])) seen++;

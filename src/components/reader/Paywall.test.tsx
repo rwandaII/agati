@@ -21,7 +21,7 @@ describe('Paywall', () => {
 
   it('invites a signed-out visitor to sign in rather than to pay', () => {
     render(<Paywall reason="PREVIEW_ONLY" book={book} signedIn={false} />);
-    // Both ways in are offered on purpose, so there are two matching links.
+    // both ways in are offered on purpose, so there are two matching links
     expect(screen.getAllByRole('link', { name: /sign in|create an account/i })).toHaveLength(2);
     expect(screen.queryByRole('link', { name: /buy this book/i })).toBeNull();
   });

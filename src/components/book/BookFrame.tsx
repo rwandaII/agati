@@ -2,10 +2,10 @@ import type { ReactNode } from 'react';
 import { Ribbons } from './Ribbons';
 
 /**
- * The desk, the book body, the page-edge stacks and the spine.
+ * Desk, book body, page-edge stacks, spine.
  *
- * `accountMark` is a slot rather than an import: it is server-rendered (it reads
- * the session cookie) and this tree is client-side, so it has to be handed in.
+ * `accountMark` is a slot rather than an import because it is server rendered
+ * (it reads the session cookie) and this tree is client side.
  */
 export function BookFrame({
   children,

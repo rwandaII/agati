@@ -43,8 +43,8 @@ describe('pageAtAnchor', () => {
   });
 
   /**
-   * The whole point: a place saved on one screen has to survive being reopened
-   * on another, where the text is broken into different pages.
+   * The point of the whole thing: a place saved on one screen has to survive
+   * being reopened on another, where the text breaks into different pages.
    */
   it('survives a re-flow into different pages', () => {
     const saved = anchorOfPage(wide, 1); // start of the third paragraph

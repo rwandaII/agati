@@ -27,8 +27,8 @@ function badgeFor(b: { accessType: string; priceRwf: number }): string {
  * Searches everything a visitor could be looking for: free books, paid books,
  * news and the static sections.
  *
- * Access is deliberately NOT a filter. A paid book must be findable — it just
- * is not readable until it has been paid for.
+ * Access is deliberately not a filter. A paid book has to be findable, it just
+ * isn't readable until it's been paid for.
  */
 export async function search(raw: string): Promise<SearchResult> {
   const q = (raw ?? '').trim();

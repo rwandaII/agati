@@ -134,9 +134,8 @@ describe('useFlip', () => {
     expect(onPrev).not.toHaveBeenCalled();
   });
 
-  // On a phone the book is drawn a quarter-turn clockwise, so the reader's
-  // finger travels up and down the glass to go through the book. The gesture
-  // is the same one — sideways across the page — seen in the page's own axes.
+  // on a phone the book is drawn a quarter turn clockwise, so the finger moves
+  // up and down the glass. Same gesture, seen in the page's own axes.
   it('turns forward on a swipe up a turned phone', () => {
     const { onNext } = setup(vi.fn(), vi.fn(), true, true);
     act(() => {

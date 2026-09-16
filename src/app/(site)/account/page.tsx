@@ -42,7 +42,7 @@ export default async function Account() {
           {active ? (
             <>
               <p>
-                <span className="badge badge--free">Active</span> — the{' '}
+                <span className="badge badge--free">Active</span> on the{' '}
                 {subscription.plan === 'YEARLY' ? 'yearly' : 'monthly'} plan. Every book in the
                 library is open to you.
               </p>
@@ -53,7 +53,7 @@ export default async function Account() {
               <p>You do not have a subscription.</p>
               <p>
                 <Link className="btn btn--primary" href="/subscribe">
-                  Read everything — ${PLANS.YEARLY.usd} a year
+                  Read everything, ${PLANS.YEARLY.usd} a year
                 </Link>
               </p>
             </>
@@ -77,7 +77,7 @@ export default async function Account() {
                 <li key={p.id} className="account__item">
                   <span className="account__what">
                     {p.kind === 'SUBSCRIPTION'
-                      ? `Subscription — ${p.plan === 'YEARLY' ? 'one year' : 'one month'}`
+                      ? `Subscription: ${p.plan === 'YEARLY' ? 'one year' : 'one month'}`
                       : (p.book?.title ?? 'A book')}
                   </span>
                   <span className="account__meta">

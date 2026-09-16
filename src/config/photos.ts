@@ -1,14 +1,14 @@
 /**
  * Agati's own photographs, downloaded from agatilibrary.org into public/agati.
  *
- * They fall into three groups, exactly as they do on their site: one colour
- * photograph of children reading, a set of black-and-white portraits of the
- * people who run Agati, and a wide black-and-white shot.
+ * Three groups, the same as on their site: one colour photograph of children
+ * reading, black and white portraits of the people who run Agati, and a wide
+ * black and white shot.
  *
- * The portraits are deliberately NOT matched to names. There is no way to tell
- * from a filename which co-founder each one shows, and putting the wrong name
- * to a real person's face is worse than leaving it blank. `FOUNDER_PHOTOS`
- * below is where Agati should make that assignment — one line each.
+ * The portraits are deliberately not matched to names from filenames. There's
+ * no way to tell from a filename which co-founder a photo shows, and putting
+ * the wrong name on a real person's face is worse than leaving it blank.
+ * FOUNDER_PHOTOS below is where Agati makes that assignment.
  */
 export type Photo = { src: string; alt: string; portrait?: boolean };
 
@@ -24,10 +24,8 @@ export const WIDE: Photo = HERO;
 /**
  * Each co-founder's own portrait.
  *
- * This pairing is not a guess at faces. It was read out of agatilibrary.org's
- * own page data, where every name sits beside exactly one image reference — and
- * it corroborates itself: the Creative Director is the one photographed in an
- * art studio.
+ * Not a guess at faces. This was read out of agatilibrary.org's own page data,
+ * where every name sits beside exactly one image reference.
  */
 export const FOUNDER_PHOTOS: Record<string, string> = {
   'Patience Karekezi': '/agati/196173_eeafe87a827245e8892751cbb44a4f91.jpg',

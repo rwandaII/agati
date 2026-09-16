@@ -16,7 +16,7 @@ export default async function CheckoutStatus({
   const { reference } = await params;
   const user = await requireUser();
 
-  // A reader may only ever see their own purchase.
+  // own purchases only
   const purchase = await prisma.purchase.findFirst({
     where: { reference, userId: user.id },
     include: { book: { select: { title: true } } },

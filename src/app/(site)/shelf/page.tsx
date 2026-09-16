@@ -65,7 +65,7 @@ export default async function Shelf() {
           <Heading>Yours to keep</Heading>
           {owned.length === 0 ? (
             <p>
-              You have not bought a book yet. Many titles cost nothing —{' '}
+              You have not bought a book yet. Many titles cost nothing,{' '}
               <Link href="/library?access=free">see the free shelf</Link>.
             </p>
           ) : (

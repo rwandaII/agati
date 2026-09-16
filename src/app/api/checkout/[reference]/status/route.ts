@@ -6,9 +6,8 @@ import { fulfilPurchase } from '@/lib/payments/fulfil';
 
 /**
  * Polled by the checkout screen while the customer approves on their phone.
- *
- * This is also the backstop for a webhook that never arrives: fulfilment runs
- * through the same idempotent door either way.
+ * Also the backstop for a webhook that never turns up: both paths go through
+ * the same idempotent fulfil().
  */
 export async function GET(_req: Request, { params }: { params: Promise<{ reference: string }> }) {
   const { reference } = await params;
@@ -16,7 +15,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ referen
   const user = await currentUser();
   if (!user) return NextResponse.json({ error: 'Please sign in first.' }, { status: 401 });
 
-  // A reader may only ever poll their own purchase.
+  // own purchases only
   const purchase = await prisma.purchase.findFirst({
     where: { reference, userId: user.id },
     include: { book: { select: { slug: true, title: true } } },
