@@ -12,7 +12,8 @@ const input = {
 };
 
 function stubFetch(handlers: Record<string, unknown>) {
-  return vi.fn(async (url: string | URL) => {
+  return vi.fn(async (url: string | URL, init?: RequestInit) => {
+    void init;
     const u = String(url);
     const key = Object.keys(handlers).find((k) => u.includes(k));
     if (!key) throw new Error(`Unexpected fetch: ${u}`);

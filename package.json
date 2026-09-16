@@ -22,9 +22,6 @@
     "postinstall": "prisma generate",
     "db:setup": "prisma db push && tsx prisma/seed.ts"
   },
-  "prisma": {
-    "seed": "tsx prisma/seed.ts"
-  },
   "dependencies": {
     "next": "^15.5.0",
     "react": "^19.1.0",

@@ -1,8 +1,11 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
+import type { Prisma } from '@prisma/client';
 import { prisma } from './db';
 import { listBooks, getBook } from './books';
 
-const mk = (over: Record<string, unknown>) => ({
+type BookOverrides = Partial<Prisma.BookCreateManyInput> & { slug: string };
+
+const mk = (over: BookOverrides): Prisma.BookCreateManyInput => ({
   title: 'T', author: 'A', summary: 's', description: 'd',
   category: 'Folk tales', pageCount: 10, ...over,
 });
