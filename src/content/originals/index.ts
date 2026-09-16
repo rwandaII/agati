@@ -5,6 +5,6 @@ import { MOBILE_LIBRARY } from './mobile-library';
 
 /**
  * Original works written for Agati Library. Every PAID title is original, so no
- * public-domain text is ever placed behind a paywall.
+ * public domain text ends up behind a paywall.
  */
 export const ORIGINALS: SeedBook[] = [AGATI_TREE, UBWENGE, MOBILE_LIBRARY];

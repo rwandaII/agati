@@ -1,8 +1,8 @@
 import type { SeedBook } from '../types';
 
 /**
- * An original work written for Agati Library. Paid titles are always original —
- * no public-domain text is ever placed behind a paywall.
+ * An original work written for Agati Library. Paid titles are always original,
+ * no public domain text is ever put behind a paywall.
  */
 export const AGATI_TREE: SeedBook = {
   slug: 'agati-the-tree-that-grew-a-library',
@@ -61,7 +61,7 @@ Which is a different question from "is it enough". It is a better question. It i
 
     `They bought books.
 
-Not the books they wanted. The books they could afford — second-hand, mismatched, some of them soft at the corners from other people's hands. Books in English and books in French and, harder to find and more precious for it, books in Kinyarwanda.
+Not the books they wanted. The books they could afford: second-hand, mismatched, some of them soft at the corners from other people's hands. Books in English and books in French and, harder to find and more precious for it, books in Kinyarwanda.
 
 Fewer than two hundred, all told.
 
@@ -97,7 +97,7 @@ Children who have one book know this. Children who have five hundred sometimes n
 
 A second library, in a different district, which meant learning that what worked in Musanze did not simply transplant. A third. Furniture that had to be built. Shelves that had to be argued for. Rent. Always rent.
 
-Prosper's question — and then what? — turned out to be the hardest one they had. It is not hard to open a library for a month. It is very hard to open one that is still open in five years, and a library that closes teaches a child something worse than never having had one.`,
+Prosper's question (and then what?) turned out to be the hardest one they had. It is not hard to open a library for a month. It is very hard to open one that is still open in five years, and a library that closes teaches a child something worse than never having had one.`,
 
     `Then in 2020 every door in the world shut at once.
 
@@ -117,7 +117,7 @@ A story read aloud on the radio reaches a child with no library, no shelf, and n
 
 The pandemic did not interrupt the work. It taught them that the work had never actually been about the building.`,
 
-    `Today there are eight library spaces — in Musanze, in Rubavu, in Kicukiro, in Nyamasheke, in Karongi.
+    `Today there are eight library spaces: in Musanze, in Rubavu, in Kicukiro, in Nyamasheke, in Karongi.
 
 The collection is no longer fewer than two hundred books. It is several thousand, in three languages.
 
@@ -127,13 +127,13 @@ Aime still counts everything twice.`,
 
     `A tree does not know it is a tree. It only knows the next inch.
 
-If you had told those six students, around that borrowed table, with that small pile of folded notes, that they were founding something — they would have laughed at you. They were not founding anything. They were solving one afternoon's problem: children who could read, and nothing to read.
+If you had told those six students, around that borrowed table, with that small pile of folded notes, that they were founding something, they would have laughed at you. They were not founding anything. They were solving one afternoon's problem: children who could read, and nothing to read.
 
 That is all any of it ever is. One afternoon's problem, solved stubbornly, for long enough that it becomes a shape.`,
 
     `So: you have finished this book.
 
-Somewhere there is a child who has learned her letters this month. She has done the hard part already — the part where shapes become sounds and sounds become meaning. That door is open in her and it will not close.
+Somewhere there is a child who has learned her letters this month. She has done the hard part already, the part where shapes become sounds and sounds become meaning. That door is open in her and it will not close.
 
 The only question left is whether there is a room behind it.
 

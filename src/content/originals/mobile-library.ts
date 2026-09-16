@@ -1,9 +1,9 @@
 import type { SeedBook } from '../types';
 
 /**
- * Deliberately FREE_TRIAL: this is the title that demonstrates the seven-day
- * window on a book people actually want to read, without touching the
- * public-domain collection.
+ * FREE_TRIAL on purpose. This is the title that demonstrates the seven day
+ * window on a book people actually want to read, without touching the public
+ * domain collection.
  */
 export const MOBILE_LIBRARY: SeedBook = {
   slug: 'the-mobile-library',
@@ -51,13 +51,13 @@ Today it is a library. That is the whole trick. That is the entire innovation.`,
 
     `The children arrive the way children arrive, which is to say suddenly and all at once and from directions you were not watching.
 
-Claudine has learned not to start immediately. She opens the crate and then she sits down beside it and waits, and the waiting is not empty — it is the part where the children work out for themselves that nothing is going to be asked of them.
+Claudine has learned not to start immediately. She opens the crate and then she sits down beside it and waits, and the waiting is not empty. It is the part where the children work out for themselves that nothing is going to be asked of them.
 
 No test. No reading aloud in front of everyone. No being told which book is appropriate for their level.
 
 Just a crate, open, on the ground.`,
 
-    `The first one in is always the smallest or the boldest, and today it is both — a girl of maybe six who walks straight up, looks in, and takes the sea book off the top with both hands because it is bigger than her forearm.
+    `The first one in is always the smallest or the boldest, and today it is both: a girl of maybe six who walks straight up, looks in, and takes the sea book off the top with both hands because it is bigger than her forearm.
 
 She cannot read it. She is not trying to read it.
 
@@ -73,7 +73,7 @@ The girl looks at the picture again with an entirely new face.`,
 
 Not literacy rates. Not outcomes. A child asking *what is this* about something she did not know existed forty seconds ago, and being told, and understanding that the world is larger than the part of it she has stood in.
 
-Everything else — the reading, the vocabulary, the school results, the aspiration, the whole long argument you make to funders — all of it grows out of that one question, asked freely, of an open crate under a tree.`,
+Everything else, the reading, the vocabulary, the school results, the aspiration, the whole long argument you make to funders, all of it grows out of that one question, asked freely, of an open crate under a tree.`,
 
     `By the second hour the shade is full.
 
@@ -87,13 +87,13 @@ An old woman has sat down at the edge of the shade with an atlas open on her kne
 
 There are children in this country who can read perfectly well and who have never once *chosen* a book. Everything they have read was assigned. Reading, to them, is a thing done to you.
 
-Choice is the entire point of a library. Forty-one books is not a large number. But forty-one books, spread on the ground, from which you may take whichever one you like, for no reason, and put it back if you do not like it, and take another —
+Choice is the entire point of a library. Forty-one books is not a large number. But forty-one books, spread on the ground, from which you may take whichever one you like, for no reason, and put it back if you do not like it, and take another...
 
 that is not forty-one books. That is the first time anybody asked you what you wanted.`,
 
     `The rain comes at four, hard and brief, the way it does.
 
-Everybody moves at once and without instruction: the crate is closed and lifted and carried to the lee side of the wall, and the sea book — which two children are already holding — goes under somebody's shirt.
+Everybody moves at once and without instruction: the crate is closed and lifted and carried to the lee side of the wall, and the sea book, which two children are already holding, goes under somebody's shirt.
 
 It rains for eleven minutes. Then it stops and the whole hillside smells of wet earth and everything steams, and the children come back out and open the crate again as though nothing has happened.
 
@@ -129,7 +129,7 @@ There are more crates than there used to be. There are not enough.`,
 
     `You have been reading this for free.
 
-That is deliberate — for seven days, this book behaves the way the crate behaves: open, on the ground, take it if you want it. After that it asks you for something, because storerooms cost money and so do motorcycles and so does the sea book, twice repaired.
+That is deliberate. For seven days, this book behaves the way the crate behaves: open, on the ground, take it if you want it. After that it asks you for something, because storerooms cost money and so do motorcycles and so does the sea book, twice repaired.
 
 If you keep it, you have paid for a book.
 

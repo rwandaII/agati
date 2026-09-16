@@ -1,12 +1,12 @@
 import type { SeedBook } from '../types';
 
 /**
- * A bilingual Kinyarwanda / English original. Written in deliberately simple
- * Kinyarwanda so that a child reading in either language can follow both.
+ * A bilingual Kinyarwanda / English original, written in deliberately simple
+ * Kinyarwanda so a child reading in either language can follow both.
  *
- * NOTE FOR AGATI: the Kinyarwanda should be reviewed by a native speaker before
- * this title is sold. It is kept short and plain on purpose; a first-language
- * editor should tighten the idiom.
+ * TODO (Agati): the Kinyarwanda needs a first-language editor before this title
+ * is sold. It's kept short and plain on purpose, but the idiom could be
+ * tightened.
  */
 export const UBWENGE: SeedBook = {
   slug: 'ubwenge-buri-mu-gitabo',
@@ -24,7 +24,7 @@ export const UBWENGE: SeedBook = {
     'A bilingual story, Kinyarwanda and English on every page, about a boy, a season of ' +
     'rain, and one book read until it became something else.',
   pages: [
-    `**Igice cya mbere — Imvura**
+    `**Igice cya mbere: Imvura**
 
 Kalisa yari afite imyaka icyenda. Yabaga i Musanze.
 
@@ -34,7 +34,7 @@ Mama we yaravuze ati: "Ntushobora gusohoka uyu munsi."
 
 ---
 
-**Chapter one — The rain**
+**Chapter one: The rain**
 
 Kalisa was nine years old. He lived in Musanze.
 
@@ -74,7 +74,7 @@ Kalisa took it. He opened it.
 
 He did not know it was the story of a girl who travelled far.`,
 
-    `**Igice cya kabiri — Umunsi wa mbere**
+    `**Igice cya kabiri: Umunsi wa mbere**
 
 Kalisa yasomye kugeza saa sita. Yararuhutse. Yasomye kugeza nimugoroba.
 
@@ -86,7 +86,7 @@ Ariko ntiyari yarangije.
 
 ---
 
-**Chapter two — The first day**
+**Chapter two: The first day**
 
 Kalisa read until noon. He rested. He read until evening.
 
@@ -96,7 +96,7 @@ At night, he finished. He closed the book. He said: "It is over."
 
 But he had not finished.`,
 
-    `**Igice cya gatatu — Umunsi wa kabiri**
+    `**Igice cya gatatu: Umunsi wa kabiri**
 
 Bukeye, imvura yari ikigwa.
 
@@ -108,7 +108,7 @@ Yabonye ko umukobwa yari afite ubwoba mbere y’urugendo. Ejo ntiyabibonye.
 
 ---
 
-**Chapter three — The second day**
+**Chapter three: The second day**
 
 The next day, the rain was still falling.
 
@@ -132,7 +132,7 @@ When you read a story the first time, you want to know the ending.
 
 When you read it a second time, you know the ending. Now you can look at the road.`,
 
-    `**Igice cya kane — Umunsi wa gatatu**
+    `**Igice cya kane: Umunsi wa gatatu**
 
 Imvura ntiyahagaze.
 
@@ -146,19 +146,19 @@ Kalisa yaravuze ati: "Nzarikoresha."
 
 ---
 
-**Chapter four — The third day**
+**Chapter four: The third day**
 
 The rain did not stop.
 
 Kalisa read a third time. Now he was not reading the story. He was reading the words.
 
-He found a word he did not know: *inkovu* — a scar.
+He found a word he did not know: *inkovu*, a scar.
 
 He asked his mother. His mother explained it to him.
 
 Kalisa said: "I will use it."`,
 
-    `**Igice cya gatanu — Umunsi wa kane**
+    `**Igice cya gatanu: Umunsi wa kane**
 
 Ku munsi wa kane, imvura yarahagaze.
 
@@ -166,11 +166,11 @@ Izuba ryarasohotse. Abana bandi barasohotse. Baratabaza ngo: "Kalisa! Ngwino han
 
 Kalisa yarebye idirishya. Yarebye igitabo.
 
-Yarasohotse — ariko yajyanye igitabo.
+Yarasohotse, ariko yajyanye igitabo.
 
 ---
 
-**Chapter five — The fourth day**
+**Chapter five: The fourth day**
 
 On the fourth day, the rain stopped.
 
@@ -178,7 +178,7 @@ The sun came out. The other children came out. They called: "Kalisa! Come outsid
 
 Kalisa looked at the window. He looked at the book.
 
-He went out — but he took the book with him.`,
+He went out, but he took the book with him.`,
 
     `Yicaye munsi y’igiti. Abandi bakinaga.
 
@@ -198,7 +198,7 @@ Kalisa did not answer. He gave her the book.
 
 Uwase sat down on the ground. She opened it.`,
 
-    `**Igice cya gatandatu — Ikintu gishya**
+    `**Igice cya gatandatu: Ikintu gishya**
 
 Bombi basomye rimwe. Umwe yategereje undi ngo arangize urupapuro.
 
@@ -212,7 +212,7 @@ Uwase yaravuze ati: "Ntumbwire!"
 
 ---
 
-**Chapter six — Something new**
+**Chapter six: Something new**
 
 The two of them read together. One waited for the other to finish the page.
 
@@ -242,7 +242,7 @@ Uwase was afraid. Because it was her first time.
 
 One book. Two people. Two different things.`,
 
-    `**Igice cya karindwi — Isomero**
+    `**Igice cya karindwi: Isomero**
 
 Nyuma y’ukwezi, umuntu yaje mu mudugudu. Yari afite agasanduku k’ibitabo.
 
@@ -254,7 +254,7 @@ Yaravuze ati: "Fata icyo ushaka."
 
 ---
 
-**Chapter seven — The library**
+**Chapter seven: The library**
 
 After a month, someone came to the village. She had a crate of books.
 
