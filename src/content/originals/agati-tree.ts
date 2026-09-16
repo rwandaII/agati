@@ -19,123 +19,121 @@ export const AGATI_TREE: SeedBook = {
     'The story of how a library begins: not with a building, but with six young people ' +
     'emptying their savings onto a table and counting what they have.',
   pages: [
-    `In Kinyarwanda, agati means a tree. A small one. The kind you can still put your hand around.
+    `In Kinyarwanda, agati means a tree. A small one, the kind you can still put your hand around.
 
-Nobody plants a tree because of the shade it will give tomorrow. You plant it because of the shade it will give in twenty years, to people whose names you do not know yet, who will sit under it and never once think about you.
+Nobody plants a tree for the shade it'll give tomorrow. You plant it for the shade it gives in twenty years, to people whose names you don't know yet, who'll sit under it without once thinking about you.
 
 This is a story about six people who planted one.`,
 
-    `Musanze in April is green in a way that is difficult to explain to someone who has not seen it. The volcanoes sit in the north with cloud caught on their shoulders. The rain comes in the afternoon, hard and brief, and afterwards the whole town smells of wet earth and eucalyptus.
+    `Musanze in April is green in a way that's hard to explain to anyone who hasn't seen it. The volcanoes sit up in the north with cloud caught on their shoulders. The rain comes in the afternoon, hard and short, and afterwards the whole town smells of wet earth and eucalyptus.
 
-Patience was twenty-two. She was still a student, which meant she was always slightly late and always slightly hungry.
+Patience was twenty-two, and still a student, which meant she was always slightly late and always slightly hungry.
 
-She had a problem she could not put down.
+She had a problem she couldn't put down. It was this: she knew children who could read, and she knew there was nothing for them to read.`,
 
-The problem was this: she knew children who could read, and she knew there was nothing for them to read.`,
+    `That's an easy sentence to say quickly. It's worth saying slowly.
 
-    `It is easy to say that sentence quickly. Say it slowly instead.
+A child learns her letters. She works at them until they stop being shapes and start being sounds, and then one afternoon the sounds stop being sounds and turn into *meaning*, and something opens in her that won't ever close again.
 
-A child learns her letters. She works at them until they stop being shapes and start being sounds, and then one afternoon the sounds stop being sounds and start being *meaning*, and something opens in her that will never close again.
+Then school ends at four o'clock and she goes home, and there's nothing there.
 
-And then school ends at four o'clock, and she goes home, and there is nothing.
-
-Not one book. Not one page. Nothing to practise on, nothing to fall into, nothing to be curious about. The door opened and then there was no room behind it.`,
+Not one book. Not a page. Nothing to practise on, nothing to fall into. The door opened and there was no room behind it.`,
 
     `Patience talked about it constantly, which is how she found the other five.
 
-Aime was good with numbers and suspicious of enthusiasm. Sabine remembered everything and everyone. Rigobert drew on any surface that held still. Prosper asked "and then what?" until the plan either survived or fell over. Denyse could talk to anybody, including people who had already said no.
+Aime was good with numbers and suspicious of enthusiasm. Sabine remembered everything and everyone. Rigobert drew on any surface that held still. Prosper asked "and then what?" until a plan either survived it or fell over. Denyse could talk to anybody, including people who'd already said no.
 
-They were all students. None of them had money. Every single one of them said yes.`,
+All of them were students. None of them had money. Every one of them said yes.`,
 
-    `They met in a room that was not theirs, around a table that was not theirs, and Aime said: let us find out what we actually have.
+    `They met in a room that wasn't theirs, around a table that wasn't theirs, and Aime said they should find out what they actually had.
 
-They put it on the table. Savings from small jobs. Money that had been intended for other things. Notes folded into squares because they had been carried in pockets for a long time.
+So they put it on the table. Savings from small jobs. Money that had been meant for other things. Notes folded into squares from being carried around in pockets for months.
 
-It was not very much.
+It wasn't very much.
 
-Aime counted it twice, because he was the kind of person who counts things twice, and then he looked up and said a number, and there was a silence.
+Aime counted it twice, because he's the kind of person who counts things twice, then looked up and said the number out loud, and nobody said anything for a while.
 
 Then Prosper said: "So what can we buy with that?"
 
-Which is a different question from "is it enough". It is a better question. It is the question that starts things.`,
+Which isn't the same question as "is it enough". It's a better one, and it's the question that actually starts things.`,
 
     `They bought books.
 
-Not the books they wanted. The books they could afford: second-hand, mismatched, some of them soft at the corners from other people's hands. Books in English and books in French and, harder to find and more precious for it, books in Kinyarwanda.
+Not the books they wanted. The books they could afford: second-hand, mismatched, half of them soft at the corners from other people's hands. Books in English, books in French, and, harder to find and worth more for it, books in Kinyarwanda.
 
 Fewer than two hundred, all told.
 
-Rigobert made a sign. Denyse told everyone she had ever met. Sabine wrote down every title in a notebook, because if you do not write it down you will not know what you have, and if you do not know what you have you cannot lend it.
+Rigobert made a sign. Denyse told everyone she'd ever met. Sabine wrote down every title in a notebook, because if you don't write it down you don't know what you have, and if you don't know what you have you can't lend it out.
 
-In April 2018, they opened the door.`,
+In April 2018 they opened the door.`,
 
-    `Here is what nobody tells you about opening a library.
+    `Here's what nobody tells you about opening a library.
 
-The first day, three children come. They stand in the doorway and do not come in, because they are not sure it is allowed. Somebody has to say: yes, it is allowed, it is for you, come in.
+On the first day three children come. They stand in the doorway and don't come in, because they're not sure it's allowed. Somebody has to say: yes, it's allowed, it's for you, come in.
 
-The second day, those three bring four more.
+The second day those three bring four more.
 
-By the second week you have stopped counting, and you have discovered your real problem, which is not getting children to come. It is that you have fewer than two hundred books and they are reading faster than you can replace them.`,
+By the second week you've stopped counting, and you've found your real problem, which isn't getting children through the door. It's that you have fewer than two hundred books and they're reading faster than you can replace them.`,
 
-    `The children read on the floor. They read on the step outside. They read two to a book, heads together, one waiting for the other to finish the page.
+    `The children read on the floor. They read on the step outside. They read two to a book, heads together, one of them waiting for the other to finish the page.
 
 Sabine watched a boy read the same book four times in nine days and asked him, gently, whether he might like a different one.
 
-He said he was not finished with this one yet.
+He said he wasn't finished with this one yet.
 
-She asked what he meant, since he had reached the end three times.
+She asked what he meant, since he'd reached the end three times.
 
-He said: "I am still finding things."`,
+He said: "I'm still finding things."`,
 
-    `That is the whole argument, if you ever need to make it to somebody holding a budget.
+    `That's the whole argument, if you ever have to make it to somebody holding a budget.
 
-A book is not information. If it were only information you could read it once and be done. A book is a place. You can go back to a place. You notice the second time what you walked past the first time, and the third time you notice what it made you feel, and the fourth time you notice that you have changed and it has not.
+A book isn't information. If it were only information you could read it once and be done with it. A book is a place, and you can go back to a place. The second time you notice what you walked past the first time. The third time you notice what it made you feel. The fourth time you notice that you've changed and it hasn't.
 
-Children who have one book know this. Children who have five hundred sometimes never find out.`,
+Children who have one book work this out. Children who have five hundred sometimes never do.`,
 
-    `The years after that are less dramatic and more difficult.
+    `The years after that are less dramatic and a lot harder.
 
-A second library, in a different district, which meant learning that what worked in Musanze did not simply transplant. A third. Furniture that had to be built. Shelves that had to be argued for. Rent. Always rent.
+A second library, in another district, which meant finding out that what worked in Musanze didn't simply transplant. Then a third. Furniture that had to be built. Shelves that had to be argued for. Rent, always rent.
 
-Prosper's question (and then what?) turned out to be the hardest one they had. It is not hard to open a library for a month. It is very hard to open one that is still open in five years, and a library that closes teaches a child something worse than never having had one.`,
+Prosper's question (and then what?) turned out to be the hardest one they had. Opening a library for a month isn't difficult. Opening one that's still open in five years is, and a library that closes teaches a child something worse than never having had one.`,
 
     `Then in 2020 every door in the world shut at once.
 
-The libraries closed. The children went home. And the six of them sat with the fact that the thing they had built was a building, and buildings can be locked.
+The libraries closed and the children went home, and the six of them sat with the fact that what they'd built was a building, and buildings can be locked.
 
 So they stopped thinking about buildings.
 
-They put books in a vehicle and drove them out to where the children were. They gathered under trees, in courtyards, in the shade beside classrooms, and they read aloud.
+They put books in a vehicle and drove them out to where the children were, and gathered under trees, in courtyards, in the shade beside classrooms, and read aloud.
 
 And they went on the radio.`,
 
     `*Nge Nawe Dusome.* You and I, let us read.
 
-Children called in and talked about the books they loved. Then children called in and read stories they had written themselves, which nobody had planned for and which turned out to be the best part.
+Children called in and talked about books they loved. Then children started calling in to read stories they'd written themselves, which nobody had planned for and which turned out to be the best part of it.
 
-A story read aloud on the radio reaches a child with no library, no shelf, and no electricity in the room, and it reaches her for free, and she does not have to travel to get it.
+A story read aloud on the radio reaches a child with no library, no shelf and no electricity in the room. It costs her nothing and she doesn't have to travel to get it.
 
-The pandemic did not interrupt the work. It taught them that the work had never actually been about the building.`,
+The pandemic didn't interrupt the work. It showed them the work had never really been about the building.`,
 
-    `Today there are eight library spaces: in Musanze, in Rubavu, in Kicukiro, in Nyamasheke, in Karongi.
+    `Today there are eight library spaces: Musanze, Rubavu, Kicukiro, Nyamasheke, Karongi.
 
-The collection is no longer fewer than two hundred books. It is several thousand, in three languages.
+The collection isn't fewer than two hundred books any more. It's several thousand, in three languages.
 
-There is a mobile library, and a radio programme, and workshops where children learn to put their own stories on paper, and residencies where writers come to finish the books that will sit on these shelves next. There are libraries inside hospitals, for children whose year is being spent in a bed.
+There's a mobile library, and a radio programme, and workshops where children learn to get their own stories onto paper, and residencies where writers come to finish the books that'll sit on these shelves next. There are libraries inside hospitals, for children whose year is being spent in a bed.
 
 Aime still counts everything twice.`,
 
-    `A tree does not know it is a tree. It only knows the next inch.
+    `A tree doesn't know it's a tree. It only knows the next inch.
 
-If you had told those six students, around that borrowed table, with that small pile of folded notes, that they were founding something, they would have laughed at you. They were not founding anything. They were solving one afternoon's problem: children who could read, and nothing to read.
+If you'd told those six students, around that borrowed table, with that small pile of folded notes, that they were founding something, they'd have laughed at you. They weren't founding anything. They were solving one afternoon's problem: children who could read, and nothing to read.
 
-That is all any of it ever is. One afternoon's problem, solved stubbornly, for long enough that it becomes a shape.`,
+That's all it ever is, really. One afternoon's problem, solved stubbornly for long enough that it turns into a shape.`,
 
-    `So: you have finished this book.
+    `So: you've finished this book.
 
-Somewhere there is a child who has learned her letters this month. She has done the hard part already, the part where shapes become sounds and sounds become meaning. That door is open in her and it will not close.
+Somewhere there's a child who learned her letters this month. She's done the hard part already, the part where shapes become sounds and sounds become meaning. That door is open in her and it isn't going to close.
 
-The only question left is whether there is a room behind it.
+The only question left is whether there's a room behind it.
 
 Agati means a small tree. Not a forest. Not yet.
 

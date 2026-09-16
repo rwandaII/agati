@@ -18,145 +18,145 @@ export const NEWS: SeedNews[] = [
     slug: 'eight-libraries-and-counting',
     title: 'Eight libraries, and counting',
     excerpt:
-      'From one room in Musanze in 2018 to library spaces across five districts, and the harder question of what comes next.',
+      'From one room in Musanze in 2018 to eight spaces across five districts, and the question of what comes next.',
     category: 'Milestones',
     publishedAt: '2026-06-14',
     featured: true,
-    body: `There are now eight Agati library spaces, in Musanze, Rubavu, Kicukiro, Nyamasheke and Karongi.
+    body: `There are now eight Agati library spaces: Musanze, Rubavu, Kicukiro, Nyamasheke and Karongi.
 
-Counting them is the easy part. The number that matters is not how many rooms we have opened but how many are still open, still staffed, still stocked, and still trusted by the children who walk to them. A library that closes teaches a child something worse than never having had one at all.
+Counting them is the easy part. What we actually watch is how many are still open a year later, still staffed and still stocked. Opening a library isn't hard. Keeping one open is, and a library that closes is worse for a child than one that never opened.
 
-Each new space has taught us that what worked in Musanze does not simply transplant. A room near a school fills at different hours than a room near a market. A district where most children read in Kinyarwanda needs a different shelf from one where French is common at home. We have learned to ask before we build, and to build smaller than we would like, so that we can keep it.
+What worked in Musanze didn't simply transplant. A room near a school fills up at different hours than a room near a market. In one district most of the children read in Kinyarwanda; in another there's more French spoken at home, so the shelf has to look different. We've learned to ask first, and to build smaller than we'd like so that we can keep it.
 
-The eighth is not a finish line. It is the point at which we stopped describing ourselves as a library and started describing ourselves as a network, with everything that implies about logistics, about training, and about making sure the eighth space is as good as the first.`,
+The eighth space isn't a finish line. It's roughly the point where we stopped calling ourselves a library and started calling ourselves a network, which so far mostly means more logistics and more staff training than any of us expected.`,
   },
   {
     slug: 'how-agati-began',
     title: 'How Agati began: six students and a folded pile of savings',
     excerpt:
-      'In April 2018, six young people in Musanze emptied their savings onto a table, counted it, and asked a better question than "is it enough".',
+      'In April 2018 six young people in Musanze emptied their savings onto a table and counted it.',
     category: 'Milestones',
     publishedAt: '2026-05-02',
-    body: `Agati was founded in April 2018 by six young people from Musanze who were, at the time, still students.
+    body: `Agati was founded in April 2018 by six young people from Musanze. All of them were students at the time.
 
-They had all grown up with the same gap. Children around them could read, schools had done that part, and then school ended in the afternoon and there was nothing to read. Literacy without books is a door opened onto an empty room.
+They had all grown up with the same gap. The children around them could read, more or less, because school had done that part. Then school finished for the day and there was nothing at home to read.
 
-None of them had money. They pooled personal savings, counted it, and bought what they could afford: fewer than two hundred second-hand books, in English, French and Kinyarwanda, most of them soft at the corners from other people's hands.
+Nobody had money. They pooled what they had saved, counted it, and bought what it covered: fewer than two hundred second-hand books in English, French and Kinyarwanda, most of them soft at the corners from whoever had owned them before.
 
-The six were Patience Karekezi, Aime Mukiza, Sabine Isangwe, Rigobert Uwiduhaye, Prosper Munyabuhoro and Denyse Umuhuza. They are still here, in the roles the organisation grew into needing: Director, Finance and Administration, Human Resources, Creative, Programmes, and Communications and Fundraising.
+The six were Patience Karekezi, Aime Mukiza, Sabine Isangwe, Rigobert Uwiduhaye, Prosper Munyabuhoro and Denyse Umuhuza. All six are still here, in the roles the organisation grew into needing: Director, Finance and Administration, Human Resources, Creative, Programmes, and Communications and Fundraising.
 
-What changed over the following years was not the ambition but the discipline. The team that opened one room on enthusiasm became a team that thinks about sustainability, because enthusiasm opens a library and only planning keeps it open.`,
+The ambition hasn't changed much since then. The planning has. You can open a library on enthusiasm, but you can't keep one open on it.`,
   },
   {
     slug: 'from-two-hundred-books-to-several-thousand',
     title: 'From under two hundred books to several thousand',
     excerpt:
-      'The collection now runs to several thousand titles in three languages, and the shape of it matters as much as the size.',
+      'Several thousand titles now, in three languages. The shape of the collection matters as much as the size.',
     category: 'Milestones',
     publishedAt: '2026-04-11',
-    body: `The first Agati shelf held fewer than two hundred books. The collection is now several thousand, in English, French and Kinyarwanda.
+    body: `The first Agati shelf held fewer than two hundred books. We're now at several thousand, in English, French and Kinyarwanda.
 
-Growth of that kind is not simply accumulation. A collection has a shape, and the shape is where the work is. Too many donated books in one language and the children who read in another quietly stop coming. Too many titles pitched at one age and a whole cohort finds nothing to grow into.
+That isn't just accumulation. A collection has a shape, and the shape is where most of the work goes. If too many donated books arrive in one language, the children who read in another quietly stop turning up. If too many are pitched at one age, a whole group finds nothing to move on to.
 
-Kinyarwanda titles remain the hardest to source and the most requested. A child reading in the language spoken at home reads faster, argues with the text more, and finishes more books. We buy Kinyarwanda where we can find it, and where we cannot, we increasingly commission it, which is part of why the Writers Residency exists.
+Kinyarwanda titles are still the hardest to find and the most asked for. A child reading in the language spoken at home reads faster, argues with the text more, and finishes more books. We buy Kinyarwanda wherever we can find it. Where we can't, we increasingly commission it, which is part of why the Writers Residency exists.
 
-Every book is catalogued. It is unglamorous work, and it is the difference between a library and a pile: if you do not know what you have, you cannot lend it, and you cannot see the gap you are about to buy into.`,
+Everything gets catalogued. It's dull work and nobody volunteers for it, but if you don't know what you have you can't lend it out, and you can't see the gap you're about to spend money on.`,
   },
   {
     slug: 'the-mobile-library-goes-further',
     title: 'The Mobile Library reaches where the buildings cannot',
     excerpt:
-      'A crate of books, a bus, a motorcycle, and a very good tree. Supported by the Butterfield & Robinson Slow Fund.',
+      'A crate of books, a bus, a motorcycle and a good tree. Funded by the Butterfield & Robinson Slow Fund.',
     category: 'Programs',
     publishedAt: '2026-03-08',
     featured: true,
-    body: `The Agati Mobile Library exists because of a lesson the pandemic taught us bluntly: a library that is a building can be locked.
+    body: `The Mobile Library came out of something the pandemic made obvious: a library that is a building can be locked.
 
-So we stopped waiting for children to reach us. Staff carry crates of books out along the ridge roads to communities with no library and no room that could become one. What they find instead is shade: under a tree, in a courtyard, beside a classroom. And shade is enough.
+So we stopped waiting for children to come to us. Staff take crates of books out along the ridge roads, to places with no library and no room that could become one. What there usually is instead is shade, under a tree or in a courtyard or beside a classroom, and that turns out to be enough.
 
-Sessions are not lessons. There is no test, no reading aloud in front of everyone, and no being told which book matches your level. The crate is opened and set on the ground, and children take whichever book they like, for whatever reason, and put it back and take another. For many of them it is the first time anybody has asked what they wanted to read.
+The sessions aren't lessons. No test, no reading aloud in front of everyone, nobody telling you which book matches your level. The crate goes on the ground and children take whichever book they want, for whatever reason, then put it back and take another. For a lot of them it's the first time anyone has asked what they'd like to read.
 
-Reading is only part of it. Staff run play and craft activities alongside, and caregivers stay as often as children do. The programme is funded through Butterfield & Robinson's Slow Fund Grant.
+Reading is only half of it. Staff run play and craft activities alongside, and the caregivers often stay as long as the children do. The programme is funded through Butterfield & Robinson's Slow Fund Grant.
 
-The constraint is simple and it is arithmetic: there are more children at every stop than there are books in the crate.`,
+The constraint is simple arithmetic: there are always more children at a stop than there are books in the crate.`,
   },
   {
     slug: 'nge-nawe-dusome-radio',
     title: 'Nge Nawe Dusome: children reading on the radio',
     excerpt:
-      'Born when every library door in the country shut at once, and kept because it turned out to do something the buildings never could.',
+      'Started when every library door in the country shut at once, and kept because it does something the buildings cannot.',
     category: 'Programs',
     publishedAt: '2026-02-19',
-    body: `*Nge Nawe Dusome* (you and I, let us read) began during COVID-19, when the libraries closed and the children went home.
+    body: `*Nge Nawe Dusome* (you and I, let us read) started during COVID-19, when the libraries closed and the children went home.
 
-The format is simple. Children come on air and talk about the books they love. Then they read stories they have written themselves, which was not the original plan and has become the best part of the programme.
+The format is simple. Children come on air and talk about books they love, then read stories they've written themselves. The second part wasn't in the original plan. It's now the best thing about it.
 
-Radio does something no building can. It reaches a child with no library, no shelf, and no electricity in the room. It costs that child nothing and requires no journey. A story read aloud arrives whole.
+Radio reaches a child who has no library, no shelf and no electricity in the room. It costs them nothing and they don't have to travel anywhere.
 
-It also changed who we thought the audience was. Caregivers listen. Older siblings listen. Teachers have told us they have heard their own pupils on air and understood something new about them.
+It also changed our idea of who was listening. Caregivers listen. Older brothers and sisters listen. Teachers have told us they've heard their own pupils on air and learned something about them they hadn't known.
 
-The programme outlived the emergency that created it, which is usually the sign that a thing was worth doing on its own terms.`,
+The programme outlasted the emergency that produced it, which is usually a good sign.`,
   },
   {
     slug: 'writers-residency',
     title: 'The Writers Residency: making the books we cannot buy',
     excerpt:
-      'A sanctuary where new narratives are born and existing manuscripts are refined, run under Projet Appui Culture - Grands Lacs.',
+      'A residency where new work gets written and half-finished manuscripts get finished. Run under Projet Appui Culture - Grands Lacs.',
     category: 'Programs',
     publishedAt: '2026-01-24',
-    body: `Some of the books our shelves need do not exist yet. The Writers Residency is our answer to that.
+    body: `Some of the books our shelves need haven't been written yet. The Writers Residency is our answer to that.
 
-Through a selective process, writers are invited into a residency, a space where new work is written and existing manuscripts are refined, away from the ordinary interruptions that keep a manuscript at eighty per cent for years.
+Writers are invited in through a selective process and given room to write new work or finish manuscripts they've been carrying around for years, away from the interruptions that keep a manuscript at eighty per cent indefinitely.
 
-The programme celebrates compelling voices with cash prizes and guidance towards publication. It operates under Projet Appui Culture - Grands Lacs (PAC-GL).
+There are cash prizes and guidance towards publication. The programme runs under Projet Appui Culture - Grands Lacs (PAC-GL).
 
-For a library, this is not a side project. The scarcity of Kinyarwanda titles for children is not a purchasing problem that money alone solves; past a certain point the books simply have not been written. A library that only buys is at the mercy of what publishers happen to produce. A library that also commissions can go looking for the book its shelf is missing.`,
+For a library this isn't a side project. The shortage of Kinyarwanda children's titles isn't only a purchasing problem. Past a certain point the books simply don't exist, and a library that only buys is stuck with whatever publishers happen to produce. Commissioning means we can go looking for the book the shelf is missing.`,
   },
   {
     slug: 'book-cafes',
     title: 'Book Cafes: authors and readers around the same table',
     excerpt:
-      'Sessions in libraries, book clubs, schools, universities and youth spaces, where the person who wrote the book is sitting across from you.',
+      'Sessions in libraries, book clubs, schools, universities and youth spaces, with the author sitting across the table.',
     category: 'Programs',
     publishedAt: '2025-11-30',
-    body: `A Book Cafe puts authors and readers around a shared table and lets the conversation go where it goes.
+    body: `A Book Cafe puts authors and readers around one table and lets the conversation go wherever it goes.
 
-Sessions run in libraries, book clubs, schools, universities and youth spaces. The format is deliberately informal: this is discussion, not a lecture, and the readers are expected to have opinions.
+Sessions run in libraries, book clubs, schools, universities and youth spaces. It's deliberately informal. This is a discussion rather than a lecture, and the readers are expected to turn up with opinions.
 
-Something specific happens when a young reader meets a writer in person. Books can seem to arrive from nowhere, finished, authored by people who are not quite real. Meeting one, who is tired, who has a day job, who will tell you which chapter nearly defeated them, converts writing from a natural phenomenon into a job that a person could decide to do.
+Something specific happens when a young reader meets a writer face to face. Books can seem to arrive from nowhere, finished, written by people who aren't quite real. Then you meet one who is tired, who has a day job, who will tell you which chapter nearly beat them, and writing turns into a job somebody could decide to do.
 
-Several of the young people who now attend our Young Writers Workshops came first to a Book Cafe. The programme runs with support from PAC-GL.`,
+Several of the young people now coming to our Young Writers Workshops came to a Book Cafe first. The programme runs with support from PAC-GL.`,
   },
   {
     slug: 'hospital-childrens-centers',
     title: 'Hospital libraries: for the children whose year is a ward',
     excerpt:
-      'A safe, creative space to read, make things and play together, for children spending months in hospital.',
+      'Somewhere to read, make things and play together, for children spending months in hospital.',
     category: 'Programs',
     publishedAt: '2025-10-15',
-    body: `Some children spend a substantial part of a year in a hospital bed. Their treatment is handled. Almost nothing else is.
+    body: `Some children spend a good part of a year in a hospital bed. The treatment is taken care of. Almost nothing else is.
 
-Our Hospital Children's Centers provide a physical space in which those children can read, do crafts, and play together. It is a small intervention with a disproportionate effect, because a hospital ward gives a child nothing to be curious about, and boredom in a child who is already frightened is its own kind of harm.
+The Hospital Children's Centers give those children somewhere to read, do crafts and play together. It's a small thing with an effect out of proportion to its size, because a ward gives a child nothing to be curious about, and boredom in a child who is already frightened does its own damage.
 
-Children who cannot leave a bed are read to. Children who can, come to the space and stay for as long as they are able. Siblings and caregivers use it too. A family spending weeks in a hospital needs somewhere that is not the ward.
+Children who can't leave the bed get read to. Children who can come to the space and stay as long as they're able. Siblings and caregivers use it too. A family spending weeks in a hospital needs somewhere to be that isn't the ward.
 
-The programme is run in partnership with Project Life International and Ready for Reading.
+We run it in partnership with Project Life International and Ready for Reading.
 
-Staff describe it, consistently, as the hardest of our programmes to work on and the one they would least like to stop.`,
+Staff say it's the hardest of our programmes to work on and the last one they'd want to stop.`,
   },
   {
     slug: 'summer-activities-2025',
     title: 'Summer at Agati: reading, play and going outside to look at things',
     excerpt:
-      'Holiday programming built on the understanding that a long break with nothing in it undoes a year of school.',
+      'Holiday programming, because a long break with nothing in it undoes a lot of the school year.',
     category: 'Programs',
     publishedAt: '2025-08-22',
-    body: `School holidays are long, and for a child with no books at home a long holiday is where the previous year quietly drains away.
+    body: `School holidays are long, and for a child with no books at home a long holiday is where a good part of the previous year quietly drains away.
 
-Our Summer Activities run through the break: reading sessions, play, nature discovery, and collaborative work in groups. The design principle is that this should not feel like extra school. Children who have just finished a year of instruction do not need more instruction; they need reasons to keep using what they learned.
+Summer Activities run through the break: reading sessions, play, nature discovery, group work. The one rule is that it mustn't feel like extra school. Children who have just finished a year of instruction don't need more instruction. They need a reason to keep using what they picked up.
 
-So the reading is chosen, not assigned. The play is physical and loud. The nature sessions involve going outside and looking closely at something small for longer than feels reasonable, which is a skill that transfers directly to reading a difficult page.
+So the reading is chosen rather than assigned, the play is loud, and the nature sessions mostly consist of going outside and looking at something small for much longer than feels reasonable. That last one transfers to reading a difficult page better than you'd expect.
 
-Agati Play runs alongside: rope jumping, puzzles, crafts, singing and dancing, for children and the adults who brought them. Learning through play is not a softer version of learning. For younger children it is most of it.`,
+Agati Play runs alongside: rope jumping, puzzles, crafts, singing, dancing, for the children and for whoever brought them. Learning through play isn't a softer kind of learning. For the younger ones it's most of it.`,
   },
 ];
